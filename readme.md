@@ -7,9 +7,9 @@ The Spectrum Management System (SMS) is a Canadian government online portal that
 
 ### What problem does this project solve?
 
-For registered radio or spectrum licensees the SMS only enables you open access to print licences, and has stuck to this rather analog way of doing things up untill now (2022). This means your personal record of these licences applications is limited - no posibility for sorting, search and reformating to a custom layout.
+For registered radio or spectrum licensees the SMS only enables you access to print licences, and has stuck to this rather analog way of doing things for the better part of ~7 years. This means your personal records of these licence applications is limited - no posibility for sorting, search and reformating to a custom layout.
 
-Also simply copying the license from the SMS isn't really an option because the engineers/user of the SMS typically have over 20 pages of tables, so everytime going in the SMS and copying everything over is not a reasonable use of their time and expertise.
+Also simply copying the licences from the SMS isn't really an option because the engineers/users of the SMS typically have over 20 pages of tables, so everytime going in the SMS and copying everything over is not a reasonable use of their time and expertise.
 
 ### How does this project solve the problem?
 
@@ -23,6 +23,6 @@ This node.js application utilises puppeteer (API to control Chrome/Chromium) to 
 And then once the table is created the program will:
 
 - Convert the table object into a csv string
-- Export/creatre a csv file in the exports folder
+- Export/create a csv file in the exports folder
 
 Thus now enabling the user to have a csv version of their license applications for their records instead of solely print in a single click! They can now put back their time to more core tasks that make use of their skills.
