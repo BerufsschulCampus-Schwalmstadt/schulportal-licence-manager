@@ -48,17 +48,30 @@ function getBrowser() {
 }
 function clickElement(page, selector) {
     return __awaiter(this, void 0, void 0, function* () {
-        yield page.evaluate(selector => {
-            var _a;
-            (_a = document.querySelector(selector)) === null || _a === void 0 ? void 0 : _a.click();
+        return yield page.evaluate(passedSelector => {
+            const element = document.querySelector(passedSelector);
+            if (element) {
+                element.click();
+                return true;
+            }
+            else {
+                return false;
+            }
         }, selector);
     });
 }
-function selectElement(page, selectElementSelector) {
+function selectElement(page, selector, optionIndex) {
     return __awaiter(this, void 0, void 0, function* () {
-        yield page.evaluate(selectElementSelector => {
-            document.querySelector(selectElementSelector).selectedIndex = 2;
-        }, selectElementSelector);
+        return yield page.evaluate((passedSelector, passedOptionIndex) => {
+            const element = document.querySelector(passedSelector);
+            if (element) {
+                element.selectedIndex = passedOptionIndex + 1;
+                return true;
+            }
+            else {
+                return false;
+            }
+        }, selector, optionIndex);
     });
 }
 function login(page) {
@@ -79,14 +92,14 @@ function login(page) {
 }
 function navToLicenceServices(page) {
     return __awaiter(this, void 0, void 0, function* () {
-        const comLicServSelector = "a[title ='Radiocommunication Licensing Services']";
-        yield clickElement(page, comLicServSelector);
+        const licenceServicesLinkSelector = "a[title ='Radiocommunication Licensing Services']";
+        yield clickElement(page, licenceServicesLinkSelector);
         yield page.waitForNavigation();
         (0, assert_1.default)(page.url() ===
             'https://sms-sgs.ic.gc.ca/eic/site/sms-sgs-prod.nsf/eng/h_00012.html');
     });
 }
-function navToLicencesList(page) {
+function navToTablePage(page) {
     return __awaiter(this, void 0, void 0, function* () {
         const applyTabSelector = '#License_Application-lnk';
         const listAppsSelector = "a[title = 'List My Applications']";
@@ -95,10 +108,10 @@ function navToLicencesList(page) {
         yield clickElement(page, applyTabSelector);
         yield page.waitForSelector(listAppsSelector);
         yield clickElement(page, listAppsSelector);
-        yield page.waitForNavigation();
+        yield page.waitForSelector(selectAccSelector);
         (0, assert_1.default)(page.url() ===
             'https://sms-sgs.ic.gc.ca/multiClient/changeClientWizard?execution=e1s1');
-        yield selectElement(page, selectAccSelector);
+        yield selectElement(page, selectAccSelector, 1);
         yield clickElement(page, submitBttnSelector);
         yield page.waitForNavigation();
         (0, assert_1.default)(page.url() === 'https://sms-sgs.ic.gc.ca/product/listOwn/index?lang=en_CA');
@@ -107,39 +120,39 @@ function navToLicencesList(page) {
 function navToNextTablePage(page) {
     return __awaiter(this, void 0, void 0, function* () {
         const nextPageBttnSelector = "a[rel = 'next']";
-        yield clickElement(page, nextPageBttnSelector);
-        yield page.waitForNavigation();
+        const clickResponse = yield clickElement(page, nextPageBttnSelector);
+        if (clickResponse) {
+            yield page.waitForNavigation();
+            return true;
+        }
+        return false;
     });
 }
 function getTable(page) {
     return __awaiter(this, void 0, void 0, function* () {
-        const table = {
-            heading: [''],
-            body: [[''], ['']],
+        const myTable = {
+            heading: [],
+            body: [[]],
+            bodyLen: 0,
         };
-        table.heading = yield page.$$eval('th', columns => {
-            return Array.from(columns, column => column.innerText);
+        myTable.heading = yield page.$$eval('th', headingCells => {
+            return Array.from(headingCells, headingText => headingText.innerText);
         });
-        (0, assert_1.default)(table.heading.length === 8);
-        let tableLen = 0;
-        let currentPageNum = 1;
-        while (currentPageNum <= Number(process.env.PAGENUM)) {
-            const currentPageBody = yield page.$$eval('tbody > tr', rows => {
-                return Array.from(rows, row => {
-                    const columns = row.querySelectorAll('td');
-                    return Array.from(columns, column => column.innerText);
-                });
-            });
-            const currentPageTableLen = currentPageBody.length;
-            for (let i = 0; i < currentPageTableLen; i++) {
-                const newElement = currentPageBody[i];
-                table.body[tableLen + i] = newElement;
-            }
-            tableLen += currentPageTableLen;
-            yield navToNextTablePage(page);
-            currentPageNum++;
+        (0, assert_1.default)(myTable.heading.length === 8);
+        let successfullNavIndicator = true;
+        while (successfullNavIndicator) {
+            yield page.evaluate(myTable => {
+                const rows = document.querySelectorAll('tbody > tr');
+                const rowsLen = rows.length;
+                for (let i = 0; i < rowsLen; i++) {
+                    const currentRowCellArray = Array.from(rows[i].cells, el => el.innerText);
+                    myTable.body[myTable.bodyLen] = currentRowCellArray;
+                    myTable.bodyLen++;
+                }
+            }, myTable);
+            successfullNavIndicator = yield navToNextTablePage(page);
         }
-        return table;
+        return myTable;
     });
 }
 function getDate() {
@@ -173,7 +186,7 @@ function exportLicensesCSV() {
         const page = yield browser.newPage();
         yield login(page);
         yield navToLicenceServices(page);
-        yield navToLicencesList(page);
+        yield navToTablePage(page);
         const table = yield getTable(page);
         const header = table.heading;
         const body = table.body;

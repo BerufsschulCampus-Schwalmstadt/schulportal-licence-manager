@@ -1,28 +1,59 @@
 import dotenv from 'dotenv';
 dotenv.config();
 import assert from 'assert';
-import puppeteer, {Browser, Page} from 'puppeteer';
+import puppeteer, {Browser, ElementHandle, HTTPResponse, Page} from 'puppeteer';
 import {convertArrayToCSV} from 'convert-array-to-csv';
 import * as fs from 'fs';
 
+// -----------------  Page Initialization Functions ------------------------//
+
+// getBrowser initialises the puppeteer browser
 async function getBrowser(): Promise<Browser> {
   return await puppeteer.launch();
 }
 
-async function clickElement(page: Page, selector: string) {
-  await page.evaluate(selector => {
-    document.querySelector<HTMLLinkElement>(selector)?.click();
+// -------------------  Page Navigation Helper Functions --------------------//
+
+// clickElement performs a DOM "click" on the passed selector
+// on the passed puppeteer page
+async function clickElement(page: Page, selector: string): Promise<boolean> {
+  return await page.evaluate(passedSelector => {
+    const element: HTMLElement | null = document.querySelector(passedSelector);
+    if (element) {
+      element.click();
+      return true;
+    } else {
+      return false;
+    }
   }, selector);
 }
 
-async function selectElement(page: Page, selectElementSelector: string) {
-  await page.evaluate(selectElementSelector => {
-    (
-      document.querySelector(selectElementSelector) as HTMLSelectElement
-    ).selectedIndex = 2;
-  }, selectElementSelector);
+// selectElement DOM "select's" the option at the passed index
+// on the passed select element selector on the passed puppeteer page
+async function selectElement(
+  page: Page,
+  selector: string,
+  optionIndex: number
+): Promise<boolean> {
+  return await page.evaluate(
+    (passedSelector: string, passedOptionIndex: number) => {
+      const element: HTMLSelectElement | null =
+        document.querySelector(passedSelector);
+      if (element) {
+        element.selectedIndex = passedOptionIndex + 1;
+        return true;
+      } else {
+        return false;
+      }
+    },
+    selector,
+    optionIndex
+  );
 }
 
+// ----------------------  Page Navigation Functions -----------------------//
+
+// login logs-in to the SMS using the credentials in the .env file
 async function login(page: Page): Promise<void> {
   // variables
   const loginURL = 'https://sms-sgs.ic.gc.ca/login/auth';
@@ -35,10 +66,8 @@ async function login(page: Page): Promise<void> {
   await page.goto(loginURL);
   assert(page.url() === loginURL);
 
-  // enter user name
+  // enter user name & password
   await page.type(userSelector, loginUser);
-
-  // enter password
   await page.type(passSelector, loginPass);
 
   // Login
@@ -49,10 +78,11 @@ async function login(page: Page): Promise<void> {
   );
 }
 
-async function navToLicenceServices(page: Page) {
-  const comLicServSelector =
+// navToLicenceServices navigates to the licence services page in the SMS
+async function navToLicenceServices(page: Page): Promise<void> {
+  const licenceServicesLinkSelector =
     "a[title ='Radiocommunication Licensing Services']";
-  await clickElement(page, comLicServSelector);
+  await clickElement(page, licenceServicesLinkSelector);
   await page.waitForNavigation();
 
   assert(
@@ -61,7 +91,8 @@ async function navToLicenceServices(page: Page) {
   );
 }
 
-async function navToLicencesList(page: Page) {
+// navToLicencesList navigates to the first licence table page in the SMS
+async function navToTablePage(page: Page): Promise<void> {
   const applyTabSelector = '#License_Application-lnk';
   const listAppsSelector = "a[title = 'List My Applications']";
   const selectAccSelector = '#changeClient';
@@ -72,15 +103,14 @@ async function navToLicencesList(page: Page) {
   await clickElement(page, listAppsSelector);
 
   // wait for nav
-  await page.waitForNavigation();
-  // might want to set timeout here
+  await page.waitForSelector(selectAccSelector);
   assert(
     page.url() ===
       'https://sms-sgs.ic.gc.ca/multiClient/changeClientWizard?execution=e1s1'
   );
 
   // select account option
-  await selectElement(page, selectAccSelector);
+  await selectElement(page, selectAccSelector, 1);
 
   // navigate to list of license applications
   await clickElement(page, submitBttnSelector);
@@ -90,58 +120,78 @@ async function navToLicencesList(page: Page) {
   );
 }
 
-async function navToNextTablePage(page: Page) {
+// navToNextTablePage navigates to the next table page and returns true if one exists
+// if no next page exists the funtion returns false
+async function navToNextTablePage(page: Page): Promise<boolean> {
   const nextPageBttnSelector = "a[rel = 'next']";
 
-  await clickElement(page, nextPageBttnSelector);
-  await page.waitForNavigation();
+  const clickResponse: boolean = await clickElement(page, nextPageBttnSelector);
+  if (clickResponse) {
+    await page.waitForNavigation();
+    return true;
+  }
+  return false;
 }
 
-async function getTable(page: Page) {
+// ----------------------  Table Creation Function -----------------------//
+
+// getTable generates and returns a custom table object that holds'
+// the license content from all tables in the SMS
+async function getTable(
+  page: Page
+): Promise<{heading: string[]; body: string[][]; bodyLen: number}> {
   // table structure
-  const table = {
+  let table = {
     heading: [''],
-    body: [[''], ['']],
+    body: [['']],
+    bodyLen: 0,
   };
 
   // get table heading
-  table.heading = await page.$$eval('th', columns => {
-    return Array.from(columns, column => column.innerText);
+  table.heading = await page.$$eval('th', headingCells => {
+    return Array.from(headingCells, headingText => headingText.innerText);
   });
 
   assert(table.heading.length === 8);
 
   // get table body content from all pages
-  let tableLen = 0;
-  let currentPageNum = 1;
+  let successfullNavIndicator = true;
 
   // iterate through all pages
-  while (currentPageNum <= Number(process.env.PAGENUM)) {
-    const currentPageBody: string[][] = await page.$$eval(
-      'tbody > tr',
-      rows => {
-        return Array.from(rows, row => {
-          const columns = row.querySelectorAll('td');
-          return Array.from(columns, column => column.innerText);
-        });
+  while (successfullNavIndicator) {
+    // add all table body content to our table object
+    table = await page.evaluate(table => {
+      // get rows
+      const rows: NodeListOf<HTMLTableRowElement> =
+        document.querySelectorAll('tbody > tr');
+
+      // get rows length
+      const rowsLen: number = rows.length;
+
+      // iterate through all rows adding them to our table body
+      for (let i = 0; i < rowsLen; i++) {
+        const currentRowCellArray: string[] = Array.from(
+          rows[i].cells,
+          el => el.innerText
+        );
+        table.body[table.bodyLen] = currentRowCellArray;
+        table.bodyLen++;
       }
-    );
 
-    const currentPageTableLen: number = currentPageBody.length;
+      // new table
+      return table;
+    }, table);
 
-    for (let i = 0; i < currentPageTableLen; i++) {
-      const newElement = currentPageBody[i];
-      table.body[tableLen + i] = newElement;
-    }
-    tableLen += currentPageTableLen;
-
-    await navToNextTablePage(page);
-    currentPageNum++;
+    successfullNavIndicator = await navToNextTablePage(page);
   }
 
   return table;
 }
 
+// ------------------------  CSV Export Functions ------------------------//
+
+// getDate generates formats and returns a date to be used for version
+// control of CSV exports
 function getDate(): string {
   let dateString: string = new Date().toLocaleDateString('en-GB');
 
@@ -156,11 +206,12 @@ function getDate(): string {
   return dateString;
 }
 
+// createCSVFile write a csv file with the given content and name
 function createCSVFile(
   writeContent: string,
   fileName: string,
   fileExtension: string
-) {
+): boolean {
   const dateString: string = getDate();
   const fullFileName: string =
     fileName + '_' + dateString + '.' + fileExtension;
@@ -180,6 +231,7 @@ function createCSVFile(
   });
 }
 
+// exportLicensesCSV navigates to the SMS and exports all your licence applications
 async function exportLicensesCSV() {
   // initialisation
   const browser: Browser = await getBrowser();
@@ -192,7 +244,7 @@ async function exportLicensesCSV() {
   await navToLicenceServices(page);
 
   // load active license applications
-  await navToLicencesList(page);
+  await navToTablePage(page);
 
   // generate a table object from all license pages
   const table = await getTable(page);
@@ -212,6 +264,8 @@ async function exportLicensesCSV() {
 
   await browser.close();
 }
+
+// -------------------------------  Main --------------------------------//
 
 // 1.5s per page
 exportLicensesCSV();
