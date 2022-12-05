@@ -81,40 +81,31 @@ function login(page) {
         const loginPass = String(process.env.GOVPASSWORD);
         const userSelector = '#Username';
         const passSelector = '#Password';
+        const loginBttnSelector = 'input[value="Login"]';
         yield page.goto(loginURL);
         (0, assert_1.default)(page.url() === loginURL);
         yield page.type(userSelector, loginUser);
         yield page.type(passSelector, loginPass);
-        yield page.keyboard.press('Enter');
-        yield page.waitForNavigation();
-        (0, assert_1.default)(page.url() === 'https://sms-sgs.ic.gc.ca/eic/site/sms-sgs-prod.nsf/eng/home');
-    });
-}
-function navToLicenceServices(page) {
-    return __awaiter(this, void 0, void 0, function* () {
-        const licenceServicesLinkSelector = "a[title ='Radiocommunication Licensing Services']";
-        yield clickElement(page, licenceServicesLinkSelector);
-        yield page.waitForNavigation();
-        (0, assert_1.default)(page.url() ===
-            'https://sms-sgs.ic.gc.ca/eic/site/sms-sgs-prod.nsf/eng/h_00012.html');
+        const clickResponse = yield clickElement(page, loginBttnSelector);
+        if (clickResponse) {
+            yield page.waitForNavigation();
+            return true;
+        }
+        return false;
     });
 }
 function navToTablePage(page) {
     return __awaiter(this, void 0, void 0, function* () {
-        const applyTabSelector = '#License_Application-lnk';
-        const listAppsSelector = "a[title = 'List My Applications']";
+        yield page.goto('https://sms-sgs.ic.gc.ca/product/listOwn/index?lang=en_CA');
         const selectAccSelector = '#changeClient';
         const submitBttnSelector = '#changeAccountButton';
-        yield clickElement(page, applyTabSelector);
-        yield page.waitForSelector(listAppsSelector);
-        yield clickElement(page, listAppsSelector);
-        yield page.waitForSelector(selectAccSelector);
-        (0, assert_1.default)(page.url() ===
-            'https://sms-sgs.ic.gc.ca/multiClient/changeClientWizard?execution=e1s1');
         yield selectElement(page, selectAccSelector, 1);
-        yield clickElement(page, submitBttnSelector);
-        yield page.waitForNavigation();
-        (0, assert_1.default)(page.url() === 'https://sms-sgs.ic.gc.ca/product/listOwn/index?lang=en_CA');
+        const clickResponse = yield clickElement(page, submitBttnSelector);
+        if (clickResponse) {
+            yield page.waitForNavigation();
+            return true;
+        }
+        return false;
     });
 }
 function navToNextTablePage(page) {
@@ -130,29 +121,29 @@ function navToNextTablePage(page) {
 }
 function getTable(page) {
     return __awaiter(this, void 0, void 0, function* () {
-        const myTable = {
-            heading: [],
-            body: [[]],
+        let table = {
+            heading: [''],
+            body: [['']],
             bodyLen: 0,
         };
-        myTable.heading = yield page.$$eval('th', headingCells => {
-            return Array.from(headingCells, headingText => headingText.innerText);
-        });
-        (0, assert_1.default)(myTable.heading.length === 8);
         let successfullNavIndicator = true;
         while (successfullNavIndicator) {
-            yield page.evaluate(myTable => {
-                const rows = document.querySelectorAll('tbody > tr');
-                const rowsLen = rows.length;
-                for (let i = 0; i < rowsLen; i++) {
-                    const currentRowCellArray = Array.from(rows[i].cells, el => el.innerText);
-                    myTable.body[myTable.bodyLen] = currentRowCellArray;
-                    myTable.bodyLen++;
+            table = yield page.evaluate(table => {
+                const rows = document.querySelectorAll('tr');
+                if (!table.heading[0]) {
+                    table.heading = Array.from(rows[0].cells, headingText => headingText.innerText);
                 }
-            }, myTable);
+                const rowsLen = rows.length;
+                for (let i = 1; i < rowsLen; i++) {
+                    const currentRowCellArray = Array.from(rows[i].cells, el => el.innerText);
+                    table.body[table.bodyLen] = currentRowCellArray;
+                    table.bodyLen++;
+                }
+                return table;
+            }, table);
             successfullNavIndicator = yield navToNextTablePage(page);
         }
-        return myTable;
+        return table;
     });
 }
 function getDate() {
@@ -185,7 +176,6 @@ function exportLicensesCSV() {
         const browser = yield getBrowser();
         const page = yield browser.newPage();
         yield login(page);
-        yield navToLicenceServices(page);
         yield navToTablePage(page);
         const table = yield getTable(page);
         const header = table.heading;
