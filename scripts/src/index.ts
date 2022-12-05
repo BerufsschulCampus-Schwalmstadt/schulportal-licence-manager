@@ -1,7 +1,7 @@
 import dotenv from 'dotenv';
 dotenv.config();
 import assert from 'assert';
-import puppeteer, {Browser, ElementHandle, HTTPResponse, Page} from 'puppeteer';
+import puppeteer, {Browser, Page} from 'puppeteer';
 import {convertArrayToCSV} from 'convert-array-to-csv';
 import * as fs from 'fs';
 
@@ -78,36 +78,12 @@ async function login(page: Page): Promise<void> {
   );
 }
 
-// navToLicenceServices navigates to the licence services page in the SMS
-async function navToLicenceServices(page: Page): Promise<void> {
-  const licenceServicesLinkSelector =
-    "a[title ='Radiocommunication Licensing Services']";
-  await clickElement(page, licenceServicesLinkSelector);
-  await page.waitForNavigation();
-
-  assert(
-    page.url() ===
-      'https://sms-sgs.ic.gc.ca/eic/site/sms-sgs-prod.nsf/eng/h_00012.html'
-  );
-}
-
 // navToLicencesList navigates to the first licence table page in the SMS
 async function navToTablePage(page: Page): Promise<void> {
-  const applyTabSelector = '#License_Application-lnk';
-  const listAppsSelector = "a[title = 'List My Applications']";
+  await page.goto('https://sms-sgs.ic.gc.ca/product/listOwn/index?lang=en_CA');
+
   const selectAccSelector = '#changeClient';
   const submitBttnSelector = '#changeAccountButton';
-
-  await clickElement(page, applyTabSelector);
-  await page.waitForSelector(listAppsSelector);
-  await clickElement(page, listAppsSelector);
-
-  // wait for nav
-  await page.waitForSelector(selectAccSelector);
-  assert(
-    page.url() ===
-      'https://sms-sgs.ic.gc.ca/multiClient/changeClientWizard?execution=e1s1'
-  );
 
   // select account option
   await selectElement(page, selectAccSelector, 1);
@@ -240,10 +216,7 @@ async function exportLicensesCSV() {
   // login to government sms (Spectrum Management System)
   await login(page);
 
-  // go to license services page
-  await navToLicenceServices(page);
-
-  // load active license applications
+  // go to table repo/page
   await navToTablePage(page);
 
   // generate a table object from all license pages
