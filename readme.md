@@ -7,18 +7,18 @@ The Spectrum Management System (SMS) is a Canadian government online portal that
 
 ### What problem does this project solve?
 
-For registered radio or spectrum licensees the SMS only enables you access to print licences, and has stuck to this rather analog way of doing things for the better part of ~7 years. This means your personal records of these licence applications is limited - no posibility for sorting, search and reformating to a custom layout.
+For registered radio or spectrum licensees the SMS only enables you access to print licences, and has stuck to this rather analog way of doing things for the better part of ~7 years. This means your personal records of these licence applications is limited - no possibility for sorting, search and reformatting to a custom layout.
 
 Also simply copying the licences from the SMS isn't really an option because the engineers/users of the SMS typically have over 20 pages of tables, so everytime going in the SMS and copying everything over is not a reasonable use of their time and expertise.
 
 ### How does this project solve the problem?
 
-This node.js application utilises puppeteer (API to control Chrome/Chromium) to in the background:
+This node.js application in the background:
 
-- Navigate to the SMS
-- Login with given credentials
-- Navigate to license applications
-- Create a custom JS table object from all the licenses in the SMS
+- Navigates to the SMS
+- Logs-in with given credentials
+- Navigates to license applications
+- Creates a custom JS table object from all the licenses in the SMS
 
 And then once the table is created the program will:
 
