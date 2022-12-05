@@ -54,13 +54,14 @@ async function selectElement(
 // ----------------------  Page Navigation Functions -----------------------//
 
 // login logs-in to the SMS using the credentials in the .env file
-async function login(page: Page): Promise<void> {
+async function login(page: Page): Promise<boolean> {
   // variables
   const loginURL = 'https://sms-sgs.ic.gc.ca/login/auth';
   const loginUser = String(process.env.GOVUSERNAME);
   const loginPass = String(process.env.GOVPASSWORD);
   const userSelector = '#Username';
   const passSelector = '#Password';
+  const loginBttnSelector = 'input[value="Login"]';
 
   // initialisation
   await page.goto(loginURL);
@@ -71,15 +72,16 @@ async function login(page: Page): Promise<void> {
   await page.type(passSelector, loginPass);
 
   // Login
-  await page.keyboard.press('Enter');
-  await page.waitForNavigation();
-  assert(
-    page.url() === 'https://sms-sgs.ic.gc.ca/eic/site/sms-sgs-prod.nsf/eng/home'
-  );
+  const clickResponse = await clickElement(page, loginBttnSelector);
+  if (clickResponse) {
+    await page.waitForNavigation();
+    return true;
+  }
+  return false;
 }
 
 // navToLicencesList navigates to the first licence table page in the SMS
-async function navToTablePage(page: Page): Promise<void> {
+async function navToTablePage(page: Page): Promise<boolean> {
   await page.goto('https://sms-sgs.ic.gc.ca/product/listOwn/index?lang=en_CA');
 
   const selectAccSelector = '#changeClient';
@@ -89,11 +91,12 @@ async function navToTablePage(page: Page): Promise<void> {
   await selectElement(page, selectAccSelector, 1);
 
   // navigate to list of license applications
-  await clickElement(page, submitBttnSelector);
-  await page.waitForNavigation();
-  assert(
-    page.url() === 'https://sms-sgs.ic.gc.ca/product/listOwn/index?lang=en_CA'
-  );
+  const clickResponse = await clickElement(page, submitBttnSelector);
+  if (clickResponse) {
+    await page.waitForNavigation();
+    return true;
+  }
+  return false;
 }
 
 // navToNextTablePage navigates to the next table page and returns true if one exists
@@ -123,13 +126,6 @@ async function getTable(
     bodyLen: 0,
   };
 
-  // get table heading
-  table.heading = await page.$$eval('th', headingCells => {
-    return Array.from(headingCells, headingText => headingText.innerText);
-  });
-
-  assert(table.heading.length === 8);
-
   // get table body content from all pages
   let successfullNavIndicator = true;
 
@@ -139,13 +135,21 @@ async function getTable(
     table = await page.evaluate(table => {
       // get rows
       const rows: NodeListOf<HTMLTableRowElement> =
-        document.querySelectorAll('tbody > tr');
+        document.querySelectorAll('tr');
 
-      // get rows length
+      // set heading
+      if (!table.heading[0]) {
+        table.heading = Array.from(
+          rows[0].cells,
+          headingText => headingText.innerText
+        );
+      }
+
+      // get number of rows on page 
       const rowsLen: number = rows.length;
 
       // iterate through all rows adding them to our table body
-      for (let i = 0; i < rowsLen; i++) {
+      for (let i = 1; i < rowsLen; i++) {
         const currentRowCellArray: string[] = Array.from(
           rows[i].cells,
           el => el.innerText
@@ -240,5 +244,4 @@ async function exportLicensesCSV() {
 
 // -------------------------------  Main --------------------------------//
 
-// 1.5s per page
 exportLicensesCSV();

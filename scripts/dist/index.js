@@ -81,13 +81,17 @@ function login(page) {
         const loginPass = String(process.env.GOVPASSWORD);
         const userSelector = '#Username';
         const passSelector = '#Password';
+        const loginBttnSelector = 'input[value="Login"]';
         yield page.goto(loginURL);
         (0, assert_1.default)(page.url() === loginURL);
         yield page.type(userSelector, loginUser);
         yield page.type(passSelector, loginPass);
-        yield page.keyboard.press('Enter');
-        yield page.waitForNavigation();
-        (0, assert_1.default)(page.url() === 'https://sms-sgs.ic.gc.ca/eic/site/sms-sgs-prod.nsf/eng/home');
+        const clickResponse = yield clickElement(page, loginBttnSelector);
+        if (clickResponse) {
+            yield page.waitForNavigation();
+            return true;
+        }
+        return false;
     });
 }
 function navToTablePage(page) {
@@ -96,9 +100,12 @@ function navToTablePage(page) {
         const selectAccSelector = '#changeClient';
         const submitBttnSelector = '#changeAccountButton';
         yield selectElement(page, selectAccSelector, 1);
-        yield clickElement(page, submitBttnSelector);
-        yield page.waitForNavigation();
-        (0, assert_1.default)(page.url() === 'https://sms-sgs.ic.gc.ca/product/listOwn/index?lang=en_CA');
+        const clickResponse = yield clickElement(page, submitBttnSelector);
+        if (clickResponse) {
+            yield page.waitForNavigation();
+            return true;
+        }
+        return false;
     });
 }
 function navToNextTablePage(page) {
@@ -119,45 +126,23 @@ function getTable(page) {
             body: [['']],
             bodyLen: 0,
         };
-        table.heading = yield page.$$eval('th', headingCells => {
-            return Array.from(headingCells, headingText => headingText.innerText);
-        });
-        (0, assert_1.default)(table.heading.length === 8);
-        table = yield page.evaluate((table, page) => {
-            const click = (page, selector) => __awaiter(this, void 0, void 0, function* () {
-                return yield page.evaluate(passedSelector => {
-                    const element = document.querySelector(passedSelector);
-                    if (element) {
-                        element.click();
-                        return true;
-                    }
-                    else {
-                        return false;
-                    }
-                }, selector);
-            });
-            const nav = (page) => __awaiter(this, void 0, void 0, function* () {
-                const nextPageBttnSelector = "a[rel = 'next']";
-                const clickResponse = yield click(page, nextPageBttnSelector);
-                if (clickResponse) {
-                    yield page.waitForNavigation();
-                    return true;
+        let successfullNavIndicator = true;
+        while (successfullNavIndicator) {
+            table = yield page.evaluate(table => {
+                const rows = document.querySelectorAll('tr');
+                if (!table.heading[0]) {
+                    table.heading = Array.from(rows[0].cells, headingText => headingText.innerText);
                 }
-                return false;
-            });
-            let successfullNavIndicator = true;
-            while (successfullNavIndicator) {
-                const rows = document.querySelectorAll('tbody > tr');
                 const rowsLen = rows.length;
-                for (let i = 0; i < rowsLen; i++) {
+                for (let i = 1; i < rowsLen; i++) {
                     const currentRowCellArray = Array.from(rows[i].cells, el => el.innerText);
                     table.body[table.bodyLen] = currentRowCellArray;
                     table.bodyLen++;
                 }
-                nav(page).then(value => (successfullNavIndicator = value));
-            }
-            return table;
-        }, table, page);
+                return table;
+            }, table);
+            successfullNavIndicator = yield navToNextTablePage(page);
+        }
         return table;
     });
 }
