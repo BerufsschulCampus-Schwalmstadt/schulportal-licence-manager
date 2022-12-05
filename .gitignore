@@ -1,9 +1,15 @@
-# env
+# various keys
 .env
-
-# vscode
-.vscode
 
 #ds store
 .DS_STORE
 
+# vs code files
+.vscode
+
+# eslint
+.eslint*
+.prettier*
+
+# editor configuration
+.editorconfig
