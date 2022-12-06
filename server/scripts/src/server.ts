@@ -3,10 +3,11 @@ dotenv.config();
 import assert from 'assert';
 import puppeteer, {Browser, Page} from 'puppeteer';
 import {convertArrayToCSV} from 'convert-array-to-csv';
-import * as fs from 'fs';
 import express from 'express';
 import bodyParser from 'body-parser';
 import cors from 'cors';
+import fs from 'fs';
+import path from 'path';
 
 // -----------------  Page Initialization Functions ------------------------//
 
@@ -191,27 +192,6 @@ function getDate(): string {
   return dateString;
 }
 
-// createCSVFile write a csv file with the given content and name
-function createCSVFile(
-  writeContent: string,
-  fileName: string,
-  fileExtension: string
-) {
-  const dateString: string = getDate();
-  const fullFileName: string =
-    fileName + '_' + dateString + '.' + fileExtension;
-
-  // create writestream
-  const writeStream = fs.createWriteStream(fullFileName, {
-    flags: 'w+',
-  });
-
-  // write
-  writeStream.write(writeContent);
-
-  return writeStream;
-}
-
 // exportLicensesCSV navigates to the SMS and exports all your licence applications
 async function generateCSVString(username: string, password: string) {
   // initialisation
@@ -266,21 +246,23 @@ app.post('/login', async (req, res) => {
   console.log(username);
   console.log(password);
 
-  // write file
+  // get file content and path
   const csvString = await generateCSVString(username, password);
-  const writestream = createCSVFile(csvString, 'Active_Licences_Export', 'csv');
+  const filePath = path.join(
+    'exports/',
+    'Active_Licences_Export_' + getDate() + '.csv'
+  );
 
-  // access file path
-  const readstream = fs.createReadStream(writestream.path);
-  writestream.close;
-  const path = readstream.path as string;
+  // write temp file
+  fs.writeFileSync(filePath, csvString);
 
-  // download file
-  res.download(path);
-  readstream.close;
+  // download temp file then delete it
+  res.download(filePath, err => {
+    if (err) console.log(err);
+    fs.unlinkSync(filePath);
+  });
 });
 
 app.listen(port, () => {
   console.log('server is running on port 3000');
 });
-// exportLicensesCSV();
