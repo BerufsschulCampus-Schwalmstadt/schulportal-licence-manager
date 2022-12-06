@@ -168,7 +168,7 @@ app.post('/login', (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     console.log(username);
     console.log(password);
     const csvString = yield generateCSVString(username, password);
-    const filePath = path_1.default.join('exports/', 'Active_Licences_Export_' + getDate() + '.csv');
+    const filePath = path_1.default.join('exports', 'Active_Licences_Export_' + getDate() + '.csv');
     fs_1.default.writeFileSync(filePath, csvString);
     res.download(filePath, err => {
         if (err)

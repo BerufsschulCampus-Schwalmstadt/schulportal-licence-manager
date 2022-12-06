@@ -249,7 +249,7 @@ app.post('/login', async (req, res) => {
   // get file content and path
   const csvString = await generateCSVString(username, password);
   const filePath = path.join(
-    'exports/',
+    'exports',
     'Active_Licences_Export_' + getDate() + '.csv'
   );
 
