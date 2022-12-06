@@ -1,0 +1,11 @@
+#rightPanelWrapper {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 0px;
+    gap: 10px;
+    width: 50%;
+
+    height: 668px;
+}

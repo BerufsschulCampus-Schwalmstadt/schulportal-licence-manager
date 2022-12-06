@@ -1,0 +1,43 @@
+#leftPanelContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 78px 56px 108px;
+    gap: 58px;
+    align-self: stretch;
+    background: linear-gradient(0deg, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)), #3C37FF;
+    width: 50%;
+}
+
+#appNameText {
+    font-family: 'Poppins';
+    font-style: normal;
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 24px;
+    text-transform: uppercase;
+    color: #FFFFFF;
+}
+
+#leftHeadingsWrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 10px 0px;
+    gap: 36px;
+}
+
+h1 {
+    font-weight: 700;
+    font-size: 40px;
+    line-height: 159%;
+    text-transform: capitalize;
+    color: #FFFFFF;
+}
+
+h2 {
+    font-weight: 400;
+    font-size: 24px;
+    line-height: 36px;
+    color: #B9B9B9;
+}

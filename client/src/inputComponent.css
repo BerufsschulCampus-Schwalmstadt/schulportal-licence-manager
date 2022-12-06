@@ -1,0 +1,17 @@
+
+#inputComponentWrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 0px;
+    gap: 15.96px;
+
+    flex: none;
+    order: 0;
+    align-self: stretch;
+    flex-grow: 0;
+}
+
+.inputFields{
+    background-color: #3C37FF;
+}

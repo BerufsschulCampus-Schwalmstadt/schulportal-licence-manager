@@ -1,8 +1,15 @@
 import React from 'react';
-import LoginForm from './loginForm';
+import LeftPanel from './leftPanel';
+import RightPanel from './rightPanel';
+import './App.css';
 
 function App() {
-  return <LoginForm />;
+  return (
+    <div id="appWrapper">
+      <LeftPanel />
+      <RightPanel />
+    </div>
+  );
 }
 
 export default App;
