@@ -5,6 +5,10 @@ type inputComponentProps = {
   fieldName: string;
 };
 
+function getLabel(fieldName: string) {
+  return 'SMS ' + fieldName;
+}
+
 function getPlaceholder(fieldName: string): string {
   return 'Enter ' + fieldName;
 }
@@ -17,7 +21,7 @@ export default class inputComponent extends Component<inputComponentProps> {
   render() {
     return (
       <div id="inputComponentWrapper">
-        <p>{this.props.fieldName}</p>
+        <p className="inputLabels">{getLabel(this.props.fieldName)}</p>
         <input
           className="inputFields"
           name={this.props.fieldName}

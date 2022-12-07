@@ -5,26 +5,17 @@ import './loginForm.css';
 export default class loginForm extends Component {
   render() {
     return (
-      <form
-        id="loginFormWrapper"
-        action="http://localhost:3000/login"
-        method="POST"
-      >
-        <InputComponent fieldName="username" />
-        <input
-          name="username"
-          id="usernameInput"
-          placeholder="Enter Username"
-        ></input>
-        <input
-          name="password"
-          id="passwordInput"
-          placeholder="Enter Password"
-        ></input>
-        <button name="submit" id="submitBttn">
-          Export Licence Applications as CSV
-        </button>
-      </form>
+      <div id="loginFormWrapper">
+        <form id="loginForm" action="http://localhost:3001/login" method="POST">
+          <div className="inputFieldContainer">
+            <InputComponent fieldName="username" />
+            <InputComponent fieldName="password" />
+          </div>
+          <button className="primaryButton" name="submit" id="submitButton">
+            Export Licenses as cSV
+          </button>
+        </form>
+      </div>
     );
   }
 }

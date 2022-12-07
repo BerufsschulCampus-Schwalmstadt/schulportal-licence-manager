@@ -12,6 +12,40 @@
     flex-grow: 0;
 }
 
+.inputLabels {
+    font-weight: 500;
+    font-size: 22px;
+    line-height: 33px;
+    text-transform: capitalize;
+
+    color: #000000;
+    margin: 0;
+
+    flex: none;
+    order: 0;
+    flex-grow: 0;
+}
+
 .inputFields{
-    background-color: #3C37FF;
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    padding: 11px 23px;
+    gap: 10px;
+
+    background: #FFFFFF;
+    border: 1px solid #302CCC;
+    border-radius: 10px;
+
+    flex: none;
+    order: 1;
+    align-self: stretch;
+    flex-grow: 0;
+
+    /* inner text */
+    font-weight: 400;
+    font-size: 20px;
+    line-height: 30px;
+
+    color: #A6A6A6;
 }

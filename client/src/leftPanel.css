@@ -1,43 +1,63 @@
-#leftPanelContainer {
+#leftPanelWrapper {
     display: flex;
     flex-direction: column;
+    justify-content: center;
     align-items: flex-start;
-    padding: 78px 56px 108px;
-    gap: 58px;
-    align-self: stretch;
+    padding: 0px 56px;
+    gap: 46px;
+
     background: linear-gradient(0deg, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)), #3C37FF;
-    width: 50%;
+    max-width: 490px;
+
+    /* Inside auto layout */
+
+    flex: none;
+    order: 0;
+    align-self: stretch;
+    flex-grow: 0;
 }
 
 #appNameText {
-    font-family: 'Poppins';
-    font-style: normal;
     font-weight: 500;
     font-size: 16px;
     line-height: 24px;
     text-transform: uppercase;
+
     color: #FFFFFF;
+
+    /* Inside auto layout */
+    flex: none;
+    order: 0;
+    flex-grow: 0;
 }
 
-#leftHeadingsWrapper {
+#leftHeadingsContainer {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
     padding: 10px 0px;
-    gap: 36px;
+    gap: 12px;
+
+    flex: none;
+    order: 1;
+    align-self: stretch;
+    flex-grow: 0;
 }
 
-h1 {
-    font-weight: 700;
-    font-size: 40px;
-    line-height: 159%;
-    text-transform: capitalize;
-    color: #FFFFFF;
-}
-
-h2 {
-    font-weight: 400;
-    font-size: 24px;
-    line-height: 36px;
-    color: #B9B9B9;
+#bottomCardImgContainer {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    padding: 32px 0px;
+    
+    background: #201D8D;
+    border-radius: 20px;
+    
+    /* Inside auto layout */
+    
+    flex: none;
+    order: 2;
+    align-self: stretch;
+    flex-grow: 0;
 }

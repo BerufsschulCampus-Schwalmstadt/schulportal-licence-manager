@@ -224,7 +224,7 @@ async function generateCSVString(username: string, password: string) {
 
 // initialise server params
 const app = express();
-const port = 3000;
+const port = 3001;
 app.use(bodyParser.json());
 app.use(
   bodyParser.urlencoded({
@@ -264,5 +264,5 @@ app.post('/login', async (req, res) => {
 });
 
 app.listen(port, () => {
-  console.log('server is running on port 3000');
+  console.log('server is running on port 3001');
 });

@@ -5,10 +5,10 @@ import './App.css';
 
 function App() {
   return (
-    <div id="appWrapper">
+    <>
       <LeftPanel />
       <RightPanel />
-    </div>
+    </>
   );
 }
 
