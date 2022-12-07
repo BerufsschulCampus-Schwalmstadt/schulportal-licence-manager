@@ -4,16 +4,53 @@ import {convertArrayToCSV} from 'convert-array-to-csv';
 import path from 'path';
 import fs from 'fs';
 
-// login type
-class PuppeteerObject {
+// ---------------------------  Classes ------------------------------//
+
+class PuppeteerObjectPromise {
   response: boolean | null;
-  browser: Browser | null;
-  page: Page | null;
+  browserStatus: string;
+  browser: Promise<Browser>;
+  page: Promise<Page>;
 
   constructor() {
     this.response = null;
-    this.browser = null;
-    this.page = null;
+    this.browserStatus = 'promised';
+    this.browser = puppeteer.launch();
+    this.page = this.browser.then(value => value.newPage());
+  }
+
+  async resolve(): Promise<PuppeteerObject> {
+    const puppeteerObject = new PuppeteerObject(
+      this.response,
+      'open',
+      await this.browser,
+      await this.page
+    );
+    return puppeteerObject;
+  }
+}
+
+class PuppeteerObject {
+  response: boolean | null;
+  browserStatus: string;
+  browser: Browser;
+  page: Page;
+
+  constructor(
+    response: boolean | null,
+    browserStatus: string,
+    browser: Browser,
+    page: Page
+  ) {
+    this.response = response;
+    this.browserStatus = browserStatus;
+    this.browser = browser;
+    this.page = page;
+  }
+
+  close() {
+    this.browser.close();
+    this.browserStatus = 'closed';
   }
 }
 
@@ -32,21 +69,6 @@ export function getDate(): string {
     dateString.substring(6);
 
   return dateString;
-}
-
-// -----------------  Page Initialization Functions ------------------------//
-
-// getBrowser initialises a puppeteer browser session
-// and return the Browser object
-async function getBrowser(): Promise<Browser> {
-  return await puppeteer.launch();
-}
-
-// -----------------  Page termination Functions ------------------------//
-
-// closeBrowser closes the puppeteer browser session
-export function closeBrowser(puppeteerObject: PuppeteerObject): void {
-  puppeteerObject.browser?.close;
 }
 
 // -------------------  Page Navigation Helper Functions --------------------//
@@ -103,11 +125,9 @@ export async function login(
   const userSelector = '#Username';
   const passSelector = '#Password';
   const loginBttnSelector = 'input[value="Login"]';
-  const loginObject = new PuppeteerObject();
+  const loginObject = await new PuppeteerObjectPromise().resolve();
 
   // initialisation
-  loginObject.browser = (await getBrowser()) as Browser;
-  loginObject.page = (await loginObject.browser.newPage()) as Page;
   await loginObject.page.goto(loginURL);
   assert(loginObject.page.url() === loginURL);
 

@@ -2,7 +2,7 @@ import express from 'express';
 import bodyParser from 'body-parser';
 import cors from 'cors';
 import fs from 'fs';
-import {closeBrowser, generateCSVFile, login} from './exportFunctions';
+import {login, generateCSVFile} from './exportCSV';
 
 // initialise server params
 const app = express();
@@ -33,10 +33,10 @@ app.post('/login', async (req, res) => {
 
   if (!loginObject.response) {
     // if login unsuccessfull send back 401 error code
-    res.send(401);
+    res.sendStatus(401);
   } else {
     // if login successfull send 200 success code
-    res.send(200);
+    res.sendStatus(200);
 
     // generate csv file
     const csvFilePath = await generateCSVFile(loginObject);
@@ -47,7 +47,7 @@ app.post('/login', async (req, res) => {
       fs.unlinkSync(csvFilePath);
     });
 
-    closeBrowser(loginObject);
+    loginObject.close();
   }
 });
 

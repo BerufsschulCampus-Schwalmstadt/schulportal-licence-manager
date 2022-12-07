@@ -16,7 +16,7 @@ const express_1 = __importDefault(require("express"));
 const body_parser_1 = __importDefault(require("body-parser"));
 const cors_1 = __importDefault(require("cors"));
 const fs_1 = __importDefault(require("fs"));
-const exportFunctions_1 = require("./exportFunctions");
+const exportCSV_1 = require("./exportCSV");
 const app = (0, express_1.default)();
 const port = 3001;
 app.use(body_parser_1.default.json());
@@ -32,19 +32,19 @@ app.post('/login', (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     const password = req.body.password;
     console.log(username);
     console.log(password);
-    const loginObject = yield (0, exportFunctions_1.login)(username, password);
+    const loginObject = yield (0, exportCSV_1.login)(username, password);
     if (!loginObject.response) {
-        res.send(401);
+        res.sendStatus(401);
     }
     else {
-        res.send(200);
-        const csvFilePath = yield (0, exportFunctions_1.generateCSVFile)(loginObject);
+        res.sendStatus(200);
+        const csvFilePath = yield (0, exportCSV_1.generateCSVFile)(loginObject);
         res.download(csvFilePath, err => {
             if (err)
                 console.log(err);
             fs_1.default.unlinkSync(csvFilePath);
         });
-        (0, exportFunctions_1.closeBrowser)(loginObject);
+        loginObject.close();
     }
 }));
 app.listen(port, () => {
