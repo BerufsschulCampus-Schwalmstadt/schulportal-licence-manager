@@ -1,12 +1,52 @@
 import assert from 'assert';
 import puppeteer, {Browser, Page} from 'puppeteer';
 import {convertArrayToCSV} from 'convert-array-to-csv';
+import path from 'path';
+import fs from 'fs';
+
+// login type
+class PuppeteerObject {
+  response: boolean | null;
+  browser: Browser | null;
+  page: Page | null;
+
+  constructor() {
+    this.response = null;
+    this.browser = null;
+    this.page = null;
+  }
+}
+
+// ---------------------  general helper function ------------------------//
+
+// getDate returns a '_' (underscore) formatted date
+export function getDate(): string {
+  let dateString: string = new Date().toLocaleDateString('en-GB');
+
+  // proper date format
+  dateString =
+    dateString.substring(0, 2) +
+    '_' +
+    dateString.substring(3, 5) +
+    '_' +
+    dateString.substring(6);
+
+  return dateString;
+}
 
 // -----------------  Page Initialization Functions ------------------------//
 
-// getBrowser initialises the puppeteer browser
+// getBrowser initialises a puppeteer browser session
+// and return the Browser object
 async function getBrowser(): Promise<Browser> {
   return await puppeteer.launch();
+}
+
+// -----------------  Page termination Functions ------------------------//
+
+// closeBrowser closes the puppeteer browser session
+export function closeBrowser(puppeteerObject: PuppeteerObject): void {
+  puppeteerObject.browser?.close;
 }
 
 // -------------------  Page Navigation Helper Functions --------------------//
@@ -50,36 +90,49 @@ async function selectElement(
 
 // ----------------------  Page Navigation Functions -----------------------//
 
-// login logs-in to the SMS using the credentials in the .env file
-async function login(
-  page: Page,
+// login logs-in to the SMS using the credentials passed
+// and returns a puppeteer object containing session information
+export async function login(
   username: string,
   password: string
-): Promise<boolean> {
+): Promise<PuppeteerObject> {
   // variables
   const loginURL = 'https://sms-sgs.ic.gc.ca/login/auth';
+  const loginSuccesURL =
+    'https://sms-sgs.ic.gc.ca/eic/site/sms-sgs-prod.nsf/eng/home';
   const userSelector = '#Username';
   const passSelector = '#Password';
   const loginBttnSelector = 'input[value="Login"]';
+  const loginObject = new PuppeteerObject();
 
   // initialisation
-  await page.goto(loginURL);
-  assert(page.url() === loginURL);
+  loginObject.browser = (await getBrowser()) as Browser;
+  loginObject.page = (await loginObject.browser.newPage()) as Page;
+  await loginObject.page.goto(loginURL);
+  assert(loginObject.page.url() === loginURL);
 
   // enter user name & password
-  await page.type(userSelector, username);
-  await page.type(passSelector, password);
+  await loginObject.page.type(userSelector, username);
+  await loginObject.page.type(passSelector, password);
 
-  // Login
-  const clickResponse = await clickElement(page, loginBttnSelector);
-  if (clickResponse) {
-    await page.waitForNavigation();
-    return true;
+  // click login button
+  const clickResponse = await clickElement(loginObject.page, loginBttnSelector);
+
+  // check if we succesfully logged in
+  if (
+    clickResponse &&
+    (await loginObject.page.waitForNavigation()) &&
+    loginObject.page.url() === loginSuccesURL
+  ) {
+    loginObject.response = true;
+  } else {
+    loginObject.response = false;
   }
-  return false;
+
+  return loginObject;
 }
 
-// navToLicencesList navigates to the first licence table page in the SMS
+// navToTablePage navigates to the first licence table page in the SMS
 async function navToTablePage(page: Page): Promise<boolean> {
   await page.goto('https://sms-sgs.ic.gc.ca/product/listOwn/index?lang=en_CA');
 
@@ -169,36 +222,16 @@ async function getTable(
 
 // ------------------------  CSV Export Functions ------------------------//
 
-// getDate generates formats and returns a date to be used for version
-// control of CSV exports
-export function getDate(): string {
-  let dateString: string = new Date().toLocaleDateString('en-GB');
-
-  // proper date format
-  dateString =
-    dateString.substring(0, 2) +
-    '_' +
-    dateString.substring(3, 5) +
-    '_' +
-    dateString.substring(6);
-
-  return dateString;
-}
-
-// exportLicensesCSV navigates to the SMS and exports all your licence applications
-export async function generateCSVString(username: string, password: string) {
-  // initialisation
-  const browser: Browser = await getBrowser();
-  const page: Page = await browser.newPage();
-
-  // login to government sms (Spectrum Management System)
-  await login(page, username, password);
-
+// generateCSVString convert all your
+// licence applications data to a csv string
+export async function generateCSVString(
+  puppeteerObject: PuppeteerObject
+): Promise<string> {
   // go to table repo/page
-  await navToTablePage(page);
+  await navToTablePage(puppeteerObject.page as Page);
 
   // generate a table object from all license pages
-  const table = await getTable(page);
+  const table = await getTable(puppeteerObject.page as Page);
   const header: string[] = table.heading;
   const body: string[][] = table.body;
 
@@ -208,7 +241,22 @@ export async function generateCSVString(username: string, password: string) {
     separator: ',',
   });
 
-  await browser.close();
-
   return csvString;
+}
+
+// generateCSVFile writes a csv file
+// from all your licence applications data
+// and returns the path to this new file
+export async function generateCSVFile(
+  puppeteerObject: PuppeteerObject
+): Promise<string> {
+  const csvString = await generateCSVString(puppeteerObject);
+  const filePath = path.join(
+    'temp_exports',
+    'Active_Licences_Export_' + getDate() + '.csv'
+  );
+
+  fs.writeFileSync(filePath, csvString);
+
+  return filePath;
 }

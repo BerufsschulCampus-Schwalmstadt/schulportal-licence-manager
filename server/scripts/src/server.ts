@@ -2,8 +2,7 @@ import express from 'express';
 import bodyParser from 'body-parser';
 import cors from 'cors';
 import fs from 'fs';
-import path from 'path';
-import {generateCSVString, getDate} from './generateCSVString';
+import {closeBrowser, generateCSVFile, login} from './exportFunctions';
 
 // initialise server params
 const app = express();
@@ -29,21 +28,27 @@ app.post('/login', async (req, res) => {
   console.log(username);
   console.log(password);
 
-  // get file content and path
-  const csvString = await generateCSVString(username, password);
-  const filePath = path.join(
-    'temp_exports',
-    'Active_Licences_Export_' + getDate() + '.csv'
-  );
+  // login to government sms (Spectrum Management System)
+  const loginObject = await login(username, password);
 
-  // write temp file
-  fs.writeFileSync(filePath, csvString);
+  if (!loginObject.response) {
+    // if login unsuccessfull send back 401 error code
+    res.send(401);
+  } else {
+    // if login successfull send 200 success code
+    res.send(200);
 
-  // download temp file then delete it
-  res.download(filePath, err => {
-    if (err) console.log(err);
-    fs.unlinkSync(filePath);
-  });
+    // generate csv file
+    const csvFilePath = await generateCSVFile(loginObject);
+
+    // download file then delete it
+    res.download(csvFilePath, err => {
+      if (err) console.log(err);
+      fs.unlinkSync(csvFilePath);
+    });
+
+    closeBrowser(loginObject);
+  }
 });
 
 app.listen(port, () => {

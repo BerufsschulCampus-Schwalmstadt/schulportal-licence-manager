@@ -44,8 +44,13 @@
 
     /* inner text */
     font-weight: 400;
-    font-size: 20px;
+    font-size: 18px;
     line-height: 30px;
 
+    
+}
+
+.inputFields::placeholder{
     color: #A6A6A6;
+    
 }

@@ -1,6 +1,6 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "short_name": "Spectrum Downloader",
+  "name": "Spectrum Management System (SMS) License Application Exporter",
   "icons": [
     {
       "src": "favicon.ico",

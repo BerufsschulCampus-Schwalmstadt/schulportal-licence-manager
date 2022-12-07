@@ -37,29 +37,6 @@ html body {
     flex-grow: 0;
 }
 
-.primaryButton {
-
-    display: flex;
-    flex-direction: row;
-    align-items: flex-start;
-    padding: 21.2863px 44px;
-
-    background: #302CCC;
-    border-radius: 25px;
-
-    /* inner text */
-    font-weight: 700;
-    font-size: 25.5436px;
-    line-height: 38px;
-    text-transform: capitalize;
-    color: #FFFFFF;
-
-    /* Inside auto layout */
-    flex: none;
-    order: 1;
-    flex-grow: 0;
-}
-
 h1 {
     font-weight: 700;
     font-size: 40px;
@@ -82,4 +59,32 @@ h2 {
 
 p{
     margin: 0;
+}
+
+button{
+  cursor: pointer;
+}
+
+.primaryButton {
+
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  padding: 21.2863px 44px;
+
+  background: #302CCC;
+  border: 0;
+  border-radius: 25px;
+
+  /* inner text */
+  font-weight: 700;
+  font-size: 25.5436px;
+  line-height: 38px;
+  text-transform: capitalize;
+  color: #FFFFFF;
+
+  /* Inside auto layout */
+  flex: none;
+  order: 1;
+  flex-grow: 0;
 }

@@ -1,32 +1,38 @@
 import React, {Component} from 'react';
 import './inputComponent.css';
 
-type inputComponentProps = {
+class fullPropsObject {
+  label: string;
+  name: string;
+  placeholder: string;
+  id: string;
+  type: string;
+
+  constructor(fieldName: string) {
+    this.label = fieldName;
+    this.name = fieldName;
+    this.placeholder = 'Enter your S.M.S ' + fieldName;
+    this.id = fieldName + 'Input';
+    this.type = fieldName.includes('password') ? 'password' : 'text';
+  }
+}
+
+export default class inputComponent extends Component<{
   fieldName: string;
-};
+}> {
+  // get properties
+  fullProps = new fullPropsObject(this.props.fieldName);
 
-function getLabel(fieldName: string) {
-  return 'SMS ' + fieldName;
-}
-
-function getPlaceholder(fieldName: string): string {
-  return 'Enter ' + fieldName;
-}
-
-function getID(fieldName: string): string {
-  return fieldName + 'Input';
-}
-
-export default class inputComponent extends Component<inputComponentProps> {
   render() {
     return (
       <div id="inputComponentWrapper">
-        <p className="inputLabels">{getLabel(this.props.fieldName)}</p>
+        <p className="inputLabels">{this.fullProps.label}</p>
         <input
           className="inputFields"
-          name={this.props.fieldName}
-          id={getID(this.props.fieldName)}
-          placeholder={getPlaceholder(this.props.fieldName)}
+          name={this.fullProps.name}
+          id={this.fullProps.id}
+          placeholder={this.fullProps.placeholder}
+          type={this.fullProps.type}
         ></input>
       </div>
     );

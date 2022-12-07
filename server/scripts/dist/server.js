@@ -16,8 +16,7 @@ const express_1 = __importDefault(require("express"));
 const body_parser_1 = __importDefault(require("body-parser"));
 const cors_1 = __importDefault(require("cors"));
 const fs_1 = __importDefault(require("fs"));
-const path_1 = __importDefault(require("path"));
-const generateCSVString_1 = require("./generateCSVString");
+const exportFunctions_1 = require("./exportFunctions");
 const app = (0, express_1.default)();
 const port = 3001;
 app.use(body_parser_1.default.json());
@@ -33,14 +32,20 @@ app.post('/login', (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     const password = req.body.password;
     console.log(username);
     console.log(password);
-    const csvString = yield (0, generateCSVString_1.generateCSVString)(username, password);
-    const filePath = path_1.default.join('exports', 'Active_Licences_Export_' + (0, generateCSVString_1.getDate)() + '.csv');
-    fs_1.default.writeFileSync(filePath, csvString);
-    res.download(filePath, err => {
-        if (err)
-            console.log(err);
-        fs_1.default.unlinkSync(filePath);
-    });
+    const loginObject = yield (0, exportFunctions_1.login)(username, password);
+    if (!loginObject.response) {
+        res.send(401);
+    }
+    else {
+        res.send(200);
+        const csvFilePath = yield (0, exportFunctions_1.generateCSVFile)(loginObject);
+        res.download(csvFilePath, err => {
+            if (err)
+                console.log(err);
+            fs_1.default.unlinkSync(csvFilePath);
+        });
+        (0, exportFunctions_1.closeBrowser)(loginObject);
+    }
 }));
 app.listen(port, () => {
     console.log('server is running on port 3001');
