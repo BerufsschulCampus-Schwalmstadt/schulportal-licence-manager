@@ -1,36 +1,45 @@
-import React, {Component} from 'react';
+import React, {ChangeEvent, Component} from 'react';
 import './inputComponent.css';
 
-class fullPropsObject {
-  label: string;
+class InputComponentProps {
   name: string;
-  placeholder: string;
-  id: string;
-  type: string;
+  label?: string;
+  placeholder?: string;
+  id?: string;
+  type?: string;
 
-  constructor(fieldName: string) {
-    this.label = fieldName;
-    this.name = fieldName;
-    this.placeholder = 'Enter your S.M.S ' + fieldName;
-    this.id = fieldName + 'Input';
-    this.type = fieldName.includes('password') ? 'password' : 'text';
+  constructor(passedProps: InputComponentProps) {
+    const {name, label, placeholder, id, type} = passedProps;
+    this.name = name;
+    this.label = label ? label : name;
+    this.placeholder = placeholder ? placeholder : 'Enter your S.M.S ' + name;
+    this.id = id ? id : name + 'Input';
+    this.type = type ? type : 'text';
   }
 }
 
-export default class inputComponent extends Component<{fieldName: string}> {
-  constructor(props: {fieldName: string}) {
+export default class inputComponent extends Component<
+  InputComponentProps,
+  {value: string}
+> {
+  fullprops: InputComponentProps;
+  constructor(props: InputComponentProps) {
     super(props);
-    this.fullProps = new fullPropsObject(this.props.fieldName);
+    this.fullprops = new InputComponentProps(this.props as InputComponentProps);
+    this.state = {
+      value: '',
+    };
+    this.handlechange = this.handlechange.bind(this);
   }
 
-  getValue() {
-    return (document.getElementById(this.fullProps.id) as HTMLInputElement)
-      .value;
+  handlechange(event: ChangeEvent<HTMLInputElement>) {
+    this.setState({['value']: event.target.value});
   }
+
   // get properties
-  fullProps;
   render() {
-    const {label, name, placeholder, id, type} = this.fullProps;
+    const {name, label, placeholder, id, type} = this.fullprops;
+    const {value} = this.state;
     return (
       <div id="inputComponentWrapper">
         <p className="inputLabels">{label}</p>
@@ -40,6 +49,8 @@ export default class inputComponent extends Component<{fieldName: string}> {
           id={id}
           placeholder={placeholder}
           type={type}
+          onChange={this.handlechange}
+          value={value}
         ></input>
       </div>
     );

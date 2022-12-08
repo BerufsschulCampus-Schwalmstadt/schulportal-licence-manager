@@ -3,6 +3,7 @@ import InputComponent from './inputComponent';
 import './loginForm.css';
 import fileDownload from 'js-file-download';
 import axios from 'axios';
+import assert from 'assert';
 
 function objectToMap(object: object) {
   // start a new map
@@ -20,6 +21,23 @@ function objectToMap(object: object) {
   return map;
 }
 
+function cleanResponse(exportResponseObject: object): {
+  fileName: string;
+  fileData: string;
+} {
+  const exportResponseMap = objectToMap(exportResponseObject);
+  const responseHeadersObject = exportResponseMap.get('headers') as object;
+  const contentDisposition: string = objectToMap(responseHeadersObject).get(
+    'content-disposition'
+  );
+  const substringStart: number = contentDisposition.indexOf('"') + 1;
+  const substringEnd: number = contentDisposition.length - 1;
+  return {
+    fileName: contentDisposition.substring(substringStart, substringEnd),
+    fileData: exportResponseMap.get('data'),
+  };
+}
+
 export default class loginForm extends Component<
   {},
   {username: string | null; password: string | null}
@@ -34,73 +52,48 @@ export default class loginForm extends Component<
     this.handlechange = this.handlechange.bind(this);
   }
 
-  handlechange() {
-    const reactInputComponents =
-      document.getElementById('loginForm')?.children[0].children;
+  handlechange(e: FormEvent) {
+    const inputField = e.target as HTMLInputElement;
 
-    if (reactInputComponents) {
-      for (let i = 0; i < reactInputComponents.length; i++) {
-        const htmlInputField = reactInputComponents[i]
-          .children[1] as HTMLInputElement;
-
-        // if id matches set state
-        if (htmlInputField.id === 'usernameInput') {
-          this.setState({username: htmlInputField.value});
-          localStorage.setItem('username', htmlInputField.value);
-        } else if (htmlInputField.id === 'passwordInput') {
-          this.setState({password: htmlInputField.value});
-          localStorage.setItem('password', htmlInputField.value);
-        }
-        //console.log(this.state);
-      }
+    // change state when field is changed
+    if (inputField.name === 'username') {
+      this.setState({['username']: inputField.value});
+    } else if (inputField.name === 'password') {
+      this.setState({['password']: inputField.value});
     }
   }
 
   async handleSubmit(event: FormEvent) {
-    // Presvemt page refresh which is default
+    // Prevent form refresh which is default
     event.preventDefault();
-    event.nativeEvent.stopImmediatePropagation();
+
+    // wrong credentials p element
+    const failTextElement = document.getElementById('failTextElement');
+    assert(failTextElement);
+    failTextElement.style.display = 'none';
+
+    // axios post request
     const authResponseObject = (await axios
       .post('/login', this.state)
       .catch(error => {
-        // if login fails
         console.log(error);
-        const authFailTextElement = document.createElement('p');
-        authFailTextElement.textContent =
-          'Login to the SMS failed, please try again using your SMS credentials';
-        authFailTextElement.id = 'authFailText';
-        document
-          .getElementById('passwordInput')
-          ?.parentElement?.append(authFailTextElement);
+        failTextElement.style.display = 'block';
       })) as object;
 
-    // if login succeds
-    if (objectToMap(authResponseObject).get('status') === 200) {
-      const authFailTextElement = document.getElementById('AuthFailText');
-      if (authFailTextElement) {
-        authFailTextElement.style.display = 'none';
-      }
+    // post request response code
+    const authResponseCode = objectToMap(authResponseObject).get('status');
+    console.log(authResponseCode);
 
-      const exportResponseObject = (await axios
-        .get('/CSVExport')
-        .catch(error => {
-          console.log(error);
-        })) as object;
+    // axios get request
+    const exportResponseObject = (await axios.get('/CSVExport').catch(error => {
+      console.log(error);
+    })) as object;
 
-      const exportResponseMap = objectToMap(exportResponseObject);
-      const responseHeadersObject = exportResponseMap.get('headers') as object;
-      const contenDisposition: string = objectToMap(responseHeadersObject).get(
-        'content-disposition'
-      );
-      const substringStart: number = contenDisposition.indexOf('"') + 1;
-      const substringEnd: number = contenDisposition.length - 1;
-      const fileName = contenDisposition.substring(
-        substringStart,
-        substringEnd
-      );
-      const fileData = exportResponseMap.get('data');
-      fileDownload(fileData, fileName);
-    }
+    // cleaned get request response
+    const cleanResponseObject = cleanResponse(exportResponseObject);
+
+    // download export file
+    fileDownload(cleanResponseObject.fileData, cleanResponseObject.fileName);
   }
 
   render() {
@@ -111,9 +104,16 @@ export default class loginForm extends Component<
           onChange={this.handlechange}
           onSubmit={this.handleSubmit}
         >
-          <div className="inputFieldContainer">
-            <InputComponent fieldName="username" />
-            <InputComponent fieldName="password" />
+          <div className="loginFormContentWrapper">
+            <div className="inputFieldContainer">
+              <InputComponent name="username" />
+              <InputComponent name="password" type="password" />
+            </div>
+            <div className="failTextContainer">
+              <p id="failTextElement">
+                The username or password you’ve entered is incorrect.{' '}
+              </p>
+            </div>
           </div>
           <button
             className="primaryButton"
