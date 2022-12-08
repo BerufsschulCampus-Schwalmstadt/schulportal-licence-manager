@@ -1,8 +1,8 @@
 import express from 'express';
-import bodyParser from 'body-parser';
+import bodyParser, {json} from 'body-parser';
 import cors from 'cors';
 import fs from 'fs';
-import {login, generateCSVFile} from './exportCSV';
+import {PuppeteerObject, generateCSVFile, login} from './exportCSV';
 
 // initialise server params
 const app = express();
@@ -15,12 +15,14 @@ app.use(
 );
 app.use(cors());
 
-// teaser :)
+// root :)
 app.get('/', (req, res) => {
   res.send('Welcome to the server');
 });
 
-// Route that handles credentials input logic
+let loginObject: PuppeteerObject;
+
+// Route that handles authentication
 app.post('/login', async (req, res) => {
   const username = req.body.username;
   const password = req.body.password;
@@ -29,26 +31,30 @@ app.post('/login', async (req, res) => {
   console.log(password);
 
   // login to government sms (Spectrum Management System)
-  const loginObject = await login(username, password);
+  loginObject = await login(username, password);
 
   if (!loginObject.response) {
     // if login unsuccessfull send back 401 error code
     res.sendStatus(401);
+    loginObject.kill;
   } else {
     // if login successfull send 200 success code
     res.sendStatus(200);
-
-    // generate csv file
-    const csvFilePath = await generateCSVFile(loginObject);
-
-    // download file then delete it
-    res.download(csvFilePath, err => {
-      if (err) console.log(err);
-      fs.unlinkSync(csvFilePath);
-    });
-
-    loginObject.close();
   }
+});
+
+// Route that handles csv export
+app.get('/CSVExport', async (req, res) => {
+  // generate csv file
+  const csvFilePath = await generateCSVFile(loginObject);
+
+  // download file then delete it
+  res.download(csvFilePath, err => {
+    if (err) console.log(err);
+    fs.unlinkSync(csvFilePath);
+  });
+
+  loginObject.kill;
 });
 
 app.listen(port, () => {

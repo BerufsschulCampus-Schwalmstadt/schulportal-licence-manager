@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.generateCSVFile = exports.generateCSVString = exports.login = exports.getDate = void 0;
+exports.generateCSVFile = exports.generateCSVString = exports.login = exports.getPath = exports.getDate = exports.PuppeteerObject = void 0;
 const assert_1 = __importDefault(require("assert"));
 const puppeteer_1 = __importDefault(require("puppeteer"));
 const convert_array_to_csv_1 = require("convert-array-to-csv");
@@ -39,11 +39,12 @@ class PuppeteerObject {
         this.browser = browser;
         this.page = page;
     }
-    close() {
+    kill() {
         this.browser.close();
-        this.browserStatus = 'closed';
+        this.browserStatus = 'killed';
     }
 }
+exports.PuppeteerObject = PuppeteerObject;
 function getDate() {
     let dateString = new Date().toLocaleDateString('en-GB');
     dateString =
@@ -55,6 +56,10 @@ function getDate() {
     return dateString;
 }
 exports.getDate = getDate;
+function getPath() {
+    return path_1.default.join('temp_exports', 'Active_Licences_Export_' + getDate() + '.csv');
+}
+exports.getPath = getPath;
 function clickElement(page, selector) {
     return __awaiter(this, void 0, void 0, function* () {
         return yield page.evaluate(passedSelector => {
@@ -177,7 +182,7 @@ exports.generateCSVString = generateCSVString;
 function generateCSVFile(puppeteerObject) {
     return __awaiter(this, void 0, void 0, function* () {
         const csvString = yield generateCSVString(puppeteerObject);
-        const filePath = path_1.default.join('temp_exports', 'Active_Licences_Export_' + getDate() + '.csv');
+        const filePath = getPath();
         fs_1.default.writeFileSync(filePath, csvString);
         return filePath;
     });

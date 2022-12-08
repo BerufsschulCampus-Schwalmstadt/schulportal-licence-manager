@@ -30,7 +30,7 @@ class PuppeteerObjectPromise {
   }
 }
 
-class PuppeteerObject {
+export class PuppeteerObject {
   response: boolean | null;
   browserStatus: string;
   browser: Browser;
@@ -48,9 +48,9 @@ class PuppeteerObject {
     this.page = page;
   }
 
-  close() {
+  kill() {
     this.browser.close();
-    this.browserStatus = 'closed';
+    this.browserStatus = 'killed';
   }
 }
 
@@ -69,6 +69,14 @@ export function getDate(): string {
     dateString.substring(6);
 
   return dateString;
+}
+
+// getDate returns a '_' (underscore) formatted date
+export function getPath(): string {
+  return path.join(
+    'temp_exports',
+    'Active_Licences_Export_' + getDate() + '.csv'
+  );
 }
 
 // -------------------  Page Navigation Helper Functions --------------------//
@@ -271,12 +279,8 @@ export async function generateCSVFile(
   puppeteerObject: PuppeteerObject
 ): Promise<string> {
   const csvString = await generateCSVString(puppeteerObject);
-  const filePath = path.join(
-    'temp_exports',
-    'Active_Licences_Export_' + getDate() + '.csv'
-  );
+  const filePath = getPath();
 
   fs.writeFileSync(filePath, csvString);
-
   return filePath;
 }

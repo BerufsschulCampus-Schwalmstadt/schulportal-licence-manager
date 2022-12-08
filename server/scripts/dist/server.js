@@ -27,25 +27,29 @@ app.use((0, cors_1.default)());
 app.get('/', (req, res) => {
     res.send('Welcome to the server');
 });
+let loginObject;
 app.post('/login', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const username = req.body.username;
     const password = req.body.password;
     console.log(username);
     console.log(password);
-    const loginObject = yield (0, exportCSV_1.login)(username, password);
+    loginObject = yield (0, exportCSV_1.login)(username, password);
     if (!loginObject.response) {
         res.sendStatus(401);
+        loginObject.kill;
     }
     else {
         res.sendStatus(200);
-        const csvFilePath = yield (0, exportCSV_1.generateCSVFile)(loginObject);
-        res.download(csvFilePath, err => {
-            if (err)
-                console.log(err);
-            fs_1.default.unlinkSync(csvFilePath);
-        });
-        loginObject.close();
     }
+}));
+app.get('/CSVExport', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const csvFilePath = yield (0, exportCSV_1.generateCSVFile)(loginObject);
+    res.download(csvFilePath, err => {
+        if (err)
+            console.log(err);
+        fs_1.default.unlinkSync(csvFilePath);
+    });
+    loginObject.kill;
 }));
 app.listen(port, () => {
     console.log('server is running on port 3001');
