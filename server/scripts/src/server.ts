@@ -36,10 +36,12 @@ app.post('/login', async (req, res) => {
   if (!loginObject.response) {
     // if login unsuccessfull send back 401 error code
     res.sendStatus(401);
+    console.log('auth failed');
     loginObject.kill;
   } else {
     // if login successfull send 200 success code
     res.sendStatus(200);
+    console.log('auth succeeded');
   }
 });
 

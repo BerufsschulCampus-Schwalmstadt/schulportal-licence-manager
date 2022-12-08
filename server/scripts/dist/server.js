@@ -36,10 +36,12 @@ app.post('/login', (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     loginObject = yield (0, exportCSV_1.login)(username, password);
     if (!loginObject.response) {
         res.sendStatus(401);
+        console.log('auth failed');
         loginObject.kill;
     }
     else {
         res.sendStatus(200);
+        console.log('auth succeeded');
     }
 }));
 app.get('/CSVExport', (req, res) => __awaiter(void 0, void 0, void 0, function* () {

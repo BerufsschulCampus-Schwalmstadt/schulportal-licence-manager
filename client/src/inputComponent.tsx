@@ -17,22 +17,29 @@ class fullPropsObject {
   }
 }
 
-export default class inputComponent extends Component<{
-  fieldName: string;
-}> {
-  // get properties
-  fullProps = new fullPropsObject(this.props.fieldName);
+export default class inputComponent extends Component<{fieldName: string}> {
+  constructor(props: {fieldName: string}) {
+    super(props);
+    this.fullProps = new fullPropsObject(this.props.fieldName);
+  }
 
+  getValue() {
+    return (document.getElementById(this.fullProps.id) as HTMLInputElement)
+      .value;
+  }
+  // get properties
+  fullProps;
   render() {
+    const {label, name, placeholder, id, type} = this.fullProps;
     return (
       <div id="inputComponentWrapper">
-        <p className="inputLabels">{this.fullProps.label}</p>
+        <p className="inputLabels">{label}</p>
         <input
           className="inputFields"
-          name={this.fullProps.name}
-          id={this.fullProps.id}
-          placeholder={this.fullProps.placeholder}
-          type={this.fullProps.type}
+          name={name}
+          id={id}
+          placeholder={placeholder}
+          type={type}
         ></input>
       </div>
     );
