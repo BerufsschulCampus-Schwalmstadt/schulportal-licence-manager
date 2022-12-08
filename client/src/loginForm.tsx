@@ -1,7 +1,24 @@
-import React, {Component} from 'react';
+import React, {Component, FormEvent} from 'react';
 import InputComponent from './inputComponent';
 import './loginForm.css';
+import fileDownload from 'js-file-download';
 import axios from 'axios';
+
+function objectToMap(object: object) {
+  // start a new map
+  const map = new Map();
+
+  // get the (passed) object's keys and values
+  const keys = Object.keys(object);
+  const values = Object.values(object);
+
+  // map each key to the value in the object
+  for (let i = 0; i < keys.length; i++) {
+    map.set(keys[i], values[i]);
+  }
+
+  return map;
+}
 
 export default class loginForm extends Component<
   {},
@@ -15,18 +32,6 @@ export default class loginForm extends Component<
     };
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handlechange = this.handlechange.bind(this);
-  }
-
-  handleSubmit(event: React.FormEvent<HTMLFormElement>) {
-    // Presvemt page refresh which is default
-    event.preventDefault();
-
-    axios
-      .post('/login', this.state)
-      .then(response => console.log(response))
-      .catch(error => {
-        console.log(error);
-      });
   }
 
   handlechange() {
@@ -46,8 +51,55 @@ export default class loginForm extends Component<
           this.setState({password: htmlInputField.value});
           localStorage.setItem('password', htmlInputField.value);
         }
-        console.log(this.state);
+        //console.log(this.state);
       }
+    }
+  }
+
+  async handleSubmit(event: FormEvent) {
+    // Presvemt page refresh which is default
+    event.preventDefault();
+    event.nativeEvent.stopImmediatePropagation();
+    const authResponseObject = (await axios
+      .post('/login', this.state)
+      .catch(error => {
+        // if login fails
+        console.log(error);
+        const authFailTextElement = document.createElement('p');
+        authFailTextElement.textContent =
+          'Login to the SMS failed, please try again using your SMS credentials';
+        authFailTextElement.id = 'authFailText';
+        document
+          .getElementById('passwordInput')
+          ?.parentElement?.append(authFailTextElement);
+      })) as object;
+
+    // if login succeds
+    if (objectToMap(authResponseObject).get('status') === 200) {
+      const authFailTextElement = document.getElementById('AuthFailText');
+      if (authFailTextElement) {
+        authFailTextElement.style.display = 'none';
+      }
+
+      const exportResponseObject = (await axios
+        .get('/CSVExport')
+        .catch(error => {
+          console.log(error);
+        })) as object;
+
+      const exportResponseMap = objectToMap(exportResponseObject);
+      const responseHeadersObject = exportResponseMap.get('headers') as object;
+      const contenDisposition: string = objectToMap(responseHeadersObject).get(
+        'content-disposition'
+      );
+      const substringStart: number = contenDisposition.indexOf('"') + 1;
+      const substringEnd: number = contenDisposition.length - 1;
+      const fileName = contenDisposition.substring(
+        substringStart,
+        substringEnd
+      );
+      const fileData = exportResponseMap.get('data');
+      fileDownload(fileData, fileName);
     }
   }
 
