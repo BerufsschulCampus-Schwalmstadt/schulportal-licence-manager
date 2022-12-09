@@ -61,4 +61,3 @@ app.get('/api/CSVExport', (req, res) => __awaiter(void 0, void 0, void 0, functi
 app.listen(PORT, () => {
     console.log('server is running on port 3001');
 });
-module.exports = app;
