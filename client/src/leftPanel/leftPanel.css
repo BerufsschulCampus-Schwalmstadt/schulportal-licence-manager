@@ -1,3 +1,4 @@
+/* styling a wrapper for the left panel */
 #leftPanelWrapper {
     display: flex;
     flex-direction: column;
@@ -17,6 +18,7 @@
     flex-grow: 0;
 }
 
+/* Styling the text in the top left corner of the page. */
 #appNameText {
     font-weight: 500;
     font-size: 16px;
@@ -31,6 +33,7 @@
     flex-grow: 0;
 }
 
+/* Styling the text in the left panel. */
 #leftHeadingsContainer {
     display: flex;
     flex-direction: column;
@@ -48,6 +51,7 @@
     flex-grow: 0;    
 }
 
+/* Styling the bottom card image container. */
 #bottomCardImgContainer {
     display: flex;
     flex-direction: row;

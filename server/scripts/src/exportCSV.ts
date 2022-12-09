@@ -6,8 +6,8 @@ import fs from 'fs';
 
 // ---------------------------  Classes ------------------------------//
 
-// PuppeteerObjectPromise is a class containing all puppeteer api related elements
-// elements in this class come as promises
+/* It's a class that holds promises for a puppeteer browser and page,
+and has a method that resolves those promises and returns a PuppeteerObject */
 class PuppeteerObjectPromise {
   response: boolean | null;
   browserStatus: string;
@@ -21,6 +21,11 @@ class PuppeteerObjectPromise {
     this.page = this.browser.then(value => value.newPage());
   }
 
+  /**
+   * It returns a new PuppeteerObject with a resolved:
+   * response, browserStatus, browser, and page
+   * @returns A PuppeteerObject
+   */
   async resolve(): Promise<PuppeteerObject> {
     const puppeteerObject = new PuppeteerObject(
       this.response,
@@ -32,8 +37,7 @@ class PuppeteerObjectPromise {
   }
 }
 
-// PuppeteerObjectPromise is a resolved "PuppeteerObjectPromise" class
-// containing all puppeteer api related elements in this class come as promises
+/* It's a class that holds the response, browser status, browser, and page objects */
 export class PuppeteerObject {
   response: boolean | null;
   browserStatus: string;
@@ -52,6 +56,9 @@ export class PuppeteerObject {
     this.page = page;
   }
 
+  /**
+   * It closes the browser and sets the browserStatus to 'killed'
+   */
   kill() {
     this.browser.close();
     this.browserStatus = 'killed';
@@ -60,7 +67,10 @@ export class PuppeteerObject {
 
 // ---------------------  general helper function ------------------------//
 
-// getDate returns a '_' (underscore) formatted date
+/**
+ * It takes a date, formats it to a string, and returns it
+ * @returns A string in the format of dd_mm_yyyy
+ */
 function getDate(): string {
   let dateString: string = new Date().toLocaleDateString('en-GB');
 
@@ -75,7 +85,10 @@ function getDate(): string {
   return dateString;
 }
 
-// getDate returns a '_' (underscore) formatted date
+/**
+ * It returns a string that is the path to a file that is named after the current date
+ * @returns A string
+ */
 function getPath(): string {
   return path.join(
     'temp_exports',
@@ -85,8 +98,13 @@ function getPath(): string {
 
 // -------------------  Page Navigation Helper Functions --------------------//
 
-// clickElement performs a DOM "click" on the passed selector
-// on the passed puppeteer page
+/**
+ * It clicks on the element that matches the passed selector
+ * @param {Page} page - Page - this is the Puppeteer page object that we're using to interact with the
+ * page.
+ * @param {string} selector - The CSS selector of the element you want to click.
+ * @returns A boolean value.
+ */
 async function clickElement(page: Page, selector: string): Promise<boolean> {
   return await page.evaluate(passedSelector => {
     const element: HTMLElement | null = document.querySelector(passedSelector);
@@ -99,8 +117,13 @@ async function clickElement(page: Page, selector: string): Promise<boolean> {
   }, selector);
 }
 
-// selectElement DOM "select's" the option at the passed index
-// on the passed select element selector on the passed puppeteer page
+/**
+ * It selects an option from a dropdown menu
+ * @param {Page} page - Page - The Puppeteer page object.
+ * @param {string} selector - The CSS selector of the select element.
+ * @param {number} optionIndex - The index of the option you want to select.
+ * @returns A boolean value.
+ */
 async function selectElement(
   page: Page,
   selector: string,
@@ -124,8 +147,12 @@ async function selectElement(
 
 // ----------------------  Page Navigation Functions -----------------------//
 
-// login logs-in to the SMS using the credentials passed
-// and returns a puppeteer object containing session information
+/**
+ * It logs into the SMS website and returns a PuppeteerObject with a boolean response
+ * @param {string} username - It's a string that holds the username for the SMS website.
+ * @param {string} password - It's a string that holds the password for the SMS website.
+ * @returns A promise that resolves to a PuppeteerObject
+ */
 export async function login(
   username: string,
   password: string
@@ -164,7 +191,12 @@ export async function login(
   return loginObject;
 }
 
-// navToTablePage navigates to the first licence table page in the SMS
+/**
+ * It navigates to the table page by selecting the first account option on the license
+ * application account dropdown, and clicking the submit button
+ * @param {Page} page - Page - the puppeteer page object
+ * @returns A boolean value.
+ */
 async function navToTablePage(page: Page): Promise<boolean> {
   await page.goto('https://sms-sgs.ic.gc.ca/product/listOwn/index?lang=en_CA');
 
@@ -183,8 +215,15 @@ async function navToTablePage(page: Page): Promise<boolean> {
   return false;
 }
 
-// navToNextTablePage navigates to the next table page and returns true if one exists
-// if no next page exists the funtion returns false
+/**
+ * "Clicks the 'next page' button and wait for the page to load."
+ *
+ * The function takes a page object as an argument. It then uses the clickElement function to click the
+ * 'next page' button. If the click was successful, the function waits for the page to load and returns
+ * true. If the click was unsuccessful, the function returns false
+ * @param {Page} page - Page - the Puppeteer page object
+ * @returns A boolean value.
+ */
 async function navToNextTablePage(page: Page): Promise<boolean> {
   const nextPageBttnSelector = "a[rel = 'next']";
 
@@ -198,8 +237,15 @@ async function navToNextTablePage(page: Page): Promise<boolean> {
 
 // ----------------------  Table Creation Function -----------------------//
 
-// getTable generates and returns a custom table object that holds'
-// the license content from all tables in the SMS
+/**
+ * We're iterating through all pages of the table, adding the table body content to our table object,
+ * and returning the table object
+ * @param {Page} page - Page - the page object from puppeteer
+ * @returns An object with the following properties:
+ *   heading: An array of strings representing the table headings
+ *   body: An array of arrays of strings representing the table body
+ *   bodyLen: The number of rows in the table body
+ */
 async function getTable(
   page: Page
 ): Promise<{heading: string[]; body: string[][]; bodyLen: number}> {
@@ -254,8 +300,12 @@ async function getTable(
 
 // ------------------------  CSV Export Functions ------------------------//
 
-// generateCSVString convert all your
-// licence applications data to a csv string
+/**
+ * It navigates to the table page, generates a table object from all license pages, and then generates
+ * a csv string from the table object
+ * @param {PuppeteerObject} puppeteerObject - PuppeteerObject
+ * @returns A string of the CSV file
+ */
 async function generateCSVString(
   puppeteerObject: PuppeteerObject
 ): Promise<string> {
@@ -276,9 +326,13 @@ async function generateCSVString(
   return csvString;
 }
 
-// generateCSVFile writes a csv file
-// from all your licence applications data
-// and returns the path to this new file
+/**
+ * It takes a PuppeteerObject, generates a CSV string from it, writes that string to a file, and
+ * returns the path to that file
+ * @param {PuppeteerObject} puppeteerObject - This is the object that is returned from the
+ * generatePuppeteerObject function.
+ * @returns A string that is the path to the file that was created.
+ */
 export async function generateCSVFile(
   puppeteerObject: PuppeteerObject
 ): Promise<string> {

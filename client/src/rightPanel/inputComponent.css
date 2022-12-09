@@ -1,4 +1,5 @@
 
+/* The wrapper for the input component. */
 #inputComponentWrapper {
     display: flex;
     flex-direction: column;
@@ -12,6 +13,7 @@
     flex-grow: 0;
 }
 
+/* Styling the label for the input fields. */
 .inputLabels {
     font-weight: 500;
     font-size: 22px;
@@ -26,6 +28,7 @@
     flex-grow: 0;
 }
 
+/* Styling the input fields. */
 .inputFields{
     display: flex;
     flex-direction: row;
@@ -46,11 +49,9 @@
     font-weight: 400;
     font-size: 18px;
     line-height: 30px;
-
-    
 }
 
+/* Styling the placeholder text of the input fields. */
 .inputFields::placeholder{
     color: #A6A6A6;
-    
 }

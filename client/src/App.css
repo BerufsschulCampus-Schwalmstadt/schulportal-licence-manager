@@ -1,5 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
 
+/* Setting the body to be a flex container with a column direction, centering the items, and setting
+the background color. */
 html body {
     display: flex;
     flex-direction: column;
@@ -15,6 +17,8 @@ html body {
     font-size: 25px;
 }
 
+/* Setting the root element to be a flex container with a row direction, aligning the items to the top,
+and setting the width and height. */
 #root {
 
     display: flex;
@@ -37,6 +41,8 @@ html body {
     flex-grow: 0;
 }
 
+/* This is setting the font weight, size, line height, margin, text transform, and color for the h1
+tag. */
 h1 {
     font-weight: 700;
     font-size: 40px;
@@ -48,6 +54,7 @@ h1 {
     color: #FFFFFF;
 }
 
+/* This is setting the font weight, size, line height, margin, and color for the h2 tag. */
 h2 {
     font-weight: 400;
     font-size: 24px;
@@ -57,14 +64,17 @@ h2 {
     color: #B9B9B9;
 }
 
+/* Setting the margin to 0 for all p tags. */
 p{
     margin: 0;
 }
 
+/* Making the cursor change to a pointer when hovering over buttons. */
 button{
   cursor: pointer;
 }
 
+/* Styling all primary buttons */
 .primaryButton {
   transition: 0.1s ease-in all;
   display: flex;

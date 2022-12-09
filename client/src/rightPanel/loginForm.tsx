@@ -1,17 +1,23 @@
 import React, {Component, FormEvent} from 'react';
-import './loginForm.css';
 import fileDownload from 'js-file-download';
 import axios from 'axios';
 import assert from 'assert';
 
-// local/created elements
+// local files
+import './loginForm.css';
+import LoadAnimation from '../lotties/loadanimation.json';
+
+// local elements
 import InputComponent from './inputComponent';
-import MyLottieElement from './myLottieElement';
-import LoadAnimation from './lotties/loadanimation.json';
+import MyLottieElement from './lottieController';
 
 // ---------------------  general helper functions ------------------------//
 
-// objectToMap takes in any object and returns it in a map format
+/**
+ * It takes an object and returns a map
+ * @param {object} object - the object to convert to a map
+ * @returns A map with the keys and values of the passed object.
+ */
 function objectToMap(object: object) {
   // start a new map
   const map = new Map();
@@ -28,8 +34,13 @@ function objectToMap(object: object) {
   return map;
 }
 
-// cleanResponse takes in a response object and returns a clean object
-// with the original response objects file name and data
+/**
+ * It takes an object, converts it to a map, gets the headers object, converts that to a map, gets the
+ * content-disposition string, gets the file name from that string, and returns an object with the file
+ * name and the data
+ * @param {object} exportResponseObject - The response object from the export request.
+ * @returns an object with two properties: fileName and fileData.
+ */
 function cleanResponse(exportResponseObject: object): {
   fileName: string;
   fileData: string;
@@ -47,8 +58,9 @@ function cleanResponse(exportResponseObject: object): {
   };
 }
 
-// enableLoadState does the required dom manipulations to clear
-// the way for load state elements
+/**
+ * It hides all the input components and the submit button
+ */
 function enableLoadState(): void {
   // get reactinputcomponents
   const inputComponentsToHide = document.querySelector(
@@ -67,41 +79,61 @@ function enableLoadState(): void {
     'none';
 }
 
-// ---------------------------  Classe Component ------------------------------//
+// ---------------------------  Props and State ------------------------------//
 
+/* It's a class that holds the state of the login form */
+export class loginFormState {
+  form?: string;
+  username?: string | null;
+  password?: string | null;
+
+  constructor() {
+    this.form = 'initial';
+    this.username = null;
+    this.password = null;
+  }
+}
+
+/* It's a class that holds the login form's props */
+export class loginFormProps {}
+
+// ---------------------------  Class Component ------------------------------//
+
+/* It's a class component that holds the login form */
 export default class loginForm extends Component<
-  {},
-  {formState: string; username: string | null; password: string | null}
+  loginFormProps,
+  loginFormState
 > {
-  constructor(props: {} | Readonly<{}>) {
+  constructor(props: loginFormProps) {
     super(props);
-    this.state = {
-      formState: 'initial',
-      username: localStorage.getItem('username'),
-      password: localStorage.getItem('password'),
-    };
+    this.state = new loginFormState();
     this.handleSubmit = this.handleSubmit.bind(this);
-    this.handlechange = this.handlechange.bind(this);
+    this.handleChange = this.handleChange.bind(this);
   }
 
   // ----------form input event handler
-  // handlechange update the current state variables on input
-  handlechange(e: FormEvent) {
-    const inputField = e.target as HTMLInputElement;
+  /**
+   * A function that handles the change of the input fields.
+   * @param {FormEvent} e - FormEvent - this is the event that is triggered when
+   * the form experiences a change (ex. input).
+   */
+  handleChange(e: FormEvent): void {
+    const eventTriggerValue = (e.target as HTMLInputElement).value;
+    const eventTriggerName = (e.target as HTMLInputElement).name;
 
     // change state when field is changed
-    if (inputField.name === 'username') {
-      this.setState({username: inputField.value});
-    } else if (inputField.name === 'password') {
-      this.setState({password: inputField.value});
+    if (eventTriggerName === 'username' || eventTriggerName === 'password') {
+      this.setState({[eventTriggerName]: eventTriggerValue});
     }
   }
 
   // ----------form submission event handler
-  // handleSubmit sends a post request for (login) that's followed
-  // by a get request (for file export) if the initial
-  // post call was successfull
-  async handleSubmit(event: FormEvent) {
+  /**
+   * The function handles the form submission, and if the credentials are correct, it makes a get
+   * request to the server to download the export file
+   * @param {FormEvent} event - FormEvent - the event that is triggered when the form is submitted
+   */
+  async handleSubmit(event: FormEvent): Promise<void> {
     // Prevent form refresh which is default
     event.preventDefault();
 
@@ -110,7 +142,7 @@ export default class loginForm extends Component<
     assert(failTextElement);
     failTextElement.style.display = 'none';
 
-    // axios post request
+    //---- axios post request
     const authResponseObject = (await axios
       .post('/login', this.state)
       .catch(error => {
@@ -124,10 +156,10 @@ export default class loginForm extends Component<
 
     if (authResponseCode === 200) {
       // if no error was encountered set load state
-      this.setState({formState: 'load'});
+      this.setState({form: 'load'});
       enableLoadState();
 
-      // axios get request
+      //---- axios get request
       const exportResponseObject = (await axios
         .get('/CSVExport')
         .catch(error => {
@@ -148,11 +180,11 @@ export default class loginForm extends Component<
       <div id="loginFormWrapper">
         <form
           id="loginForm"
-          onChange={this.handlechange}
+          onChange={this.handleChange}
           onSubmit={this.handleSubmit}
         >
           <div className="loginFormContentWrapper">
-            {this.state.formState === 'load' && (
+            {this.state.form === 'load' && (
               <MyLottieElement animationData={LoadAnimation} />
             )}
             <div className="inputFieldContainer">
@@ -165,7 +197,7 @@ export default class loginForm extends Component<
               </p>
             </div>
           </div>
-          {this.state.formState === 'load' && (
+          {this.state.form === 'load' && (
             <p id="loadText">We’re working on it...</p>
           )}
           <button

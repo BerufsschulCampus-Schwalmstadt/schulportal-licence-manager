@@ -6,7 +6,8 @@ import {PuppeteerObject, generateCSVFile, login} from './exportCSV';
 
 // ---------------------------  initialize ------------------------------//
 
-// initialise server params
+/* This is the code that initialises the server. It sets the port to 3001 and sets up the body parser
+and cors. It also sets up the root route. */
 const app = express();
 const port = 3001;
 app.use(bodyParser.json());
@@ -26,7 +27,9 @@ let loginObject: PuppeteerObject;
 
 // ----------------------------  POST (Login) -------------------------------//
 
-// Route that handles authentication
+/* This is the route that handles the login request. It takes the username and password from the
+request body and passes it to the login function. If the login is successful, it returns a 200
+status code, otherwise it returns a 401 status code. */
 app.post('/login', async (req, res) => {
   const username = req.body.username;
   const password = req.body.password;
@@ -37,13 +40,13 @@ app.post('/login', async (req, res) => {
   // login to government sms (Spectrum Management System)
   loginObject = await login(username, password);
 
+  /* This is checking if the login was successful. If it was, it returns a 200 status code, otherwise it
+  returns a 401 status code. */
   if (!loginObject.response) {
-    // if login unsuccessfull send back 401 error code
     res.sendStatus(401);
     console.log('auth failed');
     loginObject.kill;
   } else {
-    // if login successfull send 200 success code
     res.sendStatus(200);
     console.log('auth succeeded');
   }
@@ -51,7 +54,8 @@ app.post('/login', async (req, res) => {
 
 // ---------------------------  GET (Export) ------------------------------//
 
-// Route that handles csv export
+/* This is the route that handles the export request. It takes the loginObject from the previous login
+request and passes it to the generateCSVFile function. It then downloads the file and deletes it. */
 app.get('/CSVExport', async (req, res) => {
   // generate csv file
   const csvFilePath = await generateCSVFile(loginObject);
@@ -67,6 +71,7 @@ app.get('/CSVExport', async (req, res) => {
 
 // ------------------------------  PORT --------------------------------//
 
+/* This is the port that the server is running on. */
 app.listen(port, () => {
   console.log('server is running on port 3001');
 });

@@ -3,6 +3,7 @@ import './inputComponent.css';
 
 // ---------------------------  Class Prop def ------------------------------//
 
+/* A class that defines the props that will be passed to the component. */
 class InputComponentProps {
   name: string;
   label?: string;
@@ -20,32 +21,44 @@ class InputComponentProps {
   }
 }
 
+/* A class that holds the state of the component. */
+class InputComponentState {
+  inputFieldValue: string | undefined;
+
+  constructor() {
+    this.inputFieldValue = undefined;
+  }
+}
+
 // ---------------------------  Class Component ------------------------------//
 
 export default class inputComponent extends Component<
   InputComponentProps,
-  {value: string}
+  InputComponentState
 > {
   fullprops: InputComponentProps;
   constructor(props: InputComponentProps) {
     super(props);
     this.fullprops = new InputComponentProps(this.props);
-    this.state = {
-      value: '',
-    };
+    this.state = new InputComponentState();
     this.handlechange = this.handlechange.bind(this);
   }
 
   // ----------Input event handler
-  // handlechange update the current state variable on input
+  /**
+   * A function that handles the change of the input fields.
+   * @param {ChangeEvent<HTMLInputElement>} event -
+   * ChangeEvent<HTMLInputElement> - this is the event that
+   * is triggered when the input field changes
+   */
   handlechange(event: ChangeEvent<HTMLInputElement>) {
-    this.setState({['value']: event.target.value});
+    this.setState({inputFieldValue: event.target.value});
   }
 
   // -------------rendered HTML
   render() {
     const {name, label, placeholder, id, type} = this.fullprops;
-    const {value} = this.state;
+    const {inputFieldValue} = this.state;
     return (
       <div id="inputComponentWrapper">
         <p className="inputLabels">{label}</p>
@@ -56,7 +69,7 @@ export default class inputComponent extends Component<
           placeholder={placeholder}
           type={type}
           onChange={this.handlechange}
-          value={value}
+          value={inputFieldValue}
         ></input>
       </div>
     );
