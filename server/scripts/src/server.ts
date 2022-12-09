@@ -5,7 +5,6 @@ import fs from 'fs';
 import {PuppeteerObject, generateCSVFile, login} from './exportCSV';
 import path from 'path';
 import dotenv from 'dotenv';
-dotenv.config();
 
 // ---------------------------  initialize ------------------------------//
 
