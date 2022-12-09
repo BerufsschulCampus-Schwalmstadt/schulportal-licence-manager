@@ -21,7 +21,7 @@
     "typescript": "~4.7.0"
   },
   "scripts": {
-    "build": "cd ../ && cd client && npm install && npm run build",
+    "build": "cd client && npm install && npm run build",
     "client-install": "npm install --prefix client",
     "start": "node scripts/dist/server.js",
     "dev": "concurrently \"npm run server\" \"npm run client\"",
