@@ -17,23 +17,18 @@ const body_parser_1 = __importDefault(require("body-parser"));
 const cors_1 = __importDefault(require("cors"));
 const fs_1 = __importDefault(require("fs"));
 const exportCSV_1 = require("./exportCSV");
-const path_1 = __importDefault(require("path"));
 const app = (0, express_1.default)();
-const PORT = process.env.PORT || 3001;
+const port = 3001;
 app.use(body_parser_1.default.json());
 app.use(body_parser_1.default.urlencoded({
     extended: true,
 }));
 app.use((0, cors_1.default)());
-app.use(express_1.default.static(path_1.default.resolve(__dirname, '../../../client/build')));
-app.get('/api', (req, res) => {
+app.get('/', (req, res) => {
     res.send('Welcome to the server');
 });
-app.get('*', (req, res) => {
-    res.sendFile(path_1.default.resolve(__dirname, '../../../client/build', 'index.html'));
-});
 let loginObject;
-app.post('/api/login', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+app.post('/login', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const username = req.body.username;
     const password = req.body.password;
     console.log(username);
@@ -49,7 +44,7 @@ app.post('/api/login', (req, res) => __awaiter(void 0, void 0, void 0, function*
         console.log('auth succeeded');
     }
 }));
-app.get('/api/CSVExport', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+app.get('/CSVExport', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const csvFilePath = yield (0, exportCSV_1.generateCSVFile)(loginObject);
     res.download(csvFilePath, err => {
         if (err)
@@ -58,6 +53,6 @@ app.get('/api/CSVExport', (req, res) => __awaiter(void 0, void 0, void 0, functi
     });
     loginObject.kill;
 }));
-app.listen(PORT, () => {
+app.listen(port, () => {
     console.log('server is running on port 3001');
 });

@@ -144,7 +144,7 @@ export default class loginForm extends Component<
 
     //---- axios post request
     const authResponseObject = (await axios
-      .post('/api/login', this.state)
+      .post('/login', this.state)
       .catch(error => {
         console.log(error);
         failTextElement.style.display = 'block';
@@ -161,7 +161,7 @@ export default class loginForm extends Component<
 
       //---- axios get request
       const exportResponseObject = (await axios
-        .get('/api/CSVExport')
+        .get('/CSVExport')
         .catch(error => {
           console.log(error);
         })) as object;
