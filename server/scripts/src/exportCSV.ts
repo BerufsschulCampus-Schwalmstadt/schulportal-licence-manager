@@ -6,6 +6,8 @@ import fs from 'fs';
 
 // ---------------------------  Classes ------------------------------//
 
+// PuppeteerObjectPromise is a class containing all puppeteer api related elements
+// elements in this class come as promises
 class PuppeteerObjectPromise {
   response: boolean | null;
   browserStatus: string;
@@ -30,6 +32,8 @@ class PuppeteerObjectPromise {
   }
 }
 
+// PuppeteerObjectPromise is a resolved "PuppeteerObjectPromise" class
+// containing all puppeteer api related elements in this class come as promises
 export class PuppeteerObject {
   response: boolean | null;
   browserStatus: string;
@@ -57,7 +61,7 @@ export class PuppeteerObject {
 // ---------------------  general helper function ------------------------//
 
 // getDate returns a '_' (underscore) formatted date
-export function getDate(): string {
+function getDate(): string {
   let dateString: string = new Date().toLocaleDateString('en-GB');
 
   // proper date format
@@ -72,7 +76,7 @@ export function getDate(): string {
 }
 
 // getDate returns a '_' (underscore) formatted date
-export function getPath(): string {
+function getPath(): string {
   return path.join(
     'temp_exports',
     'Active_Licences_Export_' + getDate() + '.csv'
@@ -252,7 +256,7 @@ async function getTable(
 
 // generateCSVString convert all your
 // licence applications data to a csv string
-export async function generateCSVString(
+async function generateCSVString(
   puppeteerObject: PuppeteerObject
 ): Promise<string> {
   // go to table repo/page

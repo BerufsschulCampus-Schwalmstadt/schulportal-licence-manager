@@ -4,6 +4,8 @@ import cors from 'cors';
 import fs from 'fs';
 import {PuppeteerObject, generateCSVFile, login} from './exportCSV';
 
+// ---------------------------  initialize ------------------------------//
+
 // initialise server params
 const app = express();
 const port = 3001;
@@ -21,6 +23,8 @@ app.get('/', (req, res) => {
 });
 
 let loginObject: PuppeteerObject;
+
+// ----------------------------  POST (Login) -------------------------------//
 
 // Route that handles authentication
 app.post('/login', async (req, res) => {
@@ -45,6 +49,8 @@ app.post('/login', async (req, res) => {
   }
 });
 
+// ---------------------------  GET (Export) ------------------------------//
+
 // Route that handles csv export
 app.get('/CSVExport', async (req, res) => {
   // generate csv file
@@ -58,6 +64,8 @@ app.get('/CSVExport', async (req, res) => {
 
   loginObject.kill;
 });
+
+// ------------------------------  PORT --------------------------------//
 
 app.listen(port, () => {
   console.log('server is running on port 3001');
