@@ -35,7 +35,4 @@
     "pretest": "npm run compile",
     "posttest": "npm run lint"
   },
-  "engines": {
-    "node": "v18.12.1"
-  }
 }
