@@ -1,9 +1,9 @@
 #leftPanelWrapper {
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: space-between;
     align-items: flex-start;
-    padding: 0px 56px;
+    padding: 57px 56px;
     gap: 46px;
 
     background: linear-gradient(0deg, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)), #3C37FF;
@@ -38,10 +38,14 @@
     padding: 10px 0px;
     gap: 12px;
 
+    height: 284px;
+
+    /* Inside auto layout */
+
     flex: none;
     order: 1;
     align-self: stretch;
-    flex-grow: 0;
+    flex-grow: 0;    
 }
 
 #bottomCardImgContainer {

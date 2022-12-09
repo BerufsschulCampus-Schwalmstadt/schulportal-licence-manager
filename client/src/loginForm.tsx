@@ -1,10 +1,17 @@
 import React, {Component, FormEvent} from 'react';
-import InputComponent from './inputComponent';
 import './loginForm.css';
 import fileDownload from 'js-file-download';
 import axios from 'axios';
 import assert from 'assert';
 
+// local/created elements
+import InputComponent from './inputComponent';
+import MyLottieElement from './myLottieElement';
+import LoadAnimation from './lotties/loadanimation.json';
+
+// ---------------------  general helper functions ------------------------//
+
+// objectToMap takes in any object and returns it in a map format
 function objectToMap(object: object) {
   // start a new map
   const map = new Map();
@@ -21,6 +28,8 @@ function objectToMap(object: object) {
   return map;
 }
 
+// cleanResponse takes in a response object and returns a clean object
+// with the original response objects file name and data
 function cleanResponse(exportResponseObject: object): {
   fileName: string;
   fileData: string;
@@ -38,13 +47,36 @@ function cleanResponse(exportResponseObject: object): {
   };
 }
 
+// enableLoadState does the required dom manipulations to clear
+// the way for load state elements
+function enableLoadState(): void {
+  // get reactinputcomponents
+  const inputComponentsToHide = document.querySelector(
+    '.loginFormContentWrapper'
+  )?.children as HTMLCollectionOf<HTMLElement>;
+
+  // hide reactinputcomponents
+  if (inputComponentsToHide) {
+    for (let i = 0; i < inputComponentsToHide?.length; i++) {
+      inputComponentsToHide[i].style.display = 'none';
+    }
+  }
+
+  // get submit button and hide it
+  (document.querySelector('#submitButton') as HTMLButtonElement).style.display =
+    'none';
+}
+
+// ---------------------------  Classe Component ------------------------------//
+
 export default class loginForm extends Component<
   {},
-  {username: string | null; password: string | null}
+  {formState: string; username: string | null; password: string | null}
 > {
   constructor(props: {} | Readonly<{}>) {
     super(props);
     this.state = {
+      formState: 'initial',
       username: localStorage.getItem('username'),
       password: localStorage.getItem('password'),
     };
@@ -52,17 +84,23 @@ export default class loginForm extends Component<
     this.handlechange = this.handlechange.bind(this);
   }
 
+  // ----------form input event handler
+  // handlechange update the current state variables on input
   handlechange(e: FormEvent) {
     const inputField = e.target as HTMLInputElement;
 
     // change state when field is changed
     if (inputField.name === 'username') {
-      this.setState({['username']: inputField.value});
+      this.setState({username: inputField.value});
     } else if (inputField.name === 'password') {
-      this.setState({['password']: inputField.value});
+      this.setState({password: inputField.value});
     }
   }
 
+  // ----------form submission event handler
+  // handleSubmit sends a post request for (login) that's followed
+  // by a get request (for file export) if the initial
+  // post call was successfull
   async handleSubmit(event: FormEvent) {
     // Prevent form refresh which is default
     event.preventDefault();
@@ -84,18 +122,27 @@ export default class loginForm extends Component<
     const authResponseCode = objectToMap(authResponseObject).get('status');
     console.log(authResponseCode);
 
-    // axios get request
-    const exportResponseObject = (await axios.get('/CSVExport').catch(error => {
-      console.log(error);
-    })) as object;
+    if (authResponseCode === 200) {
+      // if no error was encountered set load state
+      this.setState({formState: 'load'});
+      enableLoadState();
 
-    // cleaned get request response
-    const cleanResponseObject = cleanResponse(exportResponseObject);
+      // axios get request
+      const exportResponseObject = (await axios
+        .get('/CSVExport')
+        .catch(error => {
+          console.log(error);
+        })) as object;
 
-    // download export file
-    fileDownload(cleanResponseObject.fileData, cleanResponseObject.fileName);
+      // cleaned get request response
+      const cleanResponseObject = cleanResponse(exportResponseObject);
+
+      // download export file
+      fileDownload(cleanResponseObject.fileData, cleanResponseObject.fileName);
+    }
   }
 
+  // -------------rendered HTML
   render() {
     return (
       <div id="loginFormWrapper">
@@ -105,6 +152,9 @@ export default class loginForm extends Component<
           onSubmit={this.handleSubmit}
         >
           <div className="loginFormContentWrapper">
+            {this.state.formState === 'load' && (
+              <MyLottieElement animationData={LoadAnimation} />
+            )}
             <div className="inputFieldContainer">
               <InputComponent name="username" />
               <InputComponent name="password" type="password" />
@@ -115,6 +165,9 @@ export default class loginForm extends Component<
               </p>
             </div>
           </div>
+          {this.state.formState === 'load' && (
+            <p id="loadText">We’re working on it...</p>
+          )}
           <button
             className="primaryButton"
             type="submit"
@@ -128,3 +181,5 @@ export default class loginForm extends Component<
     );
   }
 }
+// when auth is back check if onclick on the button is better on submit
+// ex. check if file downloads automatically now that we don't need "prevent default"

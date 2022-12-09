@@ -2,6 +2,8 @@ import React, {Component} from 'react';
 import bottomCardImg from './imgs/LeftPanelLogo.svg';
 import './leftPanel.css';
 
+// ---------------------------  Class component ------------------------------//
+
 export default class leftPanel extends Component {
   render() {
     return (
