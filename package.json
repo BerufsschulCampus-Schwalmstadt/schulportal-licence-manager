@@ -1,8 +1,5 @@
 {
   "dependencies": {
-    "concurrently": "^7.6.0",
-    "build": "cd client && npm install && npm run build",
-    "start": "node server/scripts/dist/server.js",
-    "dev": "concurrently \"npm build\" \"npm start\""
+    "concurrently": "^7.6.0"
   }
 }
