@@ -210,7 +210,7 @@ export default class loginForm extends Component<
       enableLoadState();
 
       // download file
-      DownloadCSVFromAPI();
+      await DownloadCSVFromAPI();
     }
   }
 
