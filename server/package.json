@@ -27,7 +27,7 @@
     "node": "18.x"
   },
   "scripts": {
-    "start": "concurrently \"npm start --prefix ../client\" \"npm run devStart\"",
+    "start": "nodemon scripts/dist/server.js",
     "dev": "nodemon scripts/dist/server.js",
     "devStart": "node scripts/dist/server.js",
     "lint": "gts lint",
