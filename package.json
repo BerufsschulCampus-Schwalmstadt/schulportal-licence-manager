@@ -2,7 +2,9 @@
   "dependencies": {
     "concurrently": "^7.6.0"
   },
-  "engines": {"node": "18.x"},
+  "engines": {
+    "node": "18.x"
+  },
   "scripts": {
     "start": "npm run devStart --prefix ./server",
     "devStart": "concurrently \"npm start --prefix ./client\" \"npm run dev --prefix ./server\"",

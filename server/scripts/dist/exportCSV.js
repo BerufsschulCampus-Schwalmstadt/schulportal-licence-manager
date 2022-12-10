@@ -14,7 +14,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.generateCSVFile = exports.login = exports.PuppeteerObject = void 0;
 const assert_1 = __importDefault(require("assert"));
-const puppeteer_core_1 = __importDefault(require("puppeteer-core"));
+const puppeteer_1 = __importDefault(require("puppeteer"));
 const convert_array_to_csv_1 = require("convert-array-to-csv");
 const path_1 = __importDefault(require("path"));
 const fs_1 = __importDefault(require("fs"));
@@ -22,9 +22,7 @@ class PuppeteerObjectPromise {
     constructor() {
         this.response = null;
         this.browserStatus = 'promised';
-        this.browser = puppeteer_core_1.default.launch({
-            executablePath: '/usr/bin/chromium-browser',
-        });
+        this.browser = puppeteer_1.default.launch();
         this.page = this.browser.then(value => value.newPage());
     }
     resolve() {

@@ -1,5 +1,5 @@
 import assert from 'assert';
-import puppeteer, {Browser, Page} from 'puppeteer-core';
+import puppeteer, {Browser, Page} from 'puppeteer';
 import {convertArrayToCSV} from 'convert-array-to-csv';
 import path from 'path';
 import fs from 'fs';
@@ -17,9 +17,7 @@ class PuppeteerObjectPromise {
   constructor() {
     this.response = null;
     this.browserStatus = 'promised';
-    this.browser = puppeteer.launch({
-      executablePath: '/usr/bin/chromium-browser',
-    });
+    this.browser = puppeteer.launch();
     this.page = this.browser.then(value => value.newPage());
   }
 
