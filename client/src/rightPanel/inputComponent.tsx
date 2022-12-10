@@ -23,10 +23,10 @@ class InputComponentProps {
 
 /* A class that holds the state of the component. */
 class InputComponentState {
-  inputFieldValue: string | undefined;
+  inputFieldValue: string;
 
   constructor() {
-    this.inputFieldValue = undefined;
+    this.inputFieldValue = '';
   }
 }
 
