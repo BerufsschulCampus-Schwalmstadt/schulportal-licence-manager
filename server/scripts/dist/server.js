@@ -31,9 +31,6 @@ app.use(express_1.default.static(path_1.default.resolve(__dirname, '../../../cli
 app.get('/api', (req, res) => {
     res.send('Welcome to the server');
 });
-app.get('*', (req, res) => {
-    res.sendFile(path_1.default.resolve(__dirname, '../../../client/build', 'index.html'));
-});
 let loginObject;
 app.post('/api/login', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const username = req.body.username;
@@ -60,6 +57,9 @@ app.get('/api/CSVExport', (req, res) => __awaiter(void 0, void 0, void 0, functi
     });
     loginObject.kill;
 }));
+app.get('*', (req, res) => {
+    res.sendFile(path_1.default.resolve(__dirname, '../../../client', 'index.html'));
+});
 app.listen(port, () => {
     console.log('server is running on port 3001');
 });

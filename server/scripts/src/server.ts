@@ -25,7 +25,7 @@ app.use(
 app.use(cors());
 
 /* This is the code that serves the React app. */
-app.use(express.static(path.resolve(__dirname, '../../client/build')));
+app.use(express.static(path.resolve(__dirname, '../../../client/build')));
 
 /* This is the route that handles the GET request to the / route. It returns a message saying
 "Welcome to the server". */
@@ -85,7 +85,7 @@ app.get('/api/CSVExport', async (req, res) => {
 // ------------------------- Frontend React App --------------------------//
 
 app.get('*', (req, res) => {
-  res.sendFile(path.resolve(__dirname, '../../client/build', 'index.html'));
+  res.sendFile(path.resolve(__dirname, '../../../client', 'index.html'));
 });
 
 // ------------------------------  PORT --------------------------------//
