@@ -82,12 +82,11 @@ function enableLoadState(): void {
 // -------------------------- API/Server Requests ----------------------------//
 
 // API accesspoints
-const railwayAPIAddress =
-  'https://spectrum-downloader-production.up.railway.app';
+const vercelAPIAddress = 'https://spectrum-downloader.vercel.app/';
 const localAPIAddress = 'http://localhost:3001';
 
 // Address currently being used in the APP
-const APIaddress = railwayAPIAddress;
+const APIaddress = vercelAPIAddress;
 
 /**
  * It sends a post request to the server with the login credentials, and returns true if the server
