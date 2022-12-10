@@ -11,7 +11,7 @@ dotenv.config;
 
 /* This is setting up the server. */
 const app = express();
-const port = process.env.PORT || 3001;
+const port = Number(process.env.PORT) || 3001;
 
 /* This is setting up the body parser and cors. */
 app.use(bodyParser.json());
@@ -91,5 +91,5 @@ app.get('*', (req, res) => {
 
 /* This is the port that the server is running on. */
 app.listen(port, () => {
-  console.log('server is running on port 3001');
+  console.log('server is running on port ' + port);
 });
