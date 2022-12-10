@@ -3,14 +3,19 @@ import bodyParser, {json} from 'body-parser';
 import cors from 'cors';
 import fs from 'fs';
 import {PuppeteerObject, generateCSVFile, login} from './exportCSV';
+import path from 'path';
+import dotenv from 'dotenv';
+dotenv.config;
 
 // ---------------------------  initialize ------------------------------//
 
-/* This is the code that initialises the server. It sets the port to 3001 and sets up the body parser
-and cors. It also sets up the root route. */
+/* This is setting up the server. */
 const app = express();
-const port = 3001;
+const port = process.env.PORT || 3001;
+
+/* This is setting up the body parser and cors. */
 app.use(bodyParser.json());
+
 app.use(
   bodyParser.urlencoded({
     extended: true,

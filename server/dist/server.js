@@ -17,8 +17,10 @@ const body_parser_1 = __importDefault(require("body-parser"));
 const cors_1 = __importDefault(require("cors"));
 const fs_1 = __importDefault(require("fs"));
 const exportCSV_1 = require("./exportCSV");
+const dotenv_1 = __importDefault(require("dotenv"));
+dotenv_1.default.config;
 const app = (0, express_1.default)();
-const port = 3001;
+const port = process.env.PORT || 3001;
 app.use(body_parser_1.default.json());
 app.use(body_parser_1.default.urlencoded({
     extended: true,
