@@ -114,9 +114,9 @@ async function APIAuthRequest(
   console.log(authResponseCode);
 
   if (authResponseCode === 200) {
-    failTextElement.style.display = 'block';
     return true;
   } else {
+    failTextElement.style.display = 'block';
     return false;
   }
 }
