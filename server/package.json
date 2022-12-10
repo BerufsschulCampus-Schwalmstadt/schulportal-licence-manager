@@ -15,7 +15,7 @@
     "kill-port": "^2.0.1",
     "nodemon": "^2.0.20",
     "path": "^0.12.7",
-    "puppeteer": "^16.2.0"
+    "puppeteer-core": "^19.4.0"
   },
   "devDependencies": {
     "@types/node": "^14.18.34",
@@ -23,7 +23,9 @@
     "gts": "^3.1.1",
     "typescript": "~4.7.0"
   },
-  "engines": {"node": "18.x"},
+  "engines": {
+    "node": "18.x"
+  },
   "scripts": {
     "start": "concurrently \"npm start --prefix ../client\" \"npm run devStart\"",
     "dev": "nodemon scripts/dist/server.js",
