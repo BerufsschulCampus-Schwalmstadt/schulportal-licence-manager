@@ -11,7 +11,7 @@ dotenv.config;
 
 /* This is setting up the server. */
 const app = express();
-const port = Number(process.env.PORT) || 3001;
+const port = process.env.PORT || 3001;
 
 /* This is setting up the body parser and cors. */
 app.use(bodyParser.json());
