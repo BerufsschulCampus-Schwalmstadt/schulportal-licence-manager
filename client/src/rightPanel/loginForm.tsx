@@ -94,7 +94,9 @@ const APIaddress = buildAPIAddress;
  * @param {loginFormState} login - loginFormState
  * @returns A boolean value.
  */
-async function APIAuthRequest(login: loginFormState): Promise<boolean> {
+async function APIAuthRequest(
+  loginCredentials: loginFormState
+): Promise<boolean> {
   /* Get the wrong credentials 'p' (paragraph) element,
   assert that it exists, and then hide it. */
   const failTextElement = document.getElementById('failTextElement');
@@ -102,18 +104,21 @@ async function APIAuthRequest(login: loginFormState): Promise<boolean> {
   failTextElement.style.display = 'none';
 
   //---- axios post (login) request
-  const authResponseObject = (await axios
-    .post(APIaddress + '/api/login', login)
-    .catch(error => {
-      console.log(error);
-      failTextElement.style.display = 'block';
-    })) as object;
+  const authResponseObject = (await axios.post(
+    APIaddress + '/api/login',
+    loginCredentials
+  )) as object;
 
   // post request/login response code
   const authResponseCode = objectToMap(authResponseObject).get('status');
   console.log(authResponseCode);
 
-  return authResponseCode === 200 ? true : false;
+  if (authResponseCode === 200) {
+    failTextElement.style.display = 'block';
+    return true;
+  } else {
+    return false;
+  }
 }
 
 /**
