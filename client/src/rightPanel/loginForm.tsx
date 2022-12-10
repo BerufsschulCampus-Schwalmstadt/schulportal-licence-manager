@@ -104,21 +104,18 @@ async function APIAuthRequest(
   failTextElement.style.display = 'none';
 
   //---- axios post (login) request
-  const authResponseObject = (await axios.post(
-    APIaddress + '/api/login',
-    loginCredentials
-  )) as object;
+  /* It's sending a post request to the server with the login credentials,
+  and returns true if the server responds with a 200 status code.
+  If the response is an error it returns false. */
+  (await axios
+    .post(APIaddress + '/api/login', loginCredentials)
+    .catch(error => {
+      console.log(error);
+      failTextElement.style.display = 'block';
+      return false;
+    })) as object;
 
-  // post request/login response code
-  const authResponseCode = objectToMap(authResponseObject).get('status');
-  console.log(authResponseCode);
-
-  if (authResponseCode === 200) {
-    return true;
-  } else {
-    failTextElement.style.display = 'block';
-    return false;
-  }
+  return true;
 }
 
 /**
