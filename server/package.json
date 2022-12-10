@@ -23,6 +23,7 @@
     "gts": "^3.1.1",
     "typescript": "~4.7.0"
   },
+  "engines": {"node": "18.x"},
   "scripts": {
     "start": "concurrently \"npm start --prefix ../client\" \"npm run devStart\"",
     "dev": "nodemon scripts/dist/server.js",
