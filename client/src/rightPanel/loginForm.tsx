@@ -79,6 +79,62 @@ function enableLoadState(): void {
     'none';
 }
 
+// -------------------------- API/Server Requests ----------------------------//
+
+// API accesspoints
+const buildAPIAddress = 'https://spectrum-downloader.onrender.com';
+const localAPIAddress = 'http://localhost:3001';
+
+// Address currently being used in the APP
+const APIaddress = buildAPIAddress;
+
+/**
+ * It sends a post request to the server with the login credentials, and returns true if the server
+ * responds with a 200 status code
+ * @param {loginFormState} login - loginFormState
+ * @returns A boolean value.
+ */
+async function APIAuthRequest(login: loginFormState): Promise<boolean> {
+  /* Get the wrong credentials 'p' (paragraph) element,
+  assert that it exists, and then hide it. */
+  const failTextElement = document.getElementById('failTextElement');
+  assert(failTextElement);
+  failTextElement.style.display = 'none';
+
+  //---- axios post (login) request
+  const authResponseObject = (await axios
+    .post(APIaddress + '/api/login', login)
+    .catch(error => {
+      console.log(error);
+      failTextElement.style.display = 'block';
+    })) as object;
+
+  // post request/login response code
+  const authResponseCode = objectToMap(authResponseObject).get('status');
+  console.log(authResponseCode);
+
+  return authResponseCode === 200 ? true : false;
+}
+
+/**
+ * DownloadCSVFromAPI() is an async function that makes a get request to the
+ * API, cleans the response, and then downloads the requested SMS export file
+ */
+async function DownloadCSVFromAPI(): Promise<void> {
+  //---- axios get request
+  const exportResponseObject = (await axios
+    .get(APIaddress + '/api/CSVExport')
+    .catch(error => {
+      console.log(error);
+    })) as object;
+
+  // cleaned get request response
+  const cleanResponseObject = cleanResponse(exportResponseObject);
+
+  // download export file
+  fileDownload(cleanResponseObject.fileData, cleanResponseObject.fileName);
+}
+
 // ---------------------------  Props and State ------------------------------//
 
 /* It's a class that holds the state of the login form */
@@ -129,48 +185,27 @@ export default class loginForm extends Component<
 
   // ----------form submission event handler
   /**
-   * The function handles the form submission, and if the credentials are correct, it makes a get
-   * request to the server to download the export file
-   * @param {FormEvent} event - FormEvent - the event that is triggered when the form is submitted
+   * It's checking if the login credentials are correct. If they are, it sets the state to load, hides
+   * the input components and the submit button, and then downloads the export file
+   * @param {FormEvent} event - FormEvent - This is the event that is triggered when the form is
+   * submitted.
    */
   async handleSubmit(event: FormEvent): Promise<void> {
     // Prevent form refresh which is default
     event.preventDefault();
 
-    // wrong credentials p element
-    const failTextElement = document.getElementById('failTextElement');
-    assert(failTextElement);
-    failTextElement.style.display = 'none';
-
     //---- axios post request
-    const authResponseObject = (await axios
-      .post('/api/login', this.state)
-      .catch(error => {
-        console.log(error);
-        failTextElement.style.display = 'block';
-      })) as object;
+    const authRequestResult = await APIAuthRequest(this.state);
 
-    // post request response code
-    const authResponseCode = objectToMap(authResponseObject).get('status');
-    console.log(authResponseCode);
-
-    if (authResponseCode === 200) {
-      // if no error was encountered set load state
+    /* It's checking if the login credentials are correct. If they are, it sets the state to load,
+    hides the input components and the submit button, and then downloads the export file. */
+    if (authRequestResult) {
+      // set load state
       this.setState({form: 'load'});
       enableLoadState();
 
-      //---- axios get request
-      const exportResponseObject = (await axios
-        .get('/api/CSVExport')
-        .catch(error => {
-          console.log(error);
-        })) as object;
-
-      // cleaned get request response
-      const cleanResponseObject = cleanResponse(exportResponseObject);
-
-      // download export file
-      fileDownload(cleanResponseObject.fileData, cleanResponseObject.fileName);
+      // download file
+      DownloadCSVFromAPI();
     }
   }
 
