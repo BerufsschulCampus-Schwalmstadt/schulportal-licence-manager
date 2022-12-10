@@ -26,6 +26,7 @@
   "scripts": {
     "start": "concurrently \"npm start --prefix ./client\" \"npm run dev\"",
     "dev": "nodemon scripts/dist/server.js",
+    "devStart": "node scripts/dist/server.js",
     "lint": "gts lint",
     "clean": "gts clean",
     "compile": "tsc",

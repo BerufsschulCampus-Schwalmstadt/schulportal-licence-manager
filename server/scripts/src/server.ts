@@ -33,9 +33,6 @@ app.get('/api', (req, res) => {
   res.send('Welcome to the server');
 });
 
-/* This is the code that handles all other GET requests that are not handled before. It returns the
-React app. */
-
 let loginObject: PuppeteerObject;
 
 // ----------------------------  POST (Login) -------------------------------//
@@ -84,6 +81,8 @@ app.get('/api/CSVExport', async (req, res) => {
 
 // ------------------------- Frontend React App --------------------------//
 
+/* This is the code that handles all other GET requests that are not handled before. It returns the
+React app. */
 app.get('*', (req, res) => {
   res.sendFile(path.resolve(__dirname, '../../../client', 'index.html'));
 });
