@@ -8,7 +8,7 @@
   "scripts": {
     "start": "npm run devStart --prefix ./server",
     "devStart": "concurrently \"npm start --prefix ./client\" \"npm run dev --prefix ./server\"",
-    "build": "npm install && npm install --force --prefix ./client && npm install --prefix ./server && npm run build --prefix /client",
+    "build": "npm install && npm install --force --prefix ./client && npm install --prefix ./server && npm run build --prefix ./client",
     "dev": "npm run start --prefix ./server"
   }
 }
