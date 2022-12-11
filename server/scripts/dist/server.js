@@ -35,7 +35,7 @@ app.use(body_parser_1.default.urlencoded({
     extended: true,
 }));
 const corsAllowedList = [
-    'https://spectrum-downloader.up.railway.app',
+    'https://spectrumdownloader.up.railway.app/',
     'http://localhost:3000',
 ];
 app.use((0, cors_1.default)({
