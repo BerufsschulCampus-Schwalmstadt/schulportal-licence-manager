@@ -17,7 +17,10 @@ class PuppeteerObjectPromise {
   constructor() {
     this.response = null;
     this.browserStatus = 'promised';
-    this.browser = puppeteer.launch();
+    this.browser = puppeteer.launch({
+      headless: true,
+      args: ['--no-sandbox','--disable-setuid-sandbox']
+    });
     this.page = this.browser.then(value => value.newPage());
   }
 
