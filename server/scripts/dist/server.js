@@ -38,9 +38,7 @@ const corsAllowedList = [
     'https://spectrumdownloader.up.railway.app/',
     'http://localhost:3000',
 ];
-app.use((0, cors_1.default)({
-    origin: corsAllowedList,
-}));
+app.use((0, cors_1.default)());
 app.get('/api', (req, res) => {
     res.send('Welcome to the server');
 });

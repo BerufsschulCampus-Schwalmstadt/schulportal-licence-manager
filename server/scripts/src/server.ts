@@ -44,11 +44,7 @@ const corsAllowedList = [
 ];
 
 /* This is setting up the cors.(Links allowed to access the API) */
-app.use(
-  cors({
-    origin: corsAllowedList,
-  })
-);
+app.use(cors());
 
 /* This is the route that handles the GET request to the / route. It returns a message saying
 "Welcome to the server". */
