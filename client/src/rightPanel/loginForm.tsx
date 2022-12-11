@@ -82,7 +82,7 @@ function enableLoadState(): void {
 // -------------------------- API/Server Requests ----------------------------//
 
 //----------API accesspoints (using adaptable.io to host the backend for public build)
-const adaptableAPIAddress = 'https//spectrum-downloader.up.railway.app';
+const adaptableAPIAddress = 'https://spectrum-downloader-backend.adaptable.app';
 const localAPIAddress = 'http://localhost:3001';
 
 // Address currently being used in the APP

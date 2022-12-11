@@ -39,7 +39,7 @@ app.use(
 );
 
 const corsAllowedList = [
-  'https://spectrum-downloader.up.railway.app',
+  'https://spectrum-downloader.vercel.app',
   'http://localhost:3000',
 ];
 
