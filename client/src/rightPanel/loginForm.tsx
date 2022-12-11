@@ -82,11 +82,11 @@ function enableLoadState(): void {
 // -------------------------- API/Server Requests ----------------------------//
 
 // API accesspoints
-const railwayAPIAddress = 'https://spectrum-downloader-build-production.up.railway.app';
+const renderAPIAddress = 'https://spectrum-downloader.onrender.com';
 const localAPIAddress = 'http://localhost:3001';
 
 // Address currently being used in the APP
-const APIaddress = railwayAPIAddress;
+const APIaddress = renderAPIAddress;
 
 /**
  * It sends a post request to the server with the login credentials, and returns true if the server
