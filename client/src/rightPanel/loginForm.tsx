@@ -82,7 +82,7 @@ function enableLoadState(): void {
 // -------------------------- API/Server Requests ----------------------------//
 
 // API accesspoints
-const renderAPIAddress = 'https://spectrum-downloader.adaptable.app/';
+const renderAPIAddress = 'https://spectrum-downloader.adaptable.app';
 const localAPIAddress = 'http://localhost:3001';
 
 // Address currently being used in the APP
