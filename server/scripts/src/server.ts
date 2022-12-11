@@ -84,7 +84,7 @@ app.get('/api/CSVExport', async (req, res) => {
 /* This is the code that handles all other GET requests that are not handled before. It returns the
 React app. */
 app.get('*', (req, res) => {
-  res.redirect('spectrum-downloader.vercel.app');
+  res.sendFile(path.resolve(__dirname, '../../../client', 'index.html'));
 });
 
 // ------------------------------  PORT --------------------------------//
