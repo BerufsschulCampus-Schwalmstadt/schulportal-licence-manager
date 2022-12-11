@@ -22,7 +22,10 @@ class PuppeteerObjectPromise {
     constructor() {
         this.response = null;
         this.browserStatus = 'promised';
-        this.browser = puppeteer_1.default.launch();
+        this.browser = puppeteer_1.default.launch({
+            headless: true,
+            args: ['--no-sandbox', '--disable-setuid-sandbox']
+        });
         this.page = this.browser.then(value => value.newPage());
     }
     resolve() {
