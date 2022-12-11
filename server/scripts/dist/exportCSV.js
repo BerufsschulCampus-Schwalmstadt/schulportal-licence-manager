@@ -14,19 +14,29 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.generateCSVFile = exports.login = exports.PuppeteerObject = void 0;
 const assert_1 = __importDefault(require("assert"));
-const puppeteer_1 = __importDefault(require("puppeteer"));
-const convert_array_to_csv_1 = require("convert-array-to-csv");
+const chrome_aws_lambda_1 = __importDefault(require("chrome-aws-lambda"));
+const dotenv_1 = __importDefault(require("dotenv"));
 const path_1 = __importDefault(require("path"));
+dotenv_1.default.config();
+const convert_array_to_csv_1 = require("convert-array-to-csv");
 const fs_1 = __importDefault(require("fs"));
 class PuppeteerObjectPromise {
     constructor() {
         this.response = null;
         this.browserStatus = 'promised';
-        this.browser = puppeteer_1.default.launch({
-            headless: true,
-            args: ['--no-sandbox', '--disable-setuid-sandbox']
-        });
+        this.browser = this.launchBrowser();
         this.page = this.browser.then(value => value.newPage());
+    }
+    launchBrowser() {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield chrome_aws_lambda_1.default.puppeteer.launch({
+                args: chrome_aws_lambda_1.default.args,
+                defaultViewport: chrome_aws_lambda_1.default.defaultViewport,
+                executablePath: yield chrome_aws_lambda_1.default.executablePath,
+                headless: chrome_aws_lambda_1.default.headless,
+                ignoreHTTPSErrors: true,
+            });
+        });
     }
     resolve() {
         return __awaiter(this, void 0, void 0, function* () {

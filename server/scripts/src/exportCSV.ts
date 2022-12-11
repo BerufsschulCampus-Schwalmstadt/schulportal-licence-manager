@@ -1,9 +1,12 @@
 import assert from 'assert';
-import puppeteer, {Browser, Page} from 'puppeteer';
-import {convertArrayToCSV} from 'convert-array-to-csv';
+import chromium from 'chrome-aws-lambda';
+import puppeteer, {Browser, Page} from 'puppeteer-core';
+import dotenv from 'dotenv';
 import path from 'path';
+dotenv.config();
+import {convertArrayToCSV} from 'convert-array-to-csv';
 import fs from 'fs';
-
+//'/Applications/Google Chrome.app/Contents/MacOS/Google Chrome' ||
 // ---------------------------  Classes ------------------------------//
 
 /* It's a class that holds promises for a puppeteer browser and page,
@@ -17,11 +20,22 @@ class PuppeteerObjectPromise {
   constructor() {
     this.response = null;
     this.browserStatus = 'promised';
-    this.browser = puppeteer.launch({
-      headless: true,
-      args: ['--no-sandbox','--disable-setuid-sandbox']
-    });
+    this.browser = this.launchBrowser();
     this.page = this.browser.then(value => value.newPage());
+  }
+
+  /**
+   * It launches a browser using Puppeteer and Chromium
+   * @returns A promise that resolves to a puppeteer.Browser object.
+   */
+  async launchBrowser(): Promise<puppeteer.Browser> {
+    return await chromium.puppeteer.launch({
+      args: chromium.args,
+      defaultViewport: chromium.defaultViewport,
+      executablePath: await chromium.executablePath,
+      headless: chromium.headless,
+      ignoreHTTPSErrors: true,
+    });
   }
 
   /**
