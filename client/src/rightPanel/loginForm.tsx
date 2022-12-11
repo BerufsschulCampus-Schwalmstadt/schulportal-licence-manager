@@ -82,11 +82,11 @@ function enableLoadState(): void {
 // -------------------------- API/Server Requests ----------------------------//
 
 // API accesspoints
-const renderAPIAddress = 'https://spectrum-downloader.adaptable.app';
+const flyIoAPIAddress = 'https://spectrumdownloader.fly.dev';
 const localAPIAddress = 'http://localhost:3001';
 
 // Address currently being used in the APP
-const APIaddress = renderAPIAddress;
+const APIaddress = flyIoAPIAddress;
 
 /**
  * It sends a post request to the server with the login credentials, and returns true if the server
