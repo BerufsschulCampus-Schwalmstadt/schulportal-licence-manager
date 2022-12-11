@@ -1,13 +1,29 @@
 import express from 'express';
-import bodyParser, {json} from 'body-parser';
+import bodyParser from 'body-parser';
 import cors from 'cors';
 import fs from 'fs';
 import {PuppeteerObject, generateCSVFile, login} from './exportCSV';
-import path from 'path';
 import dotenv from 'dotenv';
 dotenv.config;
 
-// ---------------------------  initialize ------------------------------//
+/**
+ * If the current path includes any of the allowed paths, return the first allowed path that matches.
+ * Otherwise, return the first allowed path.
+ * @param {string[]} allowedPaths - An array of paths that the user is allowed to access.
+ * @param {string} currentPath - The current path of the user.
+ * @returns The first path that is included in the current path.
+ */
+function getRedirectPath(allowedPaths: string[], currentPath: string) {
+  for (let i = 0; i < allowedPaths.length; i++) {
+    const allowedPath = allowedPaths[i];
+    if (allowedPath.includes(currentPath)) {
+      return allowedPath;
+    }
+  }
+  return allowedPaths[0];
+}
+
+// ---------------------------  Server Setup ------------------------------//
 
 /* This is setting up the server. */
 const app = express();
@@ -22,10 +38,17 @@ app.use(
   })
 );
 
-app.use(cors());
+const corsAllowedList = [
+  'https://spectrum-downloader.vercel.app',
+  'http://localhost:3000',
+];
 
-/* This is the code that serves the React app. */
-app.use(express.static(path.resolve(__dirname, '../../../client/build')));
+/* This is setting up the cors.(Links allowed to access the API) */
+app.use(
+  cors({
+    origin: corsAllowedList,
+  })
+);
 
 /* This is the route that handles the GET request to the / route. It returns a message saying
 "Welcome to the server". */
@@ -33,9 +56,11 @@ app.get('/api', (req, res) => {
   res.send('Welcome to the server');
 });
 
+// ------------------- Initialize Web scrapping object ----------------------//
+
 let loginObject: PuppeteerObject;
 
-// ----------------------------  POST (Login) -------------------------------//
+// -------------------------  POST Route (Login) ---------------------------//
 
 /* This is the route that handles the login request. It takes the username and password from the
 request body and passes it to the login function. If the login is successful, it returns a 200
@@ -62,7 +87,7 @@ app.post('/api/login', async (req, res) => {
   }
 });
 
-// ---------------------------  GET (Export) ------------------------------//
+// ------------------------  GET Route (Export) --------------------------//
 
 /* This is the route that handles the export request. It takes the loginObject from the previous login
 request and passes it to the generateCSVFile function. It then downloads the file and deletes it. */
@@ -79,12 +104,19 @@ app.get('/api/CSVExport', async (req, res) => {
   loginObject.kill;
 });
 
-// ------------------------- Frontend React App --------------------------//
+// ----------------------- All other GET routes --------------------------//
 
 /* This is the code that handles all other GET requests that are not handled before. It returns the
 React app. */
 app.get('*', (req, res) => {
-  res.redirect('spectrum-downloader.vercel.app');
+  if (req.hostname === 'localhost') {
+    res.redirect(corsAllowedList[1]);
+  } else {
+    const url = req.protocol + '://' + req.hostname;
+    const redirectUrl = getRedirectPath(corsAllowedList, url);
+    console.log(url);
+    res.redirect(redirectUrl);
+  }
 });
 
 // ------------------------------  PORT --------------------------------//

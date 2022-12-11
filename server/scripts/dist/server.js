@@ -17,17 +17,30 @@ const body_parser_1 = __importDefault(require("body-parser"));
 const cors_1 = __importDefault(require("cors"));
 const fs_1 = __importDefault(require("fs"));
 const exportCSV_1 = require("./exportCSV");
-const path_1 = __importDefault(require("path"));
 const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config;
+function getRedirectPath(allowedPaths, currentPath) {
+    for (let i = 0; i < allowedPaths.length; i++) {
+        const allowedPath = allowedPaths[i];
+        if (allowedPath.includes(currentPath)) {
+            return allowedPath;
+        }
+    }
+    return allowedPaths[0];
+}
 const app = (0, express_1.default)();
 const port = Number(process.env.PORT) || 3001;
 app.use(body_parser_1.default.json());
 app.use(body_parser_1.default.urlencoded({
     extended: true,
 }));
-app.use((0, cors_1.default)());
-app.use(express_1.default.static(path_1.default.resolve(__dirname, '../../../client/build')));
+const corsAllowedList = [
+    'https://spectrum-downloader.vercel.app',
+    'http://localhost:3000',
+];
+app.use((0, cors_1.default)({
+    origin: corsAllowedList,
+}));
 app.get('/api', (req, res) => {
     res.send('Welcome to the server');
 });
@@ -58,7 +71,15 @@ app.get('/api/CSVExport', (req, res) => __awaiter(void 0, void 0, void 0, functi
     loginObject.kill;
 }));
 app.get('*', (req, res) => {
-    res.redirect('spectrum-downloader.vercel.app');
+    if (req.hostname === 'localhost') {
+        res.redirect(corsAllowedList[1]);
+    }
+    else {
+        const url = req.protocol + '://' + req.hostname;
+        const redirectUrl = getRedirectPath(corsAllowedList, url);
+        console.log(url);
+        res.redirect(redirectUrl);
+    }
 });
 app.listen(port, () => {
     console.log('server is running on port ' + port);
