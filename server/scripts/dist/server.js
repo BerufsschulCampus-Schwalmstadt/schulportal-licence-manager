@@ -21,7 +21,7 @@ const path_1 = __importDefault(require("path"));
 const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config;
 const app = (0, express_1.default)();
-const port = Number(process.env.PORT) || 8080;
+const port = Number(process.env.PORT) || 3001;
 app.use(body_parser_1.default.json());
 app.use(body_parser_1.default.urlencoded({
     extended: true,

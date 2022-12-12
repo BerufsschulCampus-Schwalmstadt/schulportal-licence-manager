@@ -1,6 +1,5 @@
 import assert from 'assert';
-import chromium from 'chrome-aws-lambda';
-import puppeteer, {Browser, Page} from 'puppeteer-core';
+import puppeteer, {Browser, Page} from 'puppeteer';
 import dotenv from 'dotenv';
 import path from 'path';
 dotenv.config();
@@ -20,24 +19,13 @@ class PuppeteerObjectPromise {
   constructor() {
     this.response = null;
     this.browserStatus = 'promised';
-    this.browser = this.launchBrowser();
+    this.browser = puppeteer.launch({
+      headless: true,
+      args: ['--no-sandbox', '--disable-setuid-sandbox'],
+      ignoreDefaultArgs: ['--disable-extensions'],
+    });
     this.page = this.browser.then(value => value.newPage());
   }
-
-  /**
-   * It launches a browser using Puppeteer and Chromium
-   * @returns A promise that resolves to a puppeteer.Browser object.
-   */
-  async launchBrowser(): Promise<puppeteer.Browser> {
-    return await chromium.puppeteer.launch({
-      args: chromium.args,
-      defaultViewport: chromium.defaultViewport,
-      executablePath: await chromium.executablePath,
-      headless: chromium.headless,
-      ignoreHTTPSErrors: true,
-    });
-  }
-
   /**
    * It returns a new PuppeteerObject with a resolved:
    * response, browserStatus, browser, and page

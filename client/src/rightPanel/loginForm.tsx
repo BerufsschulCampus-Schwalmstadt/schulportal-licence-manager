@@ -82,11 +82,11 @@ function enableLoadState(): void {
 // -------------------------- API/Server Requests ----------------------------//
 
 // API accesspoints
-const flyIoAPIAddress = 'https://spectrumdownloader.fly.dev';
+const railwayAPIAddress = 'https://spectrum.up.railway.app';
 const localAPIAddress = 'http://localhost:3001';
 
 // Address currently being used in the APP
-const APIaddress = flyIoAPIAddress;
+const APIaddress = railwayAPIAddress;
 
 /**
  * It sends a post request to the server with the login credentials, and returns true if the server

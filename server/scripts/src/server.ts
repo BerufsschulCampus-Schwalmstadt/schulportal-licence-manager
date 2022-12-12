@@ -1,5 +1,5 @@
 import express from 'express';
-import bodyParser, {json} from 'body-parser';
+import bodyParser from 'body-parser';
 import cors from 'cors';
 import fs from 'fs';
 import {PuppeteerObject, generateCSVFile, login} from './exportCSV';
@@ -11,7 +11,7 @@ dotenv.config;
 
 /* This is setting up the server. */
 const app = express();
-const port = Number(process.env.PORT) || 8080;
+const port = Number(process.env.PORT) || 3001;
 
 /* This is setting up the body parser and cors. */
 app.use(bodyParser.json());

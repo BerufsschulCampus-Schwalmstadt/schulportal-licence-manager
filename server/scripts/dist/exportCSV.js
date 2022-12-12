@@ -14,7 +14,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.generateCSVFile = exports.login = exports.PuppeteerObject = void 0;
 const assert_1 = __importDefault(require("assert"));
-const chrome_aws_lambda_1 = __importDefault(require("chrome-aws-lambda"));
+const puppeteer_1 = __importDefault(require("puppeteer"));
 const dotenv_1 = __importDefault(require("dotenv"));
 const path_1 = __importDefault(require("path"));
 dotenv_1.default.config();
@@ -24,19 +24,12 @@ class PuppeteerObjectPromise {
     constructor() {
         this.response = null;
         this.browserStatus = 'promised';
-        this.browser = this.launchBrowser();
-        this.page = this.browser.then(value => value.newPage());
-    }
-    launchBrowser() {
-        return __awaiter(this, void 0, void 0, function* () {
-            return yield chrome_aws_lambda_1.default.puppeteer.launch({
-                args: chrome_aws_lambda_1.default.args,
-                defaultViewport: chrome_aws_lambda_1.default.defaultViewport,
-                executablePath: yield chrome_aws_lambda_1.default.executablePath,
-                headless: chrome_aws_lambda_1.default.headless,
-                ignoreHTTPSErrors: true,
-            });
+        this.browser = puppeteer_1.default.launch({
+            headless: true,
+            args: ['--no-sandbox', '--disable-setuid-sandbox'],
+            ignoreDefaultArgs: ['--disable-extensions'],
         });
+        this.page = this.browser.then(value => value.newPage());
     }
     resolve() {
         return __awaiter(this, void 0, void 0, function* () {
