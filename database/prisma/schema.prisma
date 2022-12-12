@@ -10,7 +10,39 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User {
-  id   Int    @id @default(autoincrement())
-  name String
+model joyrUser {
+  email        String      @unique
+  password     String
+  smsAccount   smsAccount? @relation(fields: [smsAccountId], references: [id])
+  smsAccountId String?
+}
+
+model smsAccount {
+  id              String           @id @default(uuid())
+  smsUsername     String           @unique
+  smsPassword     String
+  joyrUsers       joyrUser[]
+  licenceAccounts licenceAccount[] // licence accounts this user has access to
+}
+
+model licenceAccount {
+  licenceAccountId String       @id
+  smsAccounts      smsAccount[] //accounts able to use this SMS licence account
+  licenceData      licenceData  @relation(fields: [licenceDataId], references: [id])
+  licenceDataId    String       @unique
+}
+
+model licenceData {
+  id                 String          @id @default(uuid())
+  lastSyncedDateTime DateTime        @updatedAt
+  applicationNumber  String
+  subservice         String
+  type               String
+  processingOffice   String
+  assignedPeron      String
+  submittedDate      String
+  updatedDate        String
+  status             String
+  actions            String
+  licenceAccount     licenceAccount?
 }

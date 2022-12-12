@@ -25,6 +25,7 @@ and setting the width and height. */
     flex-direction: row;
     align-items: flex-start;
     padding: 0px;
+    background-color: #EEE3E2;
 
     width: 1113px;
     height: 668px;
