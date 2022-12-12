@@ -32,6 +32,7 @@ app.get('/api', (req, res) => {
     res.send('Welcome to the server');
 });
 let loginObject;
+const testSession = false;
 app.post('/api/login', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const testingUsername = 'test';
     const testingPassword = 'test';

@@ -34,6 +34,7 @@ app.get('/api', (req, res) => {
 });
 
 let loginObject: PuppeteerObject;
+const testSession = false;
 
 // ----------------------------  POST (Login) -------------------------------//
 
