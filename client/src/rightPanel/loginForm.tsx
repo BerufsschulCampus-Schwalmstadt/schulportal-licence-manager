@@ -86,7 +86,7 @@ const railwayAPIAddress = 'https://spectrum.up.railway.app';
 const localAPIAddress = 'http://localhost:3001';
 
 // Address currently being used in the APP
-const APIaddress = railwayAPIAddress;
+const APIaddress = localAPIAddress;
 
 /**
  * It sends a post request to the server with the login credentials, and returns true if the server

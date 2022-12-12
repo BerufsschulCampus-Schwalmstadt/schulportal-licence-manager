@@ -33,19 +33,28 @@ app.get('/api', (req, res) => {
 });
 let loginObject;
 app.post('/api/login', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const username = req.body.username;
-    const password = req.body.password;
-    console.log(username);
-    console.log(password);
-    loginObject = yield (0, exportCSV_1.login)(username, password);
-    if (!loginObject.response) {
-        res.sendStatus(401);
-        console.log('auth failed');
-        loginObject.kill;
+    const testingUsername = 'test';
+    const testingPassword = 'test';
+    const requestUsername = req.body.username;
+    const requestPassword = req.body.password;
+    console.log(requestUsername);
+    console.log(requestPassword);
+    if (requestUsername === testingUsername &&
+        requestPassword === testingPassword) {
+        res.sendStatus(200);
+        console.log('testing session initiated');
     }
     else {
-        res.sendStatus(200);
-        console.log('auth succeeded');
+        loginObject = yield (0, exportCSV_1.login)(requestUsername, requestPassword);
+        if (!loginObject.response) {
+            res.sendStatus(401);
+            console.log('auth failed');
+            loginObject.kill;
+        }
+        else {
+            res.sendStatus(200);
+            console.log('auth succeeded');
+        }
     }
 }));
 app.get('/api/CSVExport', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
