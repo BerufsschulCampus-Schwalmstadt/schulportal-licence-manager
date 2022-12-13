@@ -1,0 +1,178 @@
+/* The wrapper for the login form. */
+#loginFormWrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 0px 47px 34px;
+  gap: 120px;
+  
+  max-width: 507px;
+  
+  background: #F1F1F1;
+  box-shadow: -21px 4px 35px rgba(0, 0, 0, 0.02);
+  
+  /* Inside auto layout */
+  
+  flex: none;
+  order: 1;
+  align-self: stretch;
+  flex-grow: 0;
+}
+
+/* The login form  */
+#loginForm {
+  /* Auto layout */
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 45px 40px 54px;
+  gap: 8.2px;
+
+  background: linear-gradient(179.96deg, rgba(255, 255, 255, 0.66) 0.03%, #FFFFFF 86.46%, rgba(255, 255, 255, 0) 108.49%);
+  border-radius: 8px;
+
+  max-width: 360px;
+
+  /* Inside auto layout */
+
+  flex: none;
+  order: 0;
+  flex-grow: 0;
+}
+
+.loginFormHeadingContainer {
+  /* Auto layout */
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0px;
+  gap: 7.95px;
+
+  /* Inside auto layout */
+
+  flex: none;
+  order: 0;
+  align-self: stretch;
+  flex-grow: 0;
+}
+
+.loginFormSubtitle {
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 24px;
+  text-align: center;
+  /* identical to box height */
+
+  text-transform: capitalize;
+
+  color: #686868;
+
+  /* Inside auto layout */
+
+  flex: none;
+  order: 1;
+  flex-grow: 0;
+}
+
+/* The wrapper for the content (inputs & submit button)
+in the login form. */
+.loginFormContentWrapper{
+  /* Auto layout */
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 20.9604px 0px 37.3641px;
+  gap: 19.14px;
+
+  /* Inside auto layout */
+
+  flex: none;
+  order: 1;
+  align-self: stretch;
+  flex-grow: 0;
+}
+
+/* The container for the input fields. */
+.inputFieldContainer {
+  /* Auto layout */
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 0px;
+  gap: 17.32px;
+
+  /* Inside auto layout */
+
+  flex: none;
+  order: 0;
+  align-self: stretch;
+  flex-grow: 0;
+}
+
+/* The container for the fail text. */
+.failTextContainer{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  padding: 0px;
+
+  height: 20px;
+
+  /* Inside auto layout */
+
+  flex: none;
+  order: 1;
+  align-self: stretch;
+  flex-grow: 0;
+}
+
+/* The text that appears when the user fails to login. */
+#failTextElement{
+  display: flex;
+  font-weight: 500;
+  font-size: 13px;
+  line-height: 20px;
+
+  text-align: center;
+  text-transform: capitalize;
+  color: #d02e2e;
+
+  /* Inside auto layout */
+
+  flex: none;
+  order: 1;
+  align-self: stretch;
+  flex-grow: 0;
+}
+
+.submissionContainer {
+  /* Auto layout */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0px;
+  gap: 16.4px;
+
+  /* Inside auto layout */
+
+  flex: none;
+  order: 2;
+  align-self: stretch;
+  flex-grow: 0;
+}
+
+#submitButton {
+  flex: none;
+  order: 2;
+  align-self: stretch;
+  flex-grow: 0;
+}

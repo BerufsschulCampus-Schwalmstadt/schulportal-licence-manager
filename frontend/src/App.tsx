@@ -1,18 +1,11 @@
-import React from 'react';
-import LeftPanel from './leftPanel/leftPanel';
-import RightPanel from './rightPanel/rightPanel';
 import './App.css';
+import LoginSingupPage from './login-and-signup/loginSingupPage';
 
 // ---------------------------  Main ------------------------------//
 
 // App is....my app :)
 function App() {
-  return (
-    <>
-      <LeftPanel />
-      <RightPanel />
-    </>
-  );
+  return <LoginSingupPage />;
 }
 
 export default App;

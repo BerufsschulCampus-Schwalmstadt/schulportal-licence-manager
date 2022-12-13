@@ -1,0 +1,13 @@
+#loginSignupPage {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    padding: 0px;
+
+    background: linear-gradient(111.36deg, #26238C 26.61%, #5F5D92 69.86%, #B5B4CE 100%), #FFFFFF;
+
+    flex: none;
+    order: 0;
+    align-self: stretch;
+    flex-grow: 1;
+}

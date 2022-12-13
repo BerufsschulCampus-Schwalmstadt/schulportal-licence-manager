@@ -1,6 +1,27 @@
 import React, {Component} from 'react';
 import Lottie from 'react-lottie';
 
+// ---------------------------  Class Component ------------------------------//
+
+/* This class is a React component that renders a Lottie animation */
+export default class LottieController extends Component<LottieControllerProps> {
+  fullProps: LottieControllerProps;
+
+  constructor(props: LottieControllerProps) {
+    super(props);
+    this.fullProps = new LottieControllerProps(this.props);
+  }
+
+  // -------------rendered HTML
+  render() {
+    return (
+      <>
+        <Lottie options={this.fullProps} />
+      </>
+    );
+  }
+}
+
 // ---------------------------  Class Prop def ------------------------------//
 
 /* It's a class that takes in a bunch of props and sets them to the class's properties */
@@ -25,26 +46,5 @@ class LottieControllerProps {
       : {preserveAspectRatio: 'xMidYMid slice'};
     this.height = height ? height : '251px';
     this.height = width ? width : '200px';
-  }
-}
-
-// ---------------------------  Class Component ------------------------------//
-
-/* This class is a React component that renders a Lottie animation */
-export default class LottieController extends Component<LottieControllerProps> {
-  fullProps: LottieControllerProps;
-
-  constructor(props: LottieControllerProps) {
-    super(props);
-    this.fullProps = new LottieControllerProps(this.props);
-  }
-
-  // -------------rendered HTML
-  render() {
-    return (
-      <>
-        <Lottie options={this.fullProps} />
-      </>
-    );
   }
 }
