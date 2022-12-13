@@ -9,9 +9,11 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-function newUser(prisma, emailToSet, passwordToSet) {
+exports.deleteUser = exports.newUser = void 0;
+const server_1 = require("./server");
+function newUser(emailToSet, passwordToSet) {
     return __awaiter(this, void 0, void 0, function* () {
-        const createdUser = yield prisma.joyrUser.create({
+        const createdUser = yield server_1.prisma.joyrUser.create({
             data: {
                 email: emailToSet,
                 password: passwordToSet,
@@ -20,11 +22,13 @@ function newUser(prisma, emailToSet, passwordToSet) {
         return createdUser;
     });
 }
-function deleteUser(prisma, userEmail) {
+exports.newUser = newUser;
+function deleteUser(userEmail) {
     return __awaiter(this, void 0, void 0, function* () {
-        const deletedUser = yield prisma.joyrUser.delete({
+        const deletedUser = yield server_1.prisma.joyrUser.delete({
             where: { email: userEmail },
         });
         return deletedUser;
     });
 }
+exports.deleteUser = deleteUser;
