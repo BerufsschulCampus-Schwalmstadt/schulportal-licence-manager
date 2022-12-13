@@ -6,7 +6,7 @@
     "node": "18.x"
   },
   "scripts": {
-    "start": "npm run devStart --prefix ./backend",
+    "start": "npm run server --prefix ./backend",
     "devStart": "concurrently \"npm start --prefix ./client\" \"npm run dev --prefix ./server\"",
     "build": "npm install && npm install --prefix ./backend",
     "dev": "npm run start --prefix ./server"
