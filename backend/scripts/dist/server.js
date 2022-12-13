@@ -17,7 +17,7 @@ const express_1 = __importDefault(require("express"));
 const body_parser_1 = __importDefault(require("body-parser"));
 const cors_1 = __importDefault(require("cors"));
 const fs_1 = __importDefault(require("fs"));
-const exportCSV_1 = require("./exportCSV");
+const exportFunctions_1 = require("./exportFunctions");
 const path_1 = __importDefault(require("path"));
 const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config;
@@ -49,7 +49,7 @@ app.post('/api/login', (req, res) => __awaiter(void 0, void 0, void 0, function*
         console.log('testing session initiated');
     }
     else {
-        loginObject = yield (0, exportCSV_1.login)(requestUsername, requestPassword);
+        loginObject = yield (0, exportFunctions_1.login)(requestUsername, requestPassword);
         if (!loginObject.response) {
             res.sendStatus(401);
             console.log('auth failed');
@@ -62,7 +62,7 @@ app.post('/api/login', (req, res) => __awaiter(void 0, void 0, void 0, function*
     }
 }));
 app.get('/api/CSVExport', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const csvFilePath = yield (0, exportCSV_1.generateCSVFile)(loginObject);
+    const csvFilePath = yield (0, exportFunctions_1.generateCSVFile)(loginObject);
     res.download(csvFilePath, err => {
         if (err)
             console.log(err);

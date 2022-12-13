@@ -2,13 +2,13 @@ import express from 'express';
 import bodyParser from 'body-parser';
 import cors from 'cors';
 import fs from 'fs';
-import {PuppeteerObject, generateCSVFile, login} from './exportCSV';
+import {PuppeteerObject, generateCSVFile, login} from './exportFunctions';
 import path from 'path';
 import dotenv from 'dotenv';
 dotenv.config;
 import {PrismaClient} from '@prisma/client';
 export const prisma = new PrismaClient();
-import {newUser} from './databaseScripts';
+import {newUser} from './databaseFunctions';
 
 // ---------------------------  initialize ------------------------------//
 
