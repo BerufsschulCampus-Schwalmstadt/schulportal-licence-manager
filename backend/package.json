@@ -32,7 +32,9 @@
   "scripts": {
     "start": "nodemon scripts/dist/server.js",
     "dev": "nodemon scripts/dist/server.js",
-    "devStart": "node scripts/dist/server.js",
+    "server": "node scripts/dist/server.js",
+    "api": "node scripts/dist/apiFunctions.js",
+    "database": "node scripts/dist/databaseFunctions.js",
     "lint": "gts lint",
     "clean": "gts clean",
     "compile": "cd server && tsc && cd ../database/scripts && tsc && cd ../../",

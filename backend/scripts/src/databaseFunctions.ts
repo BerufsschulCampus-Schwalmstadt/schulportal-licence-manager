@@ -1,5 +1,7 @@
-import {joyrUser} from '@prisma/client';
-import {prisma} from './server';
+import {joyrUser, PrismaClient} from '@prisma/client';
+// import { prisma } from './server';
+
+const prisma = new PrismaClient(); // for testing purposes
 
 /**
  * It creates a new user in the database
@@ -11,6 +13,7 @@ export async function newUser(
   emailToSet: string,
   passwordToSet: string
 ): Promise<joyrUser> {
+  await prisma.joyrUser.deleteMany();
   const createdUser = await prisma.joyrUser.create({
     data: {
       email: emailToSet,
@@ -26,10 +29,15 @@ export async function newUser(
  * @param {string} userEmail - The email of the user to delete.
  * @returns The deleted user
  */
-export async function deleteUser(userEmail: string) {
+export async function deleteUser(userId: string) {
   const deletedUser = await prisma.joyrUser.delete({
-    where: {email: userEmail},
+    where: {id: userId},
   });
 
+  console.log(deletedUser);
   return deletedUser;
 }
+
+newUser('test@user.com', 'test').then(newUser => {
+  deleteUser(newUser.id);
+});
