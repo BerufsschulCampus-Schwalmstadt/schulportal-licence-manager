@@ -37,7 +37,6 @@
     "database": "node scripts/dist/databaseFunctions.js",
     "lint": "gts lint",
     "clean": "gts clean",
-    "compile": "cd server && tsc && cd ../database/scripts && tsc && cd ../../",
     "fix": "gts fix",
     "prepare": "npm run compile",
     "pretest": "npm run compile",
