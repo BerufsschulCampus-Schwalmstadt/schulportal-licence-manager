@@ -30,7 +30,7 @@ app.use(body_parser_1.default.urlencoded({
     extended: true,
 }));
 app.use((0, cors_1.default)());
-app.use(express_1.default.static(path_1.default.resolve(__dirname, '../../../client/build')));
+app.use(express_1.default.static(path_1.default.resolve(__dirname, '../../../frontend/build')));
 app.get('/api', (req, res) => {
     res.send('Welcome to the server');
 });
@@ -71,7 +71,7 @@ app.get('/api/CSVExport', (req, res) => __awaiter(void 0, void 0, void 0, functi
     loginObject.kill;
 }));
 app.get('*', (req, res) => {
-    res.sendFile(path_1.default.resolve(__dirname, '../../../client/build', 'index.html'));
+    res.sendFile(path_1.default.resolve(__dirname, '../../../frontend/build', 'index.html'));
 });
 app.listen(port, () => {
     console.log('server is running on port ' + port);
