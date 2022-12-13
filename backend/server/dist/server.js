@@ -12,6 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.prisma = void 0;
 const express_1 = __importDefault(require("express"));
 const body_parser_1 = __importDefault(require("body-parser"));
 const cors_1 = __importDefault(require("cors"));
@@ -20,6 +21,8 @@ const exportCSV_1 = require("./exportCSV");
 const path_1 = __importDefault(require("path"));
 const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config;
+const client_1 = require("@prisma/client");
+exports.prisma = new client_1.PrismaClient();
 const app = (0, express_1.default)();
 const port = Number(process.env.PORT) || 3001;
 app.use(body_parser_1.default.json());

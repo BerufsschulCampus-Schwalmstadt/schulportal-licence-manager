@@ -6,6 +6,9 @@ import {PuppeteerObject, generateCSVFile, login} from './exportCSV';
 import path from 'path';
 import dotenv from 'dotenv';
 dotenv.config;
+import {PrismaClient} from '@prisma/client';
+export const prisma = new PrismaClient();
+import deleteUser from
 
 // ---------------------------  initialize ------------------------------//
 
