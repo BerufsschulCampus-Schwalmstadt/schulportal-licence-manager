@@ -1,14 +1,14 @@
-import React, {Component, FormEvent} from 'react';
+import {Component, FormEvent} from 'react';
 import fileDownload from 'js-file-download';
 import axios from 'axios';
 import assert from 'assert';
 
 // local files
 import './loginForm.css';
-import LoadAnimation from '../lotties/loadanimation.json';
+import LoadAnimation from '../../../lotties/loadanimation.json';
 
 // local elements
-import InputComponent from './inputComponent';
+import InputComponent from '../inputComponent';
 import MyLottieElement from './lottieController';
 
 // ---------------------  general helper functions ------------------------//
@@ -167,7 +167,7 @@ export class loginFormProps {}
 // ---------------------------  Class Component ------------------------------//
 
 /* It's a class component that holds the login form */
-export default class loginForm extends Component<
+export default class LoginForm extends Component<
   loginFormProps,
   loginFormState
 > {
@@ -229,6 +229,12 @@ export default class loginForm extends Component<
           onChange={this.handleChange}
           onSubmit={this.handleSubmit}
         >
+          <div className="loginFormHeadingContainer">
+            <h2>Welcome to JOYR!</h2>
+            <p id="loginFormSubtitle">
+              Sign up by entering an email and password below
+            </p>
+          </div>
           <div className="loginFormContentWrapper">
             {this.state.form === 'load' && (
               <MyLottieElement animationData={LoadAnimation} />
@@ -252,7 +258,7 @@ export default class loginForm extends Component<
             name="submit"
             id="submitButton"
           >
-            Export Licenses as CSV
+            Sign Up
           </button>
         </form>
       </div>

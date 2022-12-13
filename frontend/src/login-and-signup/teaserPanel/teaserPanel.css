@@ -1,21 +1,20 @@
 /* styling a wrapper for the left panel */
 #leftPanelWrapper {
+
+    /* Auto layout */
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    justify-content: center;
     align-items: flex-start;
-    padding: 57px 56px;
-    gap: 46px;
-
-    background: linear-gradient(0deg, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)), #3C37FF;
-    max-width: 490px;
-
+    padding: 8vh 7vw 6vh;
+    gap: 3vh;
+    
     /* Inside auto layout */
-
+    
     flex: none;
     order: 0;
     align-self: stretch;
-    flex-grow: 0;
+    flex-grow: 1;
 }
 
 /* Styling the text in the top left corner of the page. */
@@ -25,7 +24,7 @@
     line-height: 24px;
     text-transform: uppercase;
 
-    color: #FFFFFF;
+    color: #EEE3E2;
 
     /* Inside auto layout */
     flex: none;
@@ -38,34 +37,41 @@
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    padding: 10px 0px;
-    gap: 12px;
-
-    height: 284px;
-
+    padding: 0px;
+    gap: 0;
+    
+    max-width: 560px;
+    max-height: 242.4px;
+     
     /* Inside auto layout */
-
+    
     flex: none;
     order: 1;
-    align-self: stretch;
-    flex-grow: 0;    
+    flex-grow: 0;
+}
+
+#leftHeadingsContainer > h2 {
+    color: #EEE3E2;
+}
+
+#leftHeadingsContainer > h3 {
+    color: #B9B9B9;
 }
 
 /* Styling the bottom card image container. */
-#bottomCardImgContainer {
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-    padding: 32px 0px;
+#bottomCardImg {
+
+    height: 40vh;
+    max-width: 570px;
+    max-height: 356.25px;
+    margin-top: 4vh;
     
-    background: #201D8D;
-    border-radius: 20px;
+    background: linear-gradient(180deg, #F2F2F2 25.52%, rgba(242, 242, 242, 0) 91.67%);
+    border-radius: 15px;
     
     /* Inside auto layout */
     
     flex: none;
     order: 2;
-    align-self: stretch;
-    flex-grow: 0;
+    flex-grow: 1;
 }
