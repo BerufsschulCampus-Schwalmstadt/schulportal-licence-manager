@@ -10,17 +10,24 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum accountType {
+  ADMIN
+  BASIC
+}
+
 model joyrUser {
-  email        String      @unique
+  email        String      @id @unique
   password     String
-  smsAccount   smsAccount? @relation(fields: [smsAccountId], references: [id])
+  accountType  accountType @default(BASIC)
   smsAccountId String?
+  smsAccount   smsAccount? @relation(fields: [smsAccountId], references: [smsUsername])
+
+  @@index([email])
 }
 
 model smsAccount {
-  id              String           @id @default(uuid())
-  smsUsername     String           @unique
-  smsPassword     String
+  smsUsername     String           @id @unique
+  smsPasswords    String[]
   joyrUsers       joyrUser[]
   licenceAccounts licenceAccount[] // licence accounts this user has access to
 }
@@ -28,13 +35,12 @@ model smsAccount {
 model licenceAccount {
   licenceAccountId String       @id
   smsAccounts      smsAccount[] //accounts able to use this SMS licence account
-  licenceData      licenceData  @relation(fields: [licenceDataId], references: [id])
-  licenceDataId    String       @unique
+  licenceDataId    String?      @unique
+  licenceData      licenceData?
 }
 
 model licenceData {
-  id                 String          @id @default(uuid())
-  lastSyncedDateTime DateTime        @updatedAt
+  lastSyncedDateTime DateTime       @updatedAt
   applicationNumber  String
   subservice         String
   type               String
@@ -44,5 +50,6 @@ model licenceData {
   updatedDate        String
   status             String
   actions            String
-  licenceAccount     licenceAccount?
+  licenceAccountId   String         @unique
+  licenceAccount     licenceAccount @relation(fields: [licenceAccountId], references: [licenceAccountId])
 }
