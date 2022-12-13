@@ -30,16 +30,12 @@
     "node": "18.x"
   },
   "scripts": {
-    "start": "nodemon scripts/dist/server.js",
-    "dev": "nodemon scripts/dist/server.js",
     "server": "node scripts/dist/server.js",
     "api": "node scripts/dist/apiFunctions.js",
     "database": "node scripts/dist/databaseFunctions.js",
     "lint": "gts lint",
     "clean": "gts clean",
     "fix": "gts fix",
-    "prepare": "npm run compile",
-    "pretest": "npm run compile",
     "posttest": "npm run lint"
   },
   "name": "spectrum-management-system-license-exporter",
