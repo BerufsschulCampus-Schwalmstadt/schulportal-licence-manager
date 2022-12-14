@@ -82,7 +82,7 @@ export function authFormFailText(formState: AuthFormState) {
   }
 }
 
-// ---------------- form functions ------------------------------///
+// ---------------------- util function -------------------------///
 
 export function checkSubmission(formState: AuthFormState) {
   const {email, password} = formState;
@@ -98,6 +98,8 @@ export function checkSubmission(formState: AuthFormState) {
     return {formFailure: 'empty fields'};
   }
 }
+
+// ----------------- API/Server access functions ---------------///
 
 export async function apiAuthRequest(formState: AuthFormState) {
   const requestType = formState.loginType;
