@@ -30,9 +30,9 @@
     "node": "18.x"
   },
   "scripts": {
-    "server": "node scripts/dist/server.js",
-    "api": "node scripts/dist/apiFunctions.js",
-    "database": "node scripts/dist/databaseFunctions.js",
+    "server": "node dist/server/server.js",
+    "api": "node dist/api/api.js",
+    "database": "node dist/database/database.js",
     "lint": "gts lint",
     "clean": "gts clean",
     "fix": "gts fix",

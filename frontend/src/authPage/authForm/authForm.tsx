@@ -102,8 +102,8 @@ export default class AuthForm extends Component<{}, AuthFormState> {
               <InputComponent name="email" />
               <InputComponent name="password" type="password" />
             </div>
-            <p id="failTextElement">{authFormFailText(this.state)}</p>
           </div>
+          <p id="failTextElement">{authFormFailText(this.state)}</p>
           <div className="submissionContainer">
             <button
               className="primaryButton"

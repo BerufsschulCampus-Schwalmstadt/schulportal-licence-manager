@@ -29,13 +29,13 @@ export function authInstructions(formState: AuthFormState) {
   if (formState.loginType === 'login') {
     return (
       <p className="authFormSubtitle" id="authInstructions">
-        Please sign in below to access your account
+        Please sign in below to continue!
       </p>
     );
   } else {
     return (
       <p className="authFormSubtitle" id="authInstructions">
-        Please sign up below to get started on JOYR!
+        Please sign up below to get started!
       </p>
     );
   }

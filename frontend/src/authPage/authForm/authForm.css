@@ -7,10 +7,10 @@
   padding: 0px 47px 34px;
   gap: 120px;
   
-  max-width: 400px;
+  width: 32vw;
   
   background: #F1F1F1;
-  box-shadow: -21px 4px 35px rgba(0, 0, 0, 0.02);
+  box-shadow: -21px 4px 35px rgba(0, 0, 0, 0.05);
   
   /* Inside auto layout */
   
@@ -34,13 +34,14 @@
   background: linear-gradient(179.96deg, rgba(255, 255, 255, 0.66) 0.03%, #FFFFFF 86.46%, rgba(255, 255, 255, 0) 108.49%);
   border-radius: 8px;
 
-  max-width: 360px;
+  min-width: 300px;
+  max-width: 500px;
 
   /* Inside auto layout */
 
   flex: none;
   order: 0;
-  flex-grow: 0;
+  flex-grow: 0.35;
 }
 
 .loginFormHeadingContainer {
@@ -79,7 +80,7 @@ in the login form. */
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  padding: 20.9604px 0px 20px;
+  padding: 20.9604px 0px 10px;
   gap: 10px;
 
   /* Inside auto layout */
@@ -125,9 +126,9 @@ in the login form. */
 
   /* Inside auto layout */
 
-  flex: none;
+  flex: auto;
   order: 1;
-  align-self: stretch;
+  align-self: center;
   flex-grow: 0;
 }
 
@@ -149,6 +150,7 @@ in the login form. */
 }
 
 #submitButton {
+  margin-top: 10px;
   order: 2;
   align-self: stretch;
   flex-grow: 0;
