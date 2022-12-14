@@ -20,8 +20,16 @@ export async function newUser(
       password: passwordToSet,
     },
   });
-
+  console.log(createdUser);
   return createdUser;
+}
+
+export async function findUserByEmail(emailToQuery: string) {
+  return await prisma.joyrUser.findUnique({
+    where: {
+      email: emailToQuery,
+    },
+  });
 }
 
 /**
@@ -37,7 +45,3 @@ export async function deleteUser(userId: string) {
   console.log(deletedUser);
   return deletedUser;
 }
-
-newUser('test@user.com', 'test').then(newUser => {
-  deleteUser(newUser.id);
-});

@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteUser = exports.newUser = void 0;
+exports.deleteUser = exports.findUserByEmail = exports.newUser = void 0;
 const client_1 = require("@prisma/client");
 const prisma = new client_1.PrismaClient();
 function newUser(emailToSet, passwordToSet) {
@@ -21,10 +21,21 @@ function newUser(emailToSet, passwordToSet) {
                 password: passwordToSet,
             },
         });
+        console.log(createdUser);
         return createdUser;
     });
 }
 exports.newUser = newUser;
+function findUserByEmail(emailToQuery) {
+    return __awaiter(this, void 0, void 0, function* () {
+        return yield prisma.joyrUser.findUnique({
+            where: {
+                email: emailToQuery,
+            },
+        });
+    });
+}
+exports.findUserByEmail = findUserByEmail;
 function deleteUser(userId) {
     return __awaiter(this, void 0, void 0, function* () {
         const deletedUser = yield prisma.joyrUser.delete({
@@ -35,6 +46,3 @@ function deleteUser(userId) {
     });
 }
 exports.deleteUser = deleteUser;
-newUser('test@user.com', 'test').then(newUser => {
-    deleteUser(newUser.id);
-});

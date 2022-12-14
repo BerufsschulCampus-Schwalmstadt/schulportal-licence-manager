@@ -17,11 +17,12 @@ const express_1 = __importDefault(require("express"));
 const body_parser_1 = __importDefault(require("body-parser"));
 const cors_1 = __importDefault(require("cors"));
 const fs_1 = __importDefault(require("fs"));
-const api_1 = require("../api/api");
+const api_1 = require("./api");
 const path_1 = __importDefault(require("path"));
 const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config;
 const client_1 = require("@prisma/client");
+const auth_1 = require("./routes/auth");
 exports.prisma = new client_1.PrismaClient();
 const app = (0, express_1.default)();
 const port = Number(process.env.PORT) || 3001;
@@ -35,31 +36,7 @@ app.get('/api', (req, res) => {
     res.send('Welcome to the server');
 });
 let loginObject;
-app.post('/api/login', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const testingUsername = 'test';
-    const testingPassword = 'test';
-    const requestUsername = req.body.username;
-    const requestPassword = req.body.password;
-    console.log(requestUsername);
-    console.log(requestPassword);
-    if (requestUsername === testingUsername &&
-        requestPassword === testingPassword) {
-        res.sendStatus(200);
-        console.log('testing session initiated');
-    }
-    else {
-        loginObject = yield (0, api_1.login)(requestUsername, requestPassword);
-        if (!loginObject.response) {
-            res.sendStatus(401);
-            console.log('auth failed');
-            loginObject.kill;
-        }
-        else {
-            res.sendStatus(200);
-            console.log('auth succeeded');
-        }
-    }
-}));
+app.use('/api/auth', auth_1.authRouter);
 app.get('/api/CSVExport', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const csvFilePath = yield (0, api_1.generateCSVFile)(loginObject);
     res.download(csvFilePath, err => {

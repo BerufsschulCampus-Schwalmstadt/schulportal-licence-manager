@@ -1,16 +1,17 @@
-import React from 'react';
-import {Component, FormEvent} from 'react';
+import React, {Component, FormEvent} from 'react';
 import './authForm.css';
 import InputComponent from '../../components/inputComponent';
 import validator from 'email-validator';
+import {user} from '../../global-types';
+import assert from 'assert';
 import {
+  authFaillure,
+  getFaillureType,
   checkSubmission,
   authFormFailText,
   newLogginType,
   authFormSubmitText,
   apiAuthRequest,
-  checkResponseObject,
-  signInUser,
   authInstructions,
   authGreeting,
   formToggleText,
@@ -24,13 +25,13 @@ export class AuthFormState {
   loginType: 'login' | 'signup';
   email?: string;
   password?: string;
-  formFailure: string | null;
+  authFaillure: authFaillure;
 
   constructor() {
     this.hasEverLoggedIn =
       localStorage.getItem('hasEverLoggedIn') === 'true' ? true : false;
     this.loginType = this.hasEverLoggedIn ? 'login' : 'signup';
-    this.formFailure = null;
+    this.authFaillure = null;
   }
 }
 
@@ -46,7 +47,7 @@ export default class AuthForm extends Component<{}, AuthFormState> {
   }
 
   handleFormChange() {
-    this.setState({formFailure: null});
+    this.setState({authFaillure: null});
     this.setState({loginType: newLogginType(this.state)});
   }
 
@@ -56,7 +57,7 @@ export default class AuthForm extends Component<{}, AuthFormState> {
     // change state when field is changed
     if (trigger.name === 'email') {
       if (validate(trigger.value)) {
-        this.setState({formFailure: null});
+        this.setState({authFaillure: null});
       }
       this.setState({email: trigger.value});
     } else if (trigger.name === 'password') {
@@ -66,22 +67,22 @@ export default class AuthForm extends Component<{}, AuthFormState> {
 
   async handleSubmit(event: FormEvent) {
     event.preventDefault();
-    this.setState({formFailure: null});
+    this.setState({authFaillure: null});
 
-    const isValidSubmission = checkSubmission(this.state);
+    const submission = checkSubmission(this.state);
 
-    if (isValidSubmission === 'valid submission') {
-      const responseObject = await apiAuthRequest(this.state);
-      const authIsSuccessful = checkResponseObject(responseObject);
-
-      if (authIsSuccessful) {
-        await signInUser(this.state);
+    if (submission === 'valid submission') {
+      const response = await apiAuthRequest(this.state);
+      assert(response);
+      if (typeof response !== 'number') {
+        const user = response as user;
+        console.log(user);
+        // await signInUser(this.state);
       } else {
-        this.setState({formFailure: 'auth'});
+        this.setState({authFaillure: getFaillureType(response)});
       }
     } else {
-      const failType = isValidSubmission.formFailure;
-      this.setState({formFailure: failType});
+      this.setState({authFaillure: submission});
     }
   }
 
