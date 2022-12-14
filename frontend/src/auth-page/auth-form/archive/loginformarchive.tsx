@@ -1,4 +1,4 @@
-import {Component, FormEvent} from 'react';
+import React, {Component, FormEvent} from 'react';
 import fileDownload from 'js-file-download';
 import axios from 'axios';
 import assert from 'assert';

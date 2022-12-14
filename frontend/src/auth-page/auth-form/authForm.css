@@ -6,14 +6,14 @@
   align-items: center;
   padding: 0px 47px 34px;
   gap: 120px;
-  
+
   width: 32vw;
-  
+
   background: #F1F1F1;
   box-shadow: -21px 4px 35px rgba(0, 0, 0, 0.05);
-  
+
   /* Inside auto layout */
-  
+
   flex: none;
   order: 1;
   align-self: stretch;
@@ -73,7 +73,7 @@
 
 /* The wrapper for the content (inputs & submit button)
 in the login form. */
-.loginFormContentWrapper{
+.loginFormContentWrapper {
   /* Auto layout */
 
   display: flex;
@@ -111,7 +111,7 @@ in the login form. */
 }
 
 /* The text that appears when the user fails to login. */
-#failTextElement{
+#failTextElement {
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -139,7 +139,7 @@ in the login form. */
   align-items: center;
   padding: 0px;
   gap: 16.4px;
-  
+
 
   /* Inside auto layout */
 
@@ -172,7 +172,7 @@ in the login form. */
   flex-grow: 0;
 }
 
-#formToggleText > span {
+#formToggleText>span {
   font-weight: 600;
   cursor: pointer;
   color: #302CCC;

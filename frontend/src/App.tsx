@@ -1,5 +1,6 @@
+import React from 'react';
 import './App.css';
-import AuthPage from './authPage/authPage';
+import AuthPage from './auth-page/authPage';
 
 // ---------------------------  Main ------------------------------//
 

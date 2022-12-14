@@ -1,6 +1,6 @@
+import React, {MouseEventHandler} from 'react';
 import axios, {AxiosResponse} from 'axios';
 import validator from 'email-validator';
-import {MouseEventHandler} from 'react';
 import {AuthFormState} from './authForm';
 const apiAddress = process.env.REACT_APP_APIBASEADDRESS + '/api/';
 console.log(apiAddress);
@@ -48,7 +48,7 @@ export function formToggleText(
   if (formState.loginType === 'login') {
     return (
       <p className="authFormSubtitle" id="formToggleText">
-        Don't have an account yet?{' '}
+        Don't have an account yet? {''}
         <span onClick={actionToPerform}>Sign Up</span>
       </p>
     );
@@ -77,7 +77,7 @@ export function authFormFailText(formState: AuthFormState) {
     return 'Please enter both an email and a password';
   } else if (failType === 'email') {
     return 'Please enter a valid email';
-  } else if (failType === 'auth') {
+  } else {
     return 'The username or password you’ve entered is incorrect.';
   }
 }

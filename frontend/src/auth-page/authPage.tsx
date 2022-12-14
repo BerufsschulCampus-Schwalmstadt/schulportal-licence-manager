@@ -1,5 +1,6 @@
-import AuthForm from './authForm/authForm';
-import TeaserPanel from './teaserPanel/teaserPanel';
+import React from 'react';
+import AuthForm from './auth-form/authForm';
+import TeaserPanel from './teaser-panel/teaserPanel';
 import './authPage.css';
 
 export default function AuthPage() {

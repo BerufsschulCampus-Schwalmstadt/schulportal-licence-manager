@@ -1,3 +1,4 @@
+import React from 'react';
 import {ChangeEvent, Component} from 'react';
 import './inputComponent.css';
 

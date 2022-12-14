@@ -1,3 +1,4 @@
+import React from 'react';
 import {Component, FormEvent} from 'react';
 import './authForm.css';
 import InputComponent from '../../components/inputComponent';
