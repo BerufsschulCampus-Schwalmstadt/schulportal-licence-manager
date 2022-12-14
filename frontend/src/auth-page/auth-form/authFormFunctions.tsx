@@ -1,9 +1,34 @@
 import React, {MouseEventHandler} from 'react';
-import axios, {AxiosResponse} from 'axios';
+import axios, {AxiosError, AxiosResponse} from 'axios';
 import validator from 'email-validator';
 import {AuthFormState} from './authForm';
-const apiAddress = process.env.REACT_APP_APIBASEADDRESS + '/api/';
+import {user} from '../../global-types';
+const apiAddress = process.env.REACT_APP_APIBASEADDRESS;
 console.log(apiAddress);
+
+// -------------------------------- type ------------------------------------//
+
+export type authFaillure =
+  | null
+  | 'missing content'
+  | 'email not valid'
+  | 'auth failed'
+  | 'user not found'
+  | 'user already exists'
+  | 'request not supported';
+
+export const authFaillures = {
+  // form
+  204: 'missing content',
+  422: 'email not valid',
+  // signin
+  401: 'auth failed',
+  404: 'user not found',
+  // signup
+  409: 'user already exists',
+  // server
+  500: 'request not supported',
+};
 
 // ---------------------------- JSX Elements -------------------------------//
 
@@ -70,21 +95,29 @@ export function authFormSubmitText(formState: AuthFormState) {
 }
 
 export function authFormFailText(formState: AuthFormState) {
-  const failType = formState.formFailure;
+  const failType = formState.authFaillure;
   if (!failType) {
     return '';
-  } else if (failType === 'empty fields') {
+  } else if (failType === 'missing content') {
     return 'Please enter both an email and a password';
-  } else if (failType === 'email') {
+  } else if (failType === 'email not valid') {
     return 'Please enter a valid email';
-  } else {
-    return 'The username or password you’ve entered is incorrect.';
+  } else if (failType === 'user not found') {
+    return 'No user exists with that email';
+  } else if (failType === 'user already exists') {
+    return 'An account already exists with that email';
+  } else if (failType === 'auth failed') {
+    return 'The password you have entered is invalid';
+  } else if (failType === 'request not supported') {
+    return "Sorry we're experiencing issues";
   }
 }
 
 // ---------------------- util function -------------------------///
 
-export function checkSubmission(formState: AuthFormState) {
+export function checkSubmission(
+  formState: AuthFormState
+): 'valid submission' | authFaillure {
   const {email, password} = formState;
   const validate = validator.validate;
   console.log(email + ' ' + password);
@@ -92,36 +125,59 @@ export function checkSubmission(formState: AuthFormState) {
     if (validate(email)) {
       return 'valid submission';
     } else {
-      return {formFailure: 'email'};
+      return 'email not valid';
     }
   } else {
-    return {formFailure: 'empty fields'};
+    return 'missing content';
   }
 }
+
+// export function objectToMap(object: object): Map<string, any> {
+//   const map = new Map();
+//   const keys = Object.keys(object);
+//   const values = Object.values(object);
+
+//   // map each key to the value in the object
+//   for (let i = 0; i < keys.length; i++) {
+//     map.set(keys[i], values[i]);
+//   }
+//   return map;
+// }
 
 // ----------------- API/Server access functions ---------------///
 
 export async function apiAuthRequest(formState: AuthFormState) {
   const requestType = formState.loginType;
-  const apiAddressToAccess = apiAddress + requestType;
+  const apiAddressToAccess = apiAddress + '/api/auth/' + requestType;
   const formInputs = {
     email: formState.email,
-    passwords: formState.password,
+    password: formState.password,
   };
 
-  return await axios
+  const responseObject = (await axios
     .post(apiAddressToAccess, formInputs)
-    .catch(error => console.log(error));
+    .catch(error => {
+      return error.toJSON();
+    })) as AxiosResponse | AxiosError;
+
+  const status = responseObject.status;
+
+  if (status === 200) {
+    return (responseObject as AxiosResponse).data as user;
+  } else if (typeof status === 'number') {
+    return status;
+  } else {
+    return 500;
+  }
 }
 
-export function checkResponseObject(responseObject: AxiosResponse | void) {
-  if (responseObject) {
-    const responseCode = responseObject.status;
-    console.log(responseCode);
-    return responseCode === 200 ? true : false;
-  } else {
-    return false;
+export function getFaillureType(responseStatus: number | string): authFaillure {
+  if (typeof responseStatus === 'number') {
+    responseStatus = String(responseStatus);
   }
+  const failCodes = Object.keys(authFaillures);
+  const index = failCodes.indexOf(responseStatus);
+  return Object.values(authFaillures)[index] as authFaillure;
 }
 
 export async function signInUser(formState: AuthFormState) {

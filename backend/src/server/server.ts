@@ -2,11 +2,12 @@ import express from 'express';
 import bodyParser from 'body-parser';
 import cors from 'cors';
 import fs from 'fs';
-import {PuppeteerObject, generateCSVFile, login} from '../api/api';
+import {PuppeteerObject, generateCSVFile, login} from './api';
 import path from 'path';
 import dotenv from 'dotenv';
 dotenv.config;
 import {PrismaClient} from '@prisma/client';
+import {authRouter} from './routes/auth';
 export const prisma = new PrismaClient();
 
 // ---------------------------  initialize ------------------------------//
@@ -29,8 +30,7 @@ app.use(cors());
 /* This is the code that serves the React app. */
 app.use(express.static(path.resolve(__dirname, '../../../frontend/build')));
 
-/* This is the route that handles the GET request to the / route. It returns a message saying
-"Welcome to the server". */
+/* This is the route that handles the GET request to the root api route. */
 app.get('/api', (req, res) => {
   res.send('Welcome to the server');
 });
@@ -39,43 +39,9 @@ let loginObject: PuppeteerObject;
 
 // ----------------------------  POST (Login) -------------------------------//
 
-/* This is the route that handles the POST request to the /api/login route. It takes the username and
-password from the request body and passes it to the login function. It then checks if the login was
-successful. If it was, it returns a 200 status code, otherwise it returns a 401 status code.
-testing username and login were alos added to produce a successfull auth response*/
-
-app.post('/api/login', async (req, res) => {
-  const testingUsername = 'test';
-  const testingPassword = 'test';
-
-  const requestUsername = req.body.username;
-  const requestPassword = req.body.password;
-
-  console.log(requestUsername);
-  console.log(requestPassword);
-
-  if (
-    requestUsername === testingUsername &&
-    requestPassword === testingPassword
-  ) {
-    res.sendStatus(200);
-    console.log('testing session initiated');
-  } else {
-    // login to government sms (Spectrum Management System)
-    loginObject = await login(requestUsername, requestPassword);
-
-    /* This is checking if the login was successful. If it was, it returns a 200 status code, otherwise it
-    returns a 401 status code. */
-    if (!loginObject.response) {
-      res.sendStatus(401);
-      console.log('auth failed');
-      loginObject.kill;
-    } else {
-      res.sendStatus(200);
-      console.log('auth succeeded');
-    }
-  }
-});
+/* Importing the auth.ts file and using it as a middleware.
+all routes starting with /api/auth will use this file*/
+app.use('/api/auth', authRouter);
 
 // ---------------------------  GET (Export) ------------------------------//
 
