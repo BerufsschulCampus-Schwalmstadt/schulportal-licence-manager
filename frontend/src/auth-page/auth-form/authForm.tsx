@@ -5,35 +5,17 @@ import validator from 'email-validator';
 import {user} from '../../global-types';
 import assert from 'assert';
 import {
-  authFaillure,
-  getFaillureType,
-  checkSubmission,
-  authFormFailText,
-  newLogginType,
-  authFormSubmitText,
+  AuthFormState,
   apiAuthRequest,
-  authInstructions,
+  authFormFailText,
+  authFormSubmitText,
   authGreeting,
+  authInstructions,
+  checkSubmission,
   formToggleText,
+  getFaillureType,
+  newLogginType,
 } from './authFormFunctions';
-
-// ---------------------------  Class Props and State ------------------------------//
-
-/* It's a class that holds the state of the login form */
-export class AuthFormState {
-  hasEverLoggedIn: boolean;
-  loginType: 'login' | 'signup';
-  email?: string;
-  password?: string;
-  authFaillure: authFaillure;
-
-  constructor() {
-    this.hasEverLoggedIn =
-      localStorage.getItem('hasEverLoggedIn') === 'true' ? true : false;
-    this.loginType = this.hasEverLoggedIn ? 'login' : 'signup';
-    this.authFaillure = null;
-  }
-}
 
 // ---------------------------  Class Component ------------------------------//
 
@@ -86,7 +68,8 @@ export default class AuthForm extends Component<{}, AuthFormState> {
     }
   }
 
-  // -------------rendered HTML
+  // ---------------------------  Rendered HTML ------------------------------//
+
   render() {
     return (
       <div id="loginFormWrapper">

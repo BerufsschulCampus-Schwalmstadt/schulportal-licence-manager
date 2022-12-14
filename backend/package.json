@@ -30,8 +30,8 @@
     "node": "18.x"
   },
   "scripts": {
-    "serverDev": "nodemon dist/server/server.js",
-    "server": "node dist/server/server.js",
+    "server": "nodemon dist/server/server.js",
+    "start": "node dist/server/server.js",
     "auth": "node dist/server/routes/auth.js",
     "api": "node dist/api/api.js",
     "database": "node dist/database/database.js",
