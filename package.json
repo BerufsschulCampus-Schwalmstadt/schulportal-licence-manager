@@ -11,7 +11,7 @@
   "scripts": {
     "start": "npm run start --prefix ./backend",
     "devStart": "concurrently \"npm start --prefix ./client\" \"npm run dev --prefix ./server\"",
-    "build": "npm install && npm install --prefix ./backend && npm run generate --prefix ./backend",
+    "build": "npm install && cd backend && npm install && npm run generate",
     "dev": "npm run start --prefix ./server",
     "lint": "gts lint",
     "clean": "gts clean",
