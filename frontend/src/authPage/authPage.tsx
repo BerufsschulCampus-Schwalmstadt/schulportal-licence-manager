@@ -1,8 +1,8 @@
 import AuthForm from './authForm/authForm';
 import TeaserPanel from './teaserPanel/teaserPanel';
-import './loginSingupPage.css';
+import './authPage.css';
 
-export default function LoginSingupPage() {
+export default function AuthPage() {
   return (
     <div id="loginSignupPage">
       <TeaserPanel />

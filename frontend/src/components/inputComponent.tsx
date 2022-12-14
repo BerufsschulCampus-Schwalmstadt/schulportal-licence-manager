@@ -1,4 +1,4 @@
-import React, {ChangeEvent, Component} from 'react';
+import {ChangeEvent, Component} from 'react';
 import './inputComponent.css';
 
 // ---------------------------  Class Prop def ------------------------------//
@@ -15,7 +15,9 @@ class InputComponentProps {
     const {name, label, placeholder, id, type} = passedProps;
     this.name = name;
     this.label = label ? label : name;
-    this.placeholder = placeholder ? placeholder : 'Enter your S.M.S ' + name;
+    this.placeholder = placeholder
+      ? placeholder
+      : 'Enter your ' + name + ' here';
     this.id = id ? id : name + 'Input';
     this.type = type ? type : 'text';
   }

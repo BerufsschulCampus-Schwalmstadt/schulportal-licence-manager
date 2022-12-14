@@ -17,7 +17,7 @@ export function newLogginType(formState: AuthFormState) {
   }
 }
 
-export function authFormHeader(formState: AuthFormState) {
+export function authGreeting(formState: AuthFormState) {
   if (formState.loginType === 'login') {
     return <h1>Welcome Back!</h1>;
   } else {
@@ -25,22 +25,37 @@ export function authFormHeader(formState: AuthFormState) {
   }
 }
 
-export function authFormSubtitle(
+export function authInstructions(formState: AuthFormState) {
+  if (formState.loginType === 'login') {
+    return (
+      <p className="authFormSubtitle" id="authInstructions">
+        Please sign in below to access your account
+      </p>
+    );
+  } else {
+    return (
+      <p className="authFormSubtitle" id="authInstructions">
+        Please sign up below to get started on JOYR!
+      </p>
+    );
+  }
+}
+
+export function formToggleText(
   formState: AuthFormState,
   actionToPerform: MouseEventHandler
 ) {
   if (formState.loginType === 'login') {
     return (
-      <p className="loginFormSubtitle">
-        Don't have an account yet? sign up by{' '}
-        <span onClick={actionToPerform}>clicking here</span>
+      <p className="authFormSubtitle" id="formToggleText">
+        Don't have an account yet?{' '}
+        <span onClick={actionToPerform}>Sign Up</span>
       </p>
     );
   } else {
     return (
-      <p className="loginFormSubtitle">
-        Already have an account? Sign in by{' '}
-        <span onClick={actionToPerform}>clicking here</span>
+      <p className="authFormSubtitle" id="formToggleText">
+        Already have an account? <span onClick={actionToPerform}>Sign In</span>
       </p>
     );
   }
@@ -59,7 +74,7 @@ export function authFormFailText(formState: AuthFormState) {
   if (!failType) {
     return '';
   } else if (failType === 'empty fields') {
-    return 'Please enter both an email and a password to continue';
+    return 'Please enter both an email and a password';
   } else if (failType === 'email') {
     return 'Please enter a valid email';
   } else if (failType === 'auth') {

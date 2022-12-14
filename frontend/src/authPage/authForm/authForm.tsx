@@ -1,16 +1,18 @@
 import {Component, FormEvent} from 'react';
 import './authForm.css';
-import InputComponent from './inputComponent';
-import {newLogginType} from './authFormFunctions';
+import InputComponent from '../../components/inputComponent';
+import validator from 'email-validator';
 import {
   checkSubmission,
-  authFormHeader,
-  authFormSubtitle,
   authFormFailText,
+  newLogginType,
   authFormSubmitText,
   apiAuthRequest,
   checkResponseObject,
   signInUser,
+  authInstructions,
+  authGreeting,
+  formToggleText,
 } from './authFormFunctions';
 
 // ---------------------------  Class Props and State ------------------------------//
@@ -43,14 +45,18 @@ export default class AuthForm extends Component<{}, AuthFormState> {
   }
 
   handleFormChange() {
+    this.setState({formFailure: null});
     this.setState({loginType: newLogginType(this.state)});
   }
 
   handleInputs(event: FormEvent<HTMLFormElement>): void {
     const trigger = event.target as HTMLInputElement;
-
+    const validate = validator.validate;
     // change state when field is changed
     if (trigger.name === 'email') {
+      if (validate(trigger.value)) {
+        this.setState({formFailure: null});
+      }
       this.setState({email: trigger.value});
     } else if (trigger.name === 'password') {
       this.setState({password: trigger.value});
@@ -88,17 +94,15 @@ export default class AuthForm extends Component<{}, AuthFormState> {
           onSubmit={this.handleSubmit}
         >
           <div className="loginFormHeadingContainer">
-            {authFormHeader(this.state)}
-            {authFormSubtitle(this.state, this.handleFormChange)}
+            {authGreeting(this.state)}
+            {authInstructions(this.state)}
           </div>
           <div className="loginFormContentWrapper">
             <div className="inputFieldContainer">
               <InputComponent name="email" />
               <InputComponent name="password" type="password" />
             </div>
-            <div className="failTextContainer">
-              <p id="failTextElement">{authFormFailText(this.state)}</p>
-            </div>
+            <p id="failTextElement">{authFormFailText(this.state)}</p>
           </div>
           <div className="submissionContainer">
             <button
@@ -109,6 +113,7 @@ export default class AuthForm extends Component<{}, AuthFormState> {
             >
               {authFormSubmitText(this.state)}
             </button>
+            {formToggleText(this.state, this.handleFormChange)}
           </div>
         </form>
       </div>

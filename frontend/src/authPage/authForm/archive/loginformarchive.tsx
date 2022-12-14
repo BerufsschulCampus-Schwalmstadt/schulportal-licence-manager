@@ -8,7 +8,7 @@ import './loginForm.css';
 import LoadAnimation from '../../../lotties/loadanimation.json';
 
 // local elements
-import InputComponent from '../inputComponent';
+import InputComponent from '../../../components/inputComponent';
 import MyLottieElement from './lottieController';
 
 // ---------------------  general helper functions ------------------------//

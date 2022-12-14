@@ -1,11 +1,11 @@
 import './App.css';
-import LoginSingupPage from './login-and-signup/loginSingupPage';
+import AuthPage from './authPage/authPage';
 
 // ---------------------------  Main ------------------------------//
 
 // App is....my app :)
 function App() {
-  return <LoginSingupPage />;
+  return <AuthPage />;
 }
 
 export default App;

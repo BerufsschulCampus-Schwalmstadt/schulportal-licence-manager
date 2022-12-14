@@ -7,7 +7,7 @@
   padding: 0px 47px 34px;
   gap: 120px;
   
-  max-width: 507px;
+  max-width: 400px;
   
   background: #F1F1F1;
   box-shadow: -21px 4px 35px rgba(0, 0, 0, 0.02);
@@ -60,22 +60,14 @@
   flex-grow: 0;
 }
 
-.loginFormSubtitle {
+.authFormSubtitle {
   font-weight: 400;
   font-size: 16px;
   line-height: 24px;
   text-align: center;
   /* identical to box height */
 
-  text-transform: capitalize;
-
   color: #686868;
-
-  /* Inside auto layout */
-
-  flex: none;
-  order: 1;
-  flex-grow: 0;
 }
 
 /* The wrapper for the content (inputs & submit button)
@@ -87,8 +79,8 @@ in the login form. */
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  padding: 20.9604px 0px 37.3641px;
-  gap: 19.14px;
+  padding: 20.9604px 0px 20px;
+  gap: 10px;
 
   /* Inside auto layout */
 
@@ -117,34 +109,19 @@ in the login form. */
   flex-grow: 0;
 }
 
-/* The container for the fail text. */
-.failTextContainer{
+/* The text that appears when the user fails to login. */
+#failTextElement{
   display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: center;
   padding: 0px;
-
-  height: 20px;
-
-  /* Inside auto layout */
-
-  flex: none;
-  order: 1;
-  align-self: stretch;
-  flex-grow: 0;
-}
-
-/* The text that appears when the user fails to login. */
-#failTextElement{
-  display: flex;
   font-weight: 500;
   font-size: 13px;
   line-height: 20px;
 
   text-align: center;
-  text-transform: capitalize;
-  color: #d02e2e;
+  color: #dc5050;
 
   /* Inside auto layout */
 
@@ -161,6 +138,7 @@ in the login form. */
   align-items: center;
   padding: 0px;
   gap: 16.4px;
+  
 
   /* Inside auto layout */
 
@@ -171,8 +149,29 @@ in the login form. */
 }
 
 #submitButton {
-  flex: none;
   order: 2;
   align-self: stretch;
   flex-grow: 0;
+}
+
+#formToggleText {
+  font-weight: 400;
+  font-size: 13px;
+  line-height: 24px;
+  text-align: center;
+  /* identical to box height */
+
+  color: #686868;
+
+  /* Inside auto layout */
+
+  flex: none;
+  order: 3;
+  flex-grow: 0;
+}
+
+#formToggleText > span {
+  font-weight: 600;
+  cursor: pointer;
+  color: #302CCC;
 }
