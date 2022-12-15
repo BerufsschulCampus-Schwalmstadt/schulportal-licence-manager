@@ -1,6 +1,10 @@
 import express from 'express';
 import bcrypt from 'bcrypt';
+import jwt, {Secret} from 'jsonwebtoken';
 import {findUserByEmail, newUser} from '../../database/database';
+import * as dotenv from 'dotenv';
+import {generateAccessToken, generateRefreshToken} from './tokens';
+dotenv.config();
 export const authRouter = express.Router();
 
 //------------------auth password handling--------------------//
@@ -32,9 +36,24 @@ authRouter.post('/signup', async (req, res) => {
   console.log(reqEmail);
   console.log(reqPassword);
 
-  const createdUser = await newUser(reqEmail, reqPassword);
+  const userAlreadyExists = await findUserByEmail(reqEmail);
+  if (userAlreadyExists) {
+    res.sendStatus(409);
+  } else {
+    const createdUser = await newUser(reqEmail, reqPassword).catch(error => {
+      throw error;
+    });
+    // create tokens
+    const accessToken = generateAccessToken(createdUser);
+    const refreshToken = generateRefreshToken(createdUser); // this adds it to database
 
-  res.send(createdUser).status(200);
+    res
+      .send({
+        accessToken: accessToken,
+        refreshToken: refreshToken,
+      })
+      .status(200);
+  }
 });
 
 /* This is a post request to the login route.
@@ -61,7 +80,12 @@ authRouter.post('/login', async (req, res) => {
       databasePassword
     );
     if (isCorrectCredentials) {
-      res.send(userToLogin).status(200);
+      // sign token
+      const token = jwt.sign(
+        userToLogin,
+        process.env.ACCESS_TOKEN_SECRET as Secret
+      );
+      res.send({accessToken: token}).status(200);
     } else {
       res.sendStatus(401);
     }

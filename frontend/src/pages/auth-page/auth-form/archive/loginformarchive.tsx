@@ -5,10 +5,10 @@ import assert from 'assert';
 
 // local files
 import './loginForm.css';
-import LoadAnimation from '../../../lotties/loadanimation.json';
+import LoadAnimation from '../../../../lotties/loadanimation.json';
 
 // local elements
-import InputComponent from '../../../components/inputComponent';
+import InputComponent from '../../../../components/inputComponent';
 import MyLottieElement from './lottieController';
 
 // ---------------------  general helper functions ------------------------//

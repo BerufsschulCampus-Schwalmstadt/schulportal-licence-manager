@@ -1,20 +1,11 @@
 import React, {MouseEventHandler} from 'react';
 import axios, {AxiosError, AxiosResponse} from 'axios';
 import validator from 'email-validator';
-import {user} from '../../global-types';
+import {user} from '../../../global-types';
 const apiAddress = process.env.REACT_APP_APIBASEADDRESS;
 console.log(apiAddress);
 
 // ---------------- Constants (type, class, object) -------------------------//
-
-export type authFaillure =
-  | null
-  | 'missing content'
-  | 'email not valid'
-  | 'auth failed'
-  | 'user not found'
-  | 'user already exists'
-  | 'request not supported';
 
 export const authFaillures = {
   // form
@@ -27,27 +18,30 @@ export const authFaillures = {
   409: 'user already exists',
   // server
   500: 'request not supported',
-};
+} as const;
+
+export type authFaillureCodes = keyof typeof authFaillures;
+export type authFaillureType = typeof authFaillures[authFaillureCodes] | null;
 
 export class AuthFormState {
   hasEverLoggedIn: boolean;
-  loginType: 'login' | 'signup';
+  authType: 'login' | 'signup';
   email?: string;
   password?: string;
-  authFaillure: authFaillure;
+  authFaillure: authFaillureType;
 
   constructor() {
     this.hasEverLoggedIn =
       localStorage.getItem('hasEverLoggedIn') === 'true' ? true : false;
-    this.loginType = this.hasEverLoggedIn ? 'login' : 'signup';
+    this.authType = this.hasEverLoggedIn ? 'login' : 'signup';
     this.authFaillure = null;
   }
 }
 
 // ---------------------------- JSX Elements -------------------------------//
 
-export function newLogginType(formState: AuthFormState) {
-  const loginType = formState.loginType;
+export function newAuthType(formState: AuthFormState) {
+  const loginType = formState.authType;
 
   if (loginType === 'login') {
     return 'signup';
@@ -57,7 +51,7 @@ export function newLogginType(formState: AuthFormState) {
 }
 
 export function authGreeting(formState: AuthFormState) {
-  if (formState.loginType === 'login') {
+  if (formState.authType === 'login') {
     return <h1>Welcome Back!</h1>;
   } else {
     return <h1>Welcome!</h1>;
@@ -65,7 +59,7 @@ export function authGreeting(formState: AuthFormState) {
 }
 
 export function authInstructions(formState: AuthFormState) {
-  if (formState.loginType === 'login') {
+  if (formState.authType === 'login') {
     return (
       <p className="authFormSubtitle" id="authInstructions">
         Please sign in below to continue!
@@ -80,11 +74,11 @@ export function authInstructions(formState: AuthFormState) {
   }
 }
 
-export function formToggleText(
+export function authToggleText(
   formState: AuthFormState,
   actionToPerform: MouseEventHandler
 ) {
-  if (formState.loginType === 'login') {
+  if (formState.authType === 'login') {
     return (
       <p className="authFormSubtitle" id="formToggleText">
         Don't have an account yet? {''}
@@ -101,7 +95,7 @@ export function formToggleText(
 }
 
 export function authFormSubmitText(formState: AuthFormState) {
-  if (formState.loginType === 'login') {
+  if (formState.authType === 'login') {
     return 'Log in';
   } else {
     return 'Sign up';
@@ -138,7 +132,7 @@ export function authFormFailText(formState: AuthFormState) {
  */
 export function checkSubmission(
   formState: AuthFormState
-): 'valid submission' | authFaillure {
+): 'valid submission' | authFaillureType {
   const {email, password} = formState;
   const validate = validator.validate;
   console.log(email + ' ' + password);
@@ -175,19 +169,20 @@ export function checkSubmission(
  * @returns a promise that resolves to either a user object or an error code.
  */
 export async function apiAuthRequest(formState: AuthFormState) {
-  const requestType = formState.loginType;
+  const requestType = formState.authType;
   const apiAddressToAccess = apiAddress + '/api/auth/' + requestType;
   const formInputs = {
     email: formState.email,
     password: formState.password,
   };
 
-  const responseObject = (await axios
+  const responseObject = await axios
     .post(apiAddressToAccess, formInputs)
     .catch(error => {
-      return error.toJSON();
-    })) as AxiosResponse | AxiosError;
+      return error.toJSON() as AxiosError;
+    });
 
+  console.log(responseObject);
   const status = responseObject.status;
 
   if (status === 200) {
@@ -204,23 +199,33 @@ export async function apiAuthRequest(formState: AuthFormState) {
  * @param {number | string} responseStatus - The response status code from the server.
  * @returns The value of the key in the object that matches the responseStatus.
  */
-export function getFaillureType(responseStatus: number | string): authFaillure {
+export function getFaillureType(
+  responseStatus: number | string
+): authFaillureType {
   if (typeof responseStatus === 'number') {
     responseStatus = String(responseStatus);
   }
   const failCodes = Object.keys(authFaillures);
   const index = failCodes.indexOf(responseStatus);
-  return Object.values(authFaillures)[index] as authFaillure;
+  return Object.values(authFaillures)[index] as authFaillureType;
 }
 
-export async function signInUser(formState: AuthFormState) {
-  const userEmail = {
-    email: formState.email,
-  };
-  const apiAddressToAccess = apiAddress + 'home';
+export async function loginUser(userToLogin: user) {
+  const apiAddressToAccess = apiAddress + '/api/dashboard/';
+  // const currentDateTime = new Date().toLocaleDateString();
 
   localStorage.setItem('hasEverLoggedIn', 'true');
-  await axios
-    .post(apiAddressToAccess, userEmail)
-    .catch(error => console.log(error));
+  localStorage.setItem('authenticatedUserId', userToLogin.id);
+  // localStorage.setItem('authenticationTime', currentDateTime);
+
+  const response = await axios
+    .get(apiAddressToAccess)
+    .catch((error: AxiosError) => {
+      console.log(error);
+      return error.toJSON() as AxiosError;
+    });
+
+  const status = response.status;
+
+  return typeof status === 'number' ? status : 500;
 }

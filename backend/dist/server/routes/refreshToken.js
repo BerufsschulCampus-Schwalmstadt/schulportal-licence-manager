@@ -41,7 +41,7 @@ const bcrypt_1 = __importDefault(require("bcrypt"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const database_1 = require("../../database/database");
 const dotenv = __importStar(require("dotenv"));
-const tokens_1 = require("./tokens");
+const server_1 = require("../server");
 dotenv.config();
 exports.authRouter = express_1.default.Router();
 function encryptPassword(password) {
@@ -55,11 +55,22 @@ function verifyPassword(password, encryptedPassword) {
         return yield bcrypt_1.default.compare(password, encryptedPassword);
     });
 }
+function generateAccessToken(user) {
+    return jsonwebtoken_1.default.sign(user, process.env.ACCESS_TOKEN_SECRET, {
+        expiresIn: '30s',
+    });
+}
+function generateRefreshToken(user) {
+    return jsonwebtoken_1.default.sign(user, process.env.REFRESH_TOKEN_SECRET, {
+        expiresIn: '1d',
+    });
+}
 exports.authRouter.post('/signup', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const reqEmail = req.body.email;
     const reqPassword = yield encryptPassword(req.body.password);
     console.log(reqEmail);
     console.log(reqPassword);
+    yield server_1.prisma.joyrUser.deleteMany();
     const userAlreadyExists = yield (0, database_1.findUserByEmail)(reqEmail);
     if (userAlreadyExists) {
         res.sendStatus(409);
@@ -68,8 +79,11 @@ exports.authRouter.post('/signup', (req, res) => __awaiter(void 0, void 0, void 
         const createdUser = yield (0, database_1.newUser)(reqEmail, reqPassword).catch(error => {
             throw error;
         });
-        const accessToken = (0, tokens_1.generateAccessToken)(createdUser);
-        const refreshToken = (0, tokens_1.generateRefreshToken)(createdUser);
+        const accessToken = generateAccessToken(createdUser);
+        const refreshToken = generateRefreshToken(createdUser);
+        yield (0, database_1.pushUserRefreshToken)(createdUser.id, refreshToken).catch(error => {
+            throw error;
+        });
         res
             .send({
             accessToken: accessToken,
@@ -92,7 +106,7 @@ exports.authRouter.post('/login', (req, res) => __awaiter(void 0, void 0, void 0
         const isCorrectCredentials = yield verifyPassword(reqPassword, databasePassword);
         if (isCorrectCredentials) {
             const token = jsonwebtoken_1.default.sign(userToLogin, process.env.ACCESS_TOKEN_SECRET);
-            res.send({ accessToken: token }).status(200);
+            res.send(token).status(200);
         }
         else {
             res.sendStatus(401);

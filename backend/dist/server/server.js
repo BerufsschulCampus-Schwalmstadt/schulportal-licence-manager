@@ -23,9 +23,14 @@ const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config;
 const client_1 = require("@prisma/client");
 const auth_1 = require("./routes/auth");
+const dashboard_1 = require("./routes/dashboard");
+const tokens_1 = require("./routes/tokens");
 exports.prisma = new client_1.PrismaClient();
 const app = (0, express_1.default)();
 const port = Number(process.env.PORT) || 3001;
+exports.prisma.refreshToken.deleteMany();
+exports.prisma.joyrUser.deleteMany();
+exports.prisma.joyrUser.findMany();
 app.use(body_parser_1.default.json());
 app.use(body_parser_1.default.urlencoded({
     extended: true,
@@ -37,6 +42,9 @@ app.get('/api', (req, res) => {
 });
 let loginObject;
 app.use('/api/auth', auth_1.authRouter);
+app.use('/api/refresh', tokens_1.tokenRefreshRouter);
+app.use(tokens_1.authenticateToken);
+app.use('/api/dashboard', dashboard_1.dashboardRouter);
 app.get('/api/CSVExport', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const csvFilePath = yield (0, api_1.generateCSVFile)(loginObject);
     res.download(csvFilePath, err => {

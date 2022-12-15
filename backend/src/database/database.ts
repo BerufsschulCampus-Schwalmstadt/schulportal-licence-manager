@@ -13,21 +13,39 @@ export async function newUser(
   emailToSet: string,
   passwordToSet: string
 ): Promise<joyrUser> {
-  await prisma.joyrUser.deleteMany();
-  const createdUser = await prisma.joyrUser.create({
+  // await prisma.joyrUser.deleteMany();
+  return await prisma.joyrUser.create({
     data: {
       email: emailToSet,
       password: passwordToSet,
     },
   });
-  console.log(createdUser);
-  return createdUser;
 }
 
 export async function findUserByEmail(emailToQuery: string) {
   return await prisma.joyrUser.findUnique({
-    where: {
-      email: emailToQuery,
+    where: {email: emailToQuery},
+  });
+}
+
+export async function findUserById(idToQuery: string) {
+  return await prisma.joyrUser.findUnique({
+    where: {email: idToQuery},
+  });
+}
+
+export async function findUserByRefreshToken(refreshToken: string) {
+  return await prisma.refreshToken.findUnique({
+    where: {token: refreshToken},
+    include: {joyrUser: true},
+  });
+}
+
+export async function pushRefreshToken(refreshToken: string, userId: string) {
+  return await prisma.refreshToken.create({
+    data: {
+      token: refreshToken,
+      joyrUserId: userId,
     },
   });
 }
@@ -38,10 +56,7 @@ export async function findUserByEmail(emailToQuery: string) {
  * @returns The deleted user
  */
 export async function deleteUser(userId: string) {
-  const deletedUser = await prisma.joyrUser.delete({
+  return await prisma.joyrUser.delete({
     where: {id: userId},
   });
-
-  console.log(deletedUser);
-  return deletedUser;
 }

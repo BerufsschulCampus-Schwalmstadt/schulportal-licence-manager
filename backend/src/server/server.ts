@@ -8,6 +8,8 @@ import dotenv from 'dotenv';
 dotenv.config;
 import {PrismaClient} from '@prisma/client';
 import {authRouter} from './routes/auth';
+import {dashboardRouter} from './routes/dashboard';
+import {authenticateToken, tokenRefreshRouter} from './routes/tokens';
 export const prisma = new PrismaClient();
 
 // ---------------------------  initialize ------------------------------//
@@ -15,6 +17,9 @@ export const prisma = new PrismaClient();
 /* This is setting up the server. */
 const app = express();
 const port = Number(process.env.PORT) || 3001;
+prisma.refreshToken.deleteMany();
+prisma.joyrUser.deleteMany();
+prisma.joyrUser.findMany();
 
 /* This is setting up the body parser and cors. */
 app.use(bodyParser.json());
@@ -30,6 +35,8 @@ app.use(cors());
 /* This is the code that serves the React app. */
 app.use(express.static(path.resolve(__dirname, '../../../frontend/build')));
 
+// --------------------------root-------------------------------//
+
 /* This is the route that handles the GET request to the root api route. */
 app.get('/api', (req, res) => {
   res.send('Welcome to the server');
@@ -42,6 +49,12 @@ let loginObject: PuppeteerObject;
 /* Importing the auth.ts file and using it as a middleware.
 all routes starting with /api/auth will use this file*/
 app.use('/api/auth', authRouter);
+
+// ------------------------  GET (dashboard/home) ---------------------------//
+
+app.use('/api/refresh', tokenRefreshRouter);
+app.use(authenticateToken); // everything after this will need to be authenticated to be accessed
+app.use('/api/dashboard', dashboardRouter);
 
 // ---------------------------  GET (Export) ------------------------------//
 
