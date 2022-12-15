@@ -35,7 +35,7 @@
     "auth": "node dist/server/routes/auth.js",
     "api": "node dist/api/api.js",
     "database": "node dist/database/database.js",
-    "generate": "cd server/database && npx run prisma generate",
+    "generate": "cd server && cd database && npx run prisma generate",
     "lint": "gts lint",
     "clean": "gts clean",
     "fix": "gts fix",
