@@ -2,7 +2,7 @@ import express from 'express';
 import bodyParser from 'body-parser';
 import cors from 'cors';
 import fs from 'fs';
-import {PuppeteerObject, generateCSVFile, login} from './api';
+import {PuppeteerObject, generateCSVFile} from './api';
 import path from 'path';
 import dotenv from 'dotenv';
 dotenv.config;

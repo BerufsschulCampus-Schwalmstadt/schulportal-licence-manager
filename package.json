@@ -9,16 +9,13 @@
     "node": "18.x"
   },
   "scripts": {
-    "start": "npm run server --prefix ./backend",
+    "start": "npm run start --prefix ./backend",
     "devStart": "concurrently \"npm start --prefix ./client\" \"npm run dev --prefix ./server\"",
-    "build": "npm install && npm install --prefix ./backend",
+    "build": "npm install && cd backend && npm install && npm run generate",
     "dev": "npm run start --prefix ./server",
     "lint": "gts lint",
     "clean": "gts clean",
-    "compile": "tsc",
     "fix": "gts fix",
-    "prepare": "npm run compile",
-    "pretest": "npm run compile",
     "posttest": "npm run lint"
   },
   "devDependencies": {

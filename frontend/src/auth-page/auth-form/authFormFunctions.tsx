@@ -1,12 +1,11 @@
 import React, {MouseEventHandler} from 'react';
 import axios, {AxiosError, AxiosResponse} from 'axios';
 import validator from 'email-validator';
-import {AuthFormState} from './authForm';
 import {user} from '../../global-types';
 const apiAddress = process.env.REACT_APP_APIBASEADDRESS;
 console.log(apiAddress);
 
-// -------------------------------- type ------------------------------------//
+// ---------------- Constants (type, class, object) -------------------------//
 
 export type authFaillure =
   | null
@@ -29,6 +28,21 @@ export const authFaillures = {
   // server
   500: 'request not supported',
 };
+
+export class AuthFormState {
+  hasEverLoggedIn: boolean;
+  loginType: 'login' | 'signup';
+  email?: string;
+  password?: string;
+  authFaillure: authFaillure;
+
+  constructor() {
+    this.hasEverLoggedIn =
+      localStorage.getItem('hasEverLoggedIn') === 'true' ? true : false;
+    this.loginType = this.hasEverLoggedIn ? 'login' : 'signup';
+    this.authFaillure = null;
+  }
+}
 
 // ---------------------------- JSX Elements -------------------------------//
 
@@ -115,6 +129,13 @@ export function authFormFailText(formState: AuthFormState) {
 
 // ---------------------- util function -------------------------///
 
+/**
+ * It checks if the form state is valid, and if it is, it returns
+ * a string saying so, otherwise it returns a string saying
+ * why it's not valid
+ * @param {AuthFormState} formState - AuthFormState
+ * @returns A string or an object
+ */
 export function checkSubmission(
   formState: AuthFormState
 ): 'valid submission' | authFaillure {
@@ -146,6 +167,13 @@ export function checkSubmission(
 
 // ----------------- API/Server access functions ---------------///
 
+/**
+ * It takes a form state object, and returns a user object
+ * or an error code
+ * @param {AuthFormState} formState - AuthFormState - This is the
+ * state of the form that the user is submitting.
+ * @returns a promise that resolves to either a user object or an error code.
+ */
 export async function apiAuthRequest(formState: AuthFormState) {
   const requestType = formState.loginType;
   const apiAddressToAccess = apiAddress + '/api/auth/' + requestType;
@@ -171,6 +199,11 @@ export async function apiAuthRequest(formState: AuthFormState) {
   }
 }
 
+/**
+ * It takes a response status code and returns the corresponding authFaillure type
+ * @param {number | string} responseStatus - The response status code from the server.
+ * @returns The value of the key in the object that matches the responseStatus.
+ */
 export function getFaillureType(responseStatus: number | string): authFaillure {
   if (typeof responseStatus === 'number') {
     responseStatus = String(responseStatus);
