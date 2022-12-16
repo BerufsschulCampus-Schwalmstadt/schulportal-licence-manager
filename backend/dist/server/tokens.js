@@ -83,9 +83,10 @@ exports.tokenRefreshRouter.post('/', (req, res) => __awaiter(void 0, void 0, voi
         const decodedElementObject = JSON.parse(JSON.stringify(decodedElement));
         const userIdAndEmail = {
             id: decodedElementObject.id,
-            email: decodedElementObject.id,
+            email: decodedElementObject.email,
         };
         const newAccessToken = generateAccessToken(userIdAndEmail);
         res.send({ accessToken: newAccessToken });
+        console.log('new access token generated');
     });
 }));

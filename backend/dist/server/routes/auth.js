@@ -61,6 +61,7 @@ exports.authRouter.post('/signup', (req, res) => __awaiter(void 0, void 0, void 
     console.log(reqPassword);
     const userAlreadyExists = yield (0, database_1.findUserByEmail)(reqEmail);
     if (userAlreadyExists) {
+        console.log('user already exists');
         res.sendStatus(409);
     }
     else {
@@ -79,6 +80,7 @@ exports.authRouter.post('/signup', (req, res) => __awaiter(void 0, void 0, void 
             refreshToken: refreshToken,
         })
             .status(200);
+        console.log('user created successfully');
     }
 }));
 exports.authRouter.post('/login', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -89,6 +91,7 @@ exports.authRouter.post('/login', (req, res) => __awaiter(void 0, void 0, void 0
     const userToLogin = yield (0, database_1.findUserByEmail)(reqEmail);
     if (!userToLogin) {
         res.sendStatus(404);
+        console.log('user not found');
     }
     else {
         const databasePassword = userToLogin.password;
@@ -106,9 +109,11 @@ exports.authRouter.post('/login', (req, res) => __awaiter(void 0, void 0, void 0
                 refreshToken: refreshToken,
             })
                 .status(200);
+            console.log('user logged in successfully');
         }
         else {
             res.sendStatus(401);
+            console.log('wrong credentials');
         }
     }
 }));

@@ -17,7 +17,7 @@ const express_1 = __importDefault(require("express"));
 const body_parser_1 = __importDefault(require("body-parser"));
 const cors_1 = __importDefault(require("cors"));
 const fs_1 = __importDefault(require("fs"));
-const api_1 = require("./api");
+const licenceDataExport_1 = require("./api-features/licenceDataExport");
 const path_1 = __importDefault(require("path"));
 const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config;
@@ -26,6 +26,10 @@ const auth_1 = require("./routes/auth");
 const dashboard_1 = require("./routes/dashboard");
 const tokens_1 = require("./tokens");
 exports.prisma = new client_1.PrismaClient();
+exports.prisma.refreshToken
+    .deleteMany()
+    .then(count => console.log(count))
+    .then(() => exports.prisma.joyrUser.deleteMany().then(count => console.log(count)));
 const app = (0, express_1.default)();
 const port = Number(process.env.PORT) || 3001;
 exports.prisma.refreshToken.deleteMany();
@@ -37,16 +41,16 @@ app.use(body_parser_1.default.urlencoded({
 }));
 app.use((0, cors_1.default)());
 app.use(express_1.default.static(path_1.default.resolve(__dirname, '../../../frontend/build')));
+let loginObject;
 app.get('/api', (req, res) => {
     res.send('Welcome to the server');
 });
-let loginObject;
 app.use('/api/auth', auth_1.authRouter);
 app.use('/api/refresh', tokens_1.tokenRefreshRouter);
 app.use(tokens_1.authenticateToken);
 app.use('/api/dashboard', dashboard_1.dashboardRouter);
 app.get('/api/CSVExport', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const csvFilePath = yield (0, api_1.generateCSVFile)(loginObject);
+    const csvFilePath = yield (0, licenceDataExport_1.generateCSVFile)(loginObject);
     res.download(csvFilePath, err => {
         if (err)
             console.log(err);

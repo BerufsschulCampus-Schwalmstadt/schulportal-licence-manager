@@ -2,7 +2,10 @@ import express from 'express';
 import bodyParser from 'body-parser';
 import cors from 'cors';
 import fs from 'fs';
-import {PuppeteerObject, generateCSVFile} from './api';
+import {
+  PuppeteerObject,
+  generateCSVFile,
+} from './api-features/licenceDataExport';
 import path from 'path';
 import dotenv from 'dotenv';
 dotenv.config;
@@ -11,6 +14,11 @@ import {authRouter} from './routes/auth';
 import {dashboardRouter} from './routes/dashboard';
 import {authenticateToken, tokenRefreshRouter} from './tokens';
 export const prisma = new PrismaClient();
+
+prisma.refreshToken
+  .deleteMany()
+  .then(count => console.log(count))
+  .then(() => prisma.joyrUser.deleteMany().then(count => console.log(count)));
 
 // ---------------------------  initialize ------------------------------//
 
@@ -35,6 +43,8 @@ app.use(cors());
 /* This is the code that serves the React app. */
 app.use(express.static(path.resolve(__dirname, '../../../frontend/build')));
 
+let loginObject: PuppeteerObject;
+
 // --------------------------root-------------------------------//
 
 /* This is the route that handles the GET request to the root api route. */
@@ -42,18 +52,19 @@ app.get('/api', (req, res) => {
   res.send('Welcome to the server');
 });
 
-let loginObject: PuppeteerObject;
+// ---------------------------  POST (Auth) -------------------------------//
 
-// ----------------------------  POST (Login) -------------------------------//
-
-/* Importing the auth.ts file and using it as a middleware.
-all routes starting with /api/auth will use this file*/
+/* This is setting up the routes for the auth and refresh tokens. */
 app.use('/api/auth', authRouter);
 app.use('/api/refresh', tokenRefreshRouter);
 
-// ------------------------  GET (dashboard/home) ---------------------------//
+// --------------------- Auth Barrier middleware -------------------------//
 
-app.use(authenticateToken); // everything after this will need to be authenticated to be accessed
+app.use(authenticateToken);
+// everything after this will need to be authenticated to be accessed
+
+// ------------------------  GET (dashboard/home) -------------------------//
+
 app.use('/api/dashboard', dashboardRouter);
 
 // ---------------------------  GET (Export) ------------------------------//

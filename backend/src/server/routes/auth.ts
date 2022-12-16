@@ -37,6 +37,7 @@ authRouter.post('/signup', async (req, res) => {
 
   const userAlreadyExists = await findUserByEmail(reqEmail);
   if (userAlreadyExists) {
+    console.log('user already exists');
     res.sendStatus(409);
   } else {
     const createdUser = await newUser(reqEmail, reqPassword).catch(error => {
@@ -56,6 +57,7 @@ authRouter.post('/signup', async (req, res) => {
         refreshToken: refreshToken,
       })
       .status(200);
+    console.log('user created successfully');
   }
 });
 
@@ -76,6 +78,7 @@ authRouter.post('/login', async (req, res) => {
 
   if (!userToLogin) {
     res.sendStatus(404);
+    console.log('user not found');
   } else {
     const databasePassword = userToLogin.password;
     const isCorrectCredentials = await verifyPassword(
@@ -96,8 +99,10 @@ authRouter.post('/login', async (req, res) => {
           refreshToken: refreshToken,
         })
         .status(200);
+      console.log('user logged in successfully');
     } else {
       res.sendStatus(401);
+      console.log('wrong credentials');
     }
   }
 });
