@@ -58,8 +58,10 @@ export default class AuthForm extends Component<{}, AuthFormState> {
       const response = await apiAuthRequest(this.state);
       assert(response);
       if (typeof response !== 'number') {
-        const user = response as user;
-        await loginUser(user);
+        const accessToken = response.accessToken;
+        const refreshToken = response.refreshToken;
+        localStorage.setItem('refreshToken', refreshToken);
+        await loginUser(accessToken);
       } else {
         this.setState({authFaillure: getFaillureType(response)});
       }
