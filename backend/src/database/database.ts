@@ -37,7 +37,7 @@ export async function findUserById(idToQuery: string) {
 export async function findUserByRefreshToken(refreshToken: string) {
   return await prisma.refreshToken.findUnique({
     where: {token: refreshToken},
-    include: {joyrUser: true},
+    select: {joyrUser: true},
   });
 }
 

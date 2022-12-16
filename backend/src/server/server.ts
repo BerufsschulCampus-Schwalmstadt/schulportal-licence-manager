@@ -9,7 +9,7 @@ dotenv.config;
 import {PrismaClient} from '@prisma/client';
 import {authRouter} from './routes/auth';
 import {dashboardRouter} from './routes/dashboard';
-import {authenticateToken, tokenRefreshRouter} from './routes/tokens';
+import {authenticateToken, tokenRefreshRouter} from './tokens';
 export const prisma = new PrismaClient();
 
 // ---------------------------  initialize ------------------------------//
@@ -49,10 +49,10 @@ let loginObject: PuppeteerObject;
 /* Importing the auth.ts file and using it as a middleware.
 all routes starting with /api/auth will use this file*/
 app.use('/api/auth', authRouter);
+app.use('/api/refresh', tokenRefreshRouter);
 
 // ------------------------  GET (dashboard/home) ---------------------------//
 
-app.use('/api/refresh', tokenRefreshRouter);
 app.use(authenticateToken); // everything after this will need to be authenticated to be accessed
 app.use('/api/dashboard', dashboardRouter);
 

@@ -24,7 +24,7 @@ dotenv_1.default.config;
 const client_1 = require("@prisma/client");
 const auth_1 = require("./routes/auth");
 const dashboard_1 = require("./routes/dashboard");
-const tokens_1 = require("./routes/tokens");
+const tokens_1 = require("./tokens");
 exports.prisma = new client_1.PrismaClient();
 const app = (0, express_1.default)();
 const port = Number(process.env.PORT) || 3001;

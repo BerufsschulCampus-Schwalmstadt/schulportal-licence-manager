@@ -1,9 +1,9 @@
-import {joyrUser} from '@prisma/client';
+import IdAndEmail from './tokens';
 
 declare global {
   namespace Express {
     export interface Request {
-      user?: joyrUser;
+      userIdAndEmail?: IdAndEmail;
     }
   }
 }

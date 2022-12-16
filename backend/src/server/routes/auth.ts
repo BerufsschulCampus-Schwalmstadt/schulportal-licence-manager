@@ -1,9 +1,8 @@
 import express from 'express';
 import bcrypt from 'bcrypt';
-import jwt, {Secret} from 'jsonwebtoken';
 import {findUserByEmail, newUser} from '../../database/database';
 import * as dotenv from 'dotenv';
-import {generateAccessToken, generateRefreshToken} from './tokens';
+import {generateAccessToken, generateRefreshToken, IdAndEmail} from '../tokens';
 dotenv.config();
 export const authRouter = express.Router();
 
@@ -43,9 +42,13 @@ authRouter.post('/signup', async (req, res) => {
     const createdUser = await newUser(reqEmail, reqPassword).catch(error => {
       throw error;
     });
+    const userIdAndEmail: IdAndEmail = {
+      id: createdUser.id,
+      email: createdUser.email,
+    };
     // create tokens
-    const accessToken = generateAccessToken(createdUser);
-    const refreshToken = generateRefreshToken(createdUser); // this adds it to database
+    const accessToken = generateAccessToken(userIdAndEmail);
+    const refreshToken = await generateRefreshToken(userIdAndEmail); // this adds it to database
 
     res
       .send({
@@ -80,9 +83,19 @@ authRouter.post('/login', async (req, res) => {
       databasePassword
     );
     if (isCorrectCredentials) {
+      const userIdAndEmail: IdAndEmail = {
+        id: userToLogin.id,
+        email: userToLogin.email,
+      };
       // sign token
-      const token = generateAccessToken(userToLogin);
-      res.send({accessToken: token}).status(200);
+      const accessToken = generateAccessToken(userIdAndEmail);
+      const refreshToken = await generateRefreshToken(userIdAndEmail);
+      res
+        .send({
+          accessToken: accessToken,
+          refreshToken: refreshToken,
+        })
+        .status(200);
     } else {
       res.sendStatus(401);
     }

@@ -43,7 +43,7 @@ function findUserByRefreshToken(refreshToken) {
     return __awaiter(this, void 0, void 0, function* () {
         return yield prisma.refreshToken.findUnique({
             where: { token: refreshToken },
-            include: { joyrUser: true },
+            select: { joyrUser: true },
         });
     });
 }

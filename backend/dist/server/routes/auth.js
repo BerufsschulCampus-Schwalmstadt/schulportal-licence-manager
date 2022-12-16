@@ -40,7 +40,7 @@ const express_1 = __importDefault(require("express"));
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const database_1 = require("../../database/database");
 const dotenv = __importStar(require("dotenv"));
-const tokens_1 = require("./tokens");
+const tokens_1 = require("../tokens");
 dotenv.config();
 exports.authRouter = express_1.default.Router();
 function encryptPassword(password) {
@@ -67,8 +67,12 @@ exports.authRouter.post('/signup', (req, res) => __awaiter(void 0, void 0, void 
         const createdUser = yield (0, database_1.newUser)(reqEmail, reqPassword).catch(error => {
             throw error;
         });
-        const accessToken = (0, tokens_1.generateAccessToken)(createdUser);
-        const refreshToken = (0, tokens_1.generateRefreshToken)(createdUser);
+        const userIdAndEmail = {
+            id: createdUser.id,
+            email: createdUser.email,
+        };
+        const accessToken = (0, tokens_1.generateAccessToken)(userIdAndEmail);
+        const refreshToken = yield (0, tokens_1.generateRefreshToken)(userIdAndEmail);
         res
             .send({
             accessToken: accessToken,
@@ -90,8 +94,18 @@ exports.authRouter.post('/login', (req, res) => __awaiter(void 0, void 0, void 0
         const databasePassword = userToLogin.password;
         const isCorrectCredentials = yield verifyPassword(reqPassword, databasePassword);
         if (isCorrectCredentials) {
-            const token = (0, tokens_1.generateAccessToken)(userToLogin);
-            res.send({ accessToken: token }).status(200);
+            const userIdAndEmail = {
+                id: userToLogin.id,
+                email: userToLogin.email,
+            };
+            const accessToken = (0, tokens_1.generateAccessToken)(userIdAndEmail);
+            const refreshToken = yield (0, tokens_1.generateRefreshToken)(userIdAndEmail);
+            res
+                .send({
+                accessToken: accessToken,
+                refreshToken: refreshToken,
+            })
+                .status(200);
         }
         else {
             res.sendStatus(401);
