@@ -2,7 +2,6 @@ import React, {Component, FormEvent} from 'react';
 import './authForm.css';
 import InputComponent from '../../../components/inputComponent';
 import validator from 'email-validator';
-import {user} from '../../../global-types';
 import assert from 'assert';
 import {
   AuthFormState,
@@ -15,8 +14,8 @@ import {
   authToggleText,
   getFaillureType,
   newAuthType,
-  loginUser,
 } from './authFormFunctions';
+import {Navigate, useNavigate} from 'react-router-dom';
 
 // ---------------------------  Class Component ------------------------------//
 
@@ -61,7 +60,7 @@ export default class AuthForm extends Component<{}, AuthFormState> {
         const accessToken = response.accessToken;
         const refreshToken = response.refreshToken;
         localStorage.setItem('refreshToken', refreshToken);
-        await loginUser(accessToken);
+        this.setState({authenticated: true});
       } else {
         this.setState({authFaillure: getFaillureType(response)});
       }
@@ -75,6 +74,7 @@ export default class AuthForm extends Component<{}, AuthFormState> {
   render() {
     return (
       <div id="loginFormWrapper">
+        {this.state.authenticated && <Navigate to="/dashboard" />}
         <form
           id="loginForm"
           onChange={this.handleInputs}
