@@ -1,7 +1,7 @@
 import React, {MouseEventHandler} from 'react';
 import axios, {AxiosError, AxiosResponse} from 'axios';
 import validator from 'email-validator';
-import {user} from '../../../global-types';
+import {Navigate, redirect} from 'react-router-dom';
 const apiAddress = process.env.REACT_APP_APIBASEADDRESS;
 console.log(apiAddress);
 
@@ -37,6 +37,11 @@ export class AuthFormState {
     this.authFaillure = null;
   }
 }
+
+export type apiAuthResponse = {
+  accessToken: string;
+  refreshToken: string;
+};
 
 // ---------------------------- JSX Elements -------------------------------//
 
@@ -186,7 +191,7 @@ export async function apiAuthRequest(formState: AuthFormState) {
   const status = responseObject.status;
 
   if (status === 200) {
-    return (responseObject as AxiosResponse).data as user;
+    return (responseObject as AxiosResponse).data as apiAuthResponse;
   } else if (typeof status === 'number') {
     return status;
   } else {
@@ -210,15 +215,17 @@ export function getFaillureType(
   return Object.values(authFaillures)[index] as authFaillureType;
 }
 
-export async function loginUser(userToLogin: user) {
+function authenticatedAxiosInstance(accessToken: string) {
+  return axios.create({
+    headers: {authorization: 'Bearer ' + accessToken},
+  });
+}
+
+export async function loginUser(accessToken: string) {
   const apiAddressToAccess = apiAddress + '/api/dashboard/';
-  // const currentDateTime = new Date().toLocaleDateString();
-
   localStorage.setItem('hasEverLoggedIn', 'true');
-  localStorage.setItem('authenticatedUserId', userToLogin.id);
-  // localStorage.setItem('authenticationTime', currentDateTime);
 
-  const response = await axios
+  const response = await authenticatedAxiosInstance(accessToken)
     .get(apiAddressToAccess)
     .catch((error: AxiosError) => {
       console.log(error);
@@ -226,6 +233,10 @@ export async function loginUser(userToLogin: user) {
     });
 
   const status = response.status;
+
+  if (status === 200) {
+    redirect('/dashboard/' + (response as AxiosResponse).data.id);
+  }
 
   return typeof status === 'number' ? status : 500;
 }
