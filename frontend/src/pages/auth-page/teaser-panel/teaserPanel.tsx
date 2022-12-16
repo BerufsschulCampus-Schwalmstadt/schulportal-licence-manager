@@ -1,5 +1,5 @@
 import React from 'react';
-import teaserImg from '../../imgs/dashboardTeaser2.svg';
+import teaserImg from '../../../imgs/dashboardTeaser2.svg';
 import './teaserPanel.css';
 
 // ---------------------------  function component ------------------------------//
