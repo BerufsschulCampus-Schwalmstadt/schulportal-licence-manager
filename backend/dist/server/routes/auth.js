@@ -117,3 +117,8 @@ exports.authRouter.post('/login', (req, res) => __awaiter(void 0, void 0, void 0
         }
     }
 }));
+exports.authRouter.delete('/logout', (req, res) => {
+    (0, database_1.deleteRefreshToken)(req.body.token);
+    res.sendStatus(204);
+    console.log('successfully loged out');
+});
