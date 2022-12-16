@@ -10,11 +10,10 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.deleteUser = exports.pushRefreshToken = exports.findUserByRefreshToken = exports.findUserById = exports.findUserByEmail = exports.newUser = void 0;
-const client_1 = require("@prisma/client");
-const prisma = new client_1.PrismaClient();
+const server_1 = require("../server/server");
 function newUser(emailToSet, passwordToSet) {
     return __awaiter(this, void 0, void 0, function* () {
-        return yield prisma.joyrUser.create({
+        return yield server_1.prisma.joyrUser.create({
             data: {
                 email: emailToSet,
                 password: passwordToSet,
@@ -25,7 +24,7 @@ function newUser(emailToSet, passwordToSet) {
 exports.newUser = newUser;
 function findUserByEmail(emailToQuery) {
     return __awaiter(this, void 0, void 0, function* () {
-        return yield prisma.joyrUser.findUnique({
+        return yield server_1.prisma.joyrUser.findUnique({
             where: { email: emailToQuery },
         });
     });
@@ -33,7 +32,7 @@ function findUserByEmail(emailToQuery) {
 exports.findUserByEmail = findUserByEmail;
 function findUserById(idToQuery) {
     return __awaiter(this, void 0, void 0, function* () {
-        return yield prisma.joyrUser.findUnique({
+        return yield server_1.prisma.joyrUser.findUnique({
             where: { email: idToQuery },
         });
     });
@@ -41,7 +40,7 @@ function findUserById(idToQuery) {
 exports.findUserById = findUserById;
 function findUserByRefreshToken(refreshToken) {
     return __awaiter(this, void 0, void 0, function* () {
-        return yield prisma.refreshToken.findUnique({
+        return yield server_1.prisma.refreshToken.findUnique({
             where: { token: refreshToken },
             select: { joyrUser: true },
         });
@@ -50,7 +49,7 @@ function findUserByRefreshToken(refreshToken) {
 exports.findUserByRefreshToken = findUserByRefreshToken;
 function pushRefreshToken(refreshToken, userId) {
     return __awaiter(this, void 0, void 0, function* () {
-        return yield prisma.refreshToken.create({
+        return yield server_1.prisma.refreshToken.create({
             data: {
                 token: refreshToken,
                 joyrUserId: userId,
@@ -61,7 +60,10 @@ function pushRefreshToken(refreshToken, userId) {
 exports.pushRefreshToken = pushRefreshToken;
 function deleteUser(userId) {
     return __awaiter(this, void 0, void 0, function* () {
-        return yield prisma.joyrUser.delete({
+        yield server_1.prisma.refreshToken.deleteMany({
+            where: { joyrUserId: userId },
+        });
+        return yield server_1.prisma.joyrUser.delete({
             where: { id: userId },
         });
     });
