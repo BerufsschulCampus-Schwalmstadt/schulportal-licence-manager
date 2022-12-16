@@ -1,7 +1,7 @@
 import React, {MouseEventHandler} from 'react';
 import axios, {AxiosError, AxiosResponse} from 'axios';
 import validator from 'email-validator';
-import {Navigate, redirect} from 'react-router-dom';
+import {UrlHistory} from '@remix-run/router/dist/history';
 const apiAddress = process.env.REACT_APP_APIBASEADDRESS;
 console.log(apiAddress);
 
@@ -29,12 +29,14 @@ export class AuthFormState {
   email?: string;
   password?: string;
   authFaillure: authFaillureType;
+  authenticated: boolean;
 
   constructor() {
     this.hasEverLoggedIn =
       localStorage.getItem('hasEverLoggedIn') === 'true' ? true : false;
     this.authType = this.hasEverLoggedIn ? 'login' : 'signup';
     this.authFaillure = null;
+    this.authenticated = false;
   }
 }
 
@@ -217,26 +219,9 @@ export function getFaillureType(
 
 function authenticatedAxiosInstance(accessToken: string) {
   return axios.create({
-    headers: {authorization: 'Bearer ' + accessToken},
+    headers: {
+      'Content-Type': 'application/json',
+      authorization: 'Bearer ' + accessToken,
+    },
   });
-}
-
-export async function loginUser(accessToken: string) {
-  const apiAddressToAccess = apiAddress + '/api/dashboard/';
-  localStorage.setItem('hasEverLoggedIn', 'true');
-
-  const response = await authenticatedAxiosInstance(accessToken)
-    .get(apiAddressToAccess)
-    .catch((error: AxiosError) => {
-      console.log(error);
-      return error.toJSON() as AxiosError;
-    });
-
-  const status = response.status;
-
-  if (status === 200) {
-    redirect('/dashboard/' + (response as AxiosResponse).data.id);
-  }
-
-  return typeof status === 'number' ? status : 500;
 }
