@@ -81,10 +81,7 @@ authRouter.post('/login', async (req, res) => {
     );
     if (isCorrectCredentials) {
       // sign token
-      const token = jwt.sign(
-        userToLogin,
-        process.env.ACCESS_TOKEN_SECRET as Secret
-      );
+      const token = generateAccessToken(userToLogin);
       res.send({accessToken: token}).status(200);
     } else {
       res.sendStatus(401);

@@ -38,7 +38,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.authRouter = void 0;
 const express_1 = __importDefault(require("express"));
 const bcrypt_1 = __importDefault(require("bcrypt"));
-const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const database_1 = require("../../database/database");
 const dotenv = __importStar(require("dotenv"));
 const tokens_1 = require("./tokens");
@@ -91,7 +90,7 @@ exports.authRouter.post('/login', (req, res) => __awaiter(void 0, void 0, void 0
         const databasePassword = userToLogin.password;
         const isCorrectCredentials = yield verifyPassword(reqPassword, databasePassword);
         if (isCorrectCredentials) {
-            const token = jsonwebtoken_1.default.sign(userToLogin, process.env.ACCESS_TOKEN_SECRET);
+            const token = (0, tokens_1.generateAccessToken)(userToLogin);
             res.send({ accessToken: token }).status(200);
         }
         else {

@@ -10,7 +10,7 @@ dotenv.config();
 
 export function generateAccessToken(user: joyrUser) {
   return jwt.sign(user, process.env.ACCESS_TOKEN_SECRET as Secret, {
-    expiresIn: '30s',
+    expiresIn: '15s',
   });
 }
 

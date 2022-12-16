@@ -35,7 +35,7 @@ exports.tokenRefreshRouter = express_1.default.Router();
 dotenv.config();
 function generateAccessToken(user) {
     return jsonwebtoken_1.default.sign(user, process.env.ACCESS_TOKEN_SECRET, {
-        expiresIn: '30s',
+        expiresIn: '15s',
     });
 }
 exports.generateAccessToken = generateAccessToken;
