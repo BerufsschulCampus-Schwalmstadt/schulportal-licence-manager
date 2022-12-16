@@ -1,6 +1,10 @@
 import express from 'express';
 import bcrypt from 'bcrypt';
-import {findUserByEmail, newUser} from '../../database/database';
+import {
+  deleteRefreshToken,
+  findUserByEmail,
+  newUser,
+} from '../../database/database';
 import * as dotenv from 'dotenv';
 import {generateAccessToken, generateRefreshToken, IdAndEmail} from '../tokens';
 dotenv.config();
@@ -105,4 +109,10 @@ authRouter.post('/login', async (req, res) => {
       console.log('wrong credentials');
     }
   }
+});
+
+authRouter.delete('/logout', (req, res) => {
+  deleteRefreshToken(req.body.token);
+  res.sendStatus(204);
+  console.log('successfully loged out');
 });

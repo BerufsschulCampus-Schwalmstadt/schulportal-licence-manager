@@ -48,6 +48,12 @@ export async function pushRefreshToken(refreshToken: string, userId: string) {
   });
 }
 
+export async function deleteRefreshToken(tokenTodelete: string) {
+  return await prisma.refreshToken.deleteMany({
+    where: {token: tokenTodelete},
+  });
+}
+
 /**
  * It deletes all refresh tokens associated with a user, then deletes the user
  * @param {string} userId - the id of the user to delete

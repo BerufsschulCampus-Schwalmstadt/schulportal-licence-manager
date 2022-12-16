@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteUser = exports.pushRefreshToken = exports.findUserByRefreshToken = exports.findUserById = exports.findUserByEmail = exports.newUser = void 0;
+exports.deleteUser = exports.deleteRefreshToken = exports.pushRefreshToken = exports.findUserByRefreshToken = exports.findUserById = exports.findUserByEmail = exports.newUser = void 0;
 const server_1 = require("../server/server");
 function newUser(emailToSet, passwordToSet) {
     return __awaiter(this, void 0, void 0, function* () {
@@ -58,6 +58,14 @@ function pushRefreshToken(refreshToken, userId) {
     });
 }
 exports.pushRefreshToken = pushRefreshToken;
+function deleteRefreshToken(tokenTodelete) {
+    return __awaiter(this, void 0, void 0, function* () {
+        return yield server_1.prisma.refreshToken.deleteMany({
+            where: { token: tokenTodelete },
+        });
+    });
+}
+exports.deleteRefreshToken = deleteRefreshToken;
 function deleteUser(userId) {
     return __awaiter(this, void 0, void 0, function* () {
         yield server_1.prisma.refreshToken.deleteMany({
