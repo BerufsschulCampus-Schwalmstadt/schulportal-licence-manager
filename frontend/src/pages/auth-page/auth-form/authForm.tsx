@@ -15,19 +15,18 @@ import {
   getFaillureType,
   newAuthType,
   logoutUser,
-  generateUserObject,
+  updateUserInfo,
 } from './authFormFunctions';
 import {Navigate} from 'react-router-dom';
-import Dashboard from '../../dashboard-page/dashboard';
-
-// --------------------------- create context -------------------------------- //
-
-export const authContext = React.createContext({});
+import {GetAndSetUserInfo} from '../../../router';
 
 // ---------------------------  Class Component ------------------------------//
 
-export default class AuthForm extends Component<{}, AuthFormState> {
-  constructor(props: {}) {
+export default class AuthForm extends Component<
+  GetAndSetUserInfo,
+  AuthFormState
+> {
+  constructor(props: GetAndSetUserInfo) {
     super(props);
     this.state = new AuthFormState();
     this.handleFormToggle = this.handleFormToggle.bind(this);
@@ -65,10 +64,7 @@ export default class AuthForm extends Component<{}, AuthFormState> {
       const response = await apiAuthRequest(this.state);
       assert(response);
       if (typeof response !== 'number') {
-        const accessToken = response.accessToken;
-        const refreshToken = response.refreshToken;
-        localStorage.setItem('refreshToken', refreshToken);
-        this.setState({authenticated: true});
+        updateUserInfo(this.props.editUserInfo, response);
       } else {
         this.setState({authFaillure: getFaillureType(response)});
       }
@@ -87,45 +83,39 @@ export default class AuthForm extends Component<{}, AuthFormState> {
   authRef = React.createRef();
   render() {
     return (
-      <authContext.Provider
-        value={{
-          currentUser: generateUserObject(this.state),
-          logout: this.handleLogout,
-        }}
-      >
-        {this.state.authenticated === true && <Dashboard />}
-        <div id="loginFormWrapper">
-          {this.state.authenticated && <Navigate to="/dashboard" />}
-          <form
-            id="loginForm"
-            onChange={this.handleInputs}
-            onSubmit={this.handleSubmit}
-          >
-            <div className="loginFormHeadingContainer">
-              {authGreeting(this.state)}
-              {authInstructions(this.state)}
+      <div id="loginFormWrapper">
+        {this.props.currentUserInfo.authenticated && (
+          <Navigate to="/dashboard" />
+        )}
+        <form
+          id="loginForm"
+          onChange={this.handleInputs}
+          onSubmit={this.handleSubmit}
+        >
+          <div className="loginFormHeadingContainer">
+            {authGreeting(this.state)}
+            {authInstructions(this.state)}
+          </div>
+          <div className="loginFormContentWrapper">
+            <div className="inputFieldContainer">
+              <InputComponent name="email" />
+              <InputComponent name="password" type="password" />
             </div>
-            <div className="loginFormContentWrapper">
-              <div className="inputFieldContainer">
-                <InputComponent name="email" />
-                <InputComponent name="password" type="password" />
-              </div>
-            </div>
-            <p id="failTextElement">{authFormFailText(this.state)}</p>
-            <div className="submissionContainer">
-              <button
-                className="primaryButton"
-                type="submit"
-                name="submit"
-                id="submitButton"
-              >
-                {authFormSubmitText(this.state)}
-              </button>
-              {authToggleText(this.state, this.handleFormToggle)}
-            </div>
-          </form>
-        </div>
-      </authContext.Provider>
+          </div>
+          <p id="failTextElement">{authFormFailText(this.state)}</p>
+          <div className="submissionContainer">
+            <button
+              className="primaryButton"
+              type="submit"
+              name="submit"
+              id="submitButton"
+            >
+              {authFormSubmitText(this.state)}
+            </button>
+            {authToggleText(this.state, this.handleFormToggle)}
+          </div>
+        </form>
+      </div>
     );
   }
 }

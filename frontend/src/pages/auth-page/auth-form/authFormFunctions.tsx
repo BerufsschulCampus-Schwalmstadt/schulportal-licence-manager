@@ -1,7 +1,7 @@
 import React, {MouseEventHandler} from 'react';
 import axios, {AxiosError, AxiosResponse} from 'axios';
 import validator from 'email-validator';
-import {UrlHistory} from '@remix-run/router/dist/history';
+import {UserInfoEditor} from '../../../router';
 const apiAddress = process.env.REACT_APP_APIBASEADDRESS;
 console.log(apiAddress);
 
@@ -45,6 +45,9 @@ export class AuthFormState {
 }
 
 export type apiAuthResponse = {
+  userId: string;
+  userEmail: string;
+  userRole: string;
   accessToken: string;
   refreshToken: string;
 };
@@ -228,15 +231,27 @@ export function getFaillureType(
   return Object.values(authFaillures)[index] as authFaillureType;
 }
 
-function authenticatedAxiosInstance(accessToken: string) {
-  return axios.create({
-    headers: {
-      'Content-Type': 'application/json',
-      authorization: 'Bearer ' + accessToken,
-    },
-  });
-}
+// function authenticatedAxiosInstance(accessToken: string) {
+//   return axios.create({
+//     headers: {
+//       'Content-Type': 'application/json',
+//       authorization: 'Bearer ' + accessToken,
+//     },
+//   });
+// }
 
 export async function logoutUser(refreshToken: string | null) {
   await axios.post(apiAddress + '/auth/logout', refreshToken);
+}
+
+export function updateUserInfo(
+  userInfoEditor: UserInfoEditor,
+  response: apiAuthResponse
+) {
+  userInfoEditor('authenticated', true);
+  userInfoEditor('userId', response.userId);
+  userInfoEditor('userEmail', response.userEmail);
+  userInfoEditor('userRole', response.userRole);
+  userInfoEditor('accessToken', response.accessToken);
+  userInfoEditor('refreshToken', response.refreshToken);
 }

@@ -65,21 +65,21 @@ exports.authRouter.post('/signup', (req, res) => __awaiter(void 0, void 0, void 
         res.sendStatus(409);
     }
     else {
-        const createdUser = yield (0, database_1.newUser)(reqEmail, reqPassword).catch(error => {
-            throw error;
-        });
+        const createdUser = yield (0, database_1.newUser)(reqEmail, reqPassword);
         const userIdAndEmail = {
             id: createdUser.id,
             email: createdUser.email,
         };
         const accessToken = (0, tokens_1.generateAccessToken)(userIdAndEmail);
         const refreshToken = yield (0, tokens_1.generateRefreshToken)(userIdAndEmail);
-        res
-            .send({
+        const responseInfo = {
+            userId: createdUser.id,
+            userEmail: createdUser.email,
+            userRole: createdUser.accountType,
             accessToken: accessToken,
             refreshToken: refreshToken,
-        })
-            .status(200);
+        };
+        res.send(responseInfo).status(200);
         console.log('user created successfully');
     }
 }));
@@ -103,12 +103,14 @@ exports.authRouter.post('/login', (req, res) => __awaiter(void 0, void 0, void 0
             };
             const accessToken = (0, tokens_1.generateAccessToken)(userIdAndEmail);
             const refreshToken = yield (0, tokens_1.generateRefreshToken)(userIdAndEmail);
-            res
-                .send({
+            const responseInfo = {
+                userID: userToLogin.id,
+                userEmail: userToLogin.email,
+                userRole: userToLogin.accountType,
                 accessToken: accessToken,
                 refreshToken: refreshToken,
-            })
-                .status(200);
+            };
+            res.send(responseInfo).status(200);
             console.log('user logged in successfully');
         }
         else {
@@ -117,7 +119,7 @@ exports.authRouter.post('/login', (req, res) => __awaiter(void 0, void 0, void 0
         }
     }
 }));
-exports.authRouter.delete('/logout', (req, res) => {
+exports.authRouter.post('/logout', (req, res) => {
     (0, database_1.deleteRefreshToken)(req.body.token);
     res.sendStatus(204);
     console.log('successfully loged out');

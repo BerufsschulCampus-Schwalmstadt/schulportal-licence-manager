@@ -1,10 +1,14 @@
 import React, {Component} from 'react';
-import {authContext} from '../auth-page/auth-form/authForm';
+import {GetAndSetUserInfo} from '../../router';
 
-export default class Dashboard extends Component {
-  static contextType = authContext;
+export default class Dashboard extends Component<GetAndSetUserInfo> {
   render() {
-    console.log(this.context);
-    return <div>hey: {JSON.stringify(this.context)}</div>;
+    console.log(this.props.currentUserInfo);
+    return (
+      <div>
+        Current user info:{' '}
+        {JSON.stringify(this.props.currentUserInfo.userEmail)}
+      </div>
+    );
   }
 }

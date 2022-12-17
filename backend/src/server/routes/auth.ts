@@ -44,9 +44,7 @@ authRouter.post('/signup', async (req, res) => {
     console.log('user already exists');
     res.sendStatus(409);
   } else {
-    const createdUser = await newUser(reqEmail, reqPassword).catch(error => {
-      throw error;
-    });
+    const createdUser = await newUser(reqEmail, reqPassword);
     const userIdAndEmail: IdAndEmail = {
       id: createdUser.id,
       email: createdUser.email,
@@ -54,13 +52,14 @@ authRouter.post('/signup', async (req, res) => {
     // create tokens
     const accessToken = generateAccessToken(userIdAndEmail);
     const refreshToken = await generateRefreshToken(userIdAndEmail); // this adds it to database
-
-    res
-      .send({
-        accessToken: accessToken,
-        refreshToken: refreshToken,
-      })
-      .status(200);
+    const responseInfo = {
+      userId: createdUser.id,
+      userEmail: createdUser.email,
+      userRole: createdUser.accountType,
+      accessToken: accessToken,
+      refreshToken: refreshToken,
+    };
+    res.send(responseInfo).status(200);
     console.log('user created successfully');
   }
 });
@@ -97,12 +96,14 @@ authRouter.post('/login', async (req, res) => {
       // sign token
       const accessToken = generateAccessToken(userIdAndEmail);
       const refreshToken = await generateRefreshToken(userIdAndEmail);
-      res
-        .send({
-          accessToken: accessToken,
-          refreshToken: refreshToken,
-        })
-        .status(200);
+      const responseInfo = {
+        userID: userToLogin.id,
+        userEmail: userToLogin.email,
+        userRole: userToLogin.accountType,
+        accessToken: accessToken,
+        refreshToken: refreshToken,
+      };
+      res.send(responseInfo).status(200);
       console.log('user logged in successfully');
     } else {
       res.sendStatus(401);
