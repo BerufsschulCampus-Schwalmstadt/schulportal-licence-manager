@@ -30,6 +30,10 @@ export class AuthFormState {
   password?: string;
   authFaillure: authFaillureType;
   authenticated: boolean;
+  userId?: string;
+  userRole?: string;
+  accessToken?: string;
+  refreshToken?: string;
 
   constructor() {
     this.hasEverLoggedIn =
@@ -154,6 +158,13 @@ export function checkSubmission(
   }
 }
 
+export function generateUserObject(formState: AuthFormState) {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const {authFaillure, authType, hasEverLoggedIn, password, ...authObject} =
+    formState;
+  return authObject;
+}
+
 // export function objectToMap(object: object): Map<string, any> {
 //   const map = new Map();
 //   const keys = Object.keys(object);
@@ -224,4 +235,8 @@ function authenticatedAxiosInstance(accessToken: string) {
       authorization: 'Bearer ' + accessToken,
     },
   });
+}
+
+export async function logoutUser(refreshToken: string | null) {
+  await axios.post(apiAddress + '/auth/logout', refreshToken);
 }

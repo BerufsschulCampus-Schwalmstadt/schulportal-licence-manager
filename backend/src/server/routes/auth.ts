@@ -111,7 +111,7 @@ authRouter.post('/login', async (req, res) => {
   }
 });
 
-authRouter.delete('/logout', (req, res) => {
+authRouter.post('/logout', (req, res) => {
   deleteRefreshToken(req.body.token);
   res.sendStatus(204);
   console.log('successfully loged out');

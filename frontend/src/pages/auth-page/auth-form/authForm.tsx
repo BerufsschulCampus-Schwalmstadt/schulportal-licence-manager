@@ -14,8 +14,15 @@ import {
   authToggleText,
   getFaillureType,
   newAuthType,
+  logoutUser,
+  generateUserObject,
 } from './authFormFunctions';
-import {Navigate, useNavigate} from 'react-router-dom';
+import {Navigate} from 'react-router-dom';
+import Dashboard from '../../dashboard-page/dashboard';
+
+// --------------------------- create context -------------------------------- //
+
+export const authContext = React.createContext({});
 
 // ---------------------------  Class Component ------------------------------//
 
@@ -26,6 +33,7 @@ export default class AuthForm extends Component<{}, AuthFormState> {
     this.handleFormToggle = this.handleFormToggle.bind(this);
     this.handleInputs = this.handleInputs.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleLogout = this.handleLogout.bind(this);
   }
 
   handleFormToggle() {
@@ -69,41 +77,55 @@ export default class AuthForm extends Component<{}, AuthFormState> {
     }
   }
 
-  // ---------------------------  Rendered HTML ------------------------------//
+  async handleLogout() {
+    const refreshToken = localStorage.getItem('refreshToken');
+    logoutUser(refreshToken);
+    this.setState({authenticated: false});
+  }
 
+  // ---------------------------  Rendered HTML ------------------------------//
+  authRef = React.createRef();
   render() {
     return (
-      <div id="loginFormWrapper">
-        {this.state.authenticated && <Navigate to="/dashboard" />}
-        <form
-          id="loginForm"
-          onChange={this.handleInputs}
-          onSubmit={this.handleSubmit}
-        >
-          <div className="loginFormHeadingContainer">
-            {authGreeting(this.state)}
-            {authInstructions(this.state)}
-          </div>
-          <div className="loginFormContentWrapper">
-            <div className="inputFieldContainer">
-              <InputComponent name="email" />
-              <InputComponent name="password" type="password" />
+      <authContext.Provider
+        value={{
+          currentUser: generateUserObject(this.state),
+          logout: this.handleLogout,
+        }}
+      >
+        {this.state.authenticated === true && <Dashboard />}
+        <div id="loginFormWrapper">
+          {this.state.authenticated && <Navigate to="/dashboard" />}
+          <form
+            id="loginForm"
+            onChange={this.handleInputs}
+            onSubmit={this.handleSubmit}
+          >
+            <div className="loginFormHeadingContainer">
+              {authGreeting(this.state)}
+              {authInstructions(this.state)}
             </div>
-          </div>
-          <p id="failTextElement">{authFormFailText(this.state)}</p>
-          <div className="submissionContainer">
-            <button
-              className="primaryButton"
-              type="submit"
-              name="submit"
-              id="submitButton"
-            >
-              {authFormSubmitText(this.state)}
-            </button>
-            {authToggleText(this.state, this.handleFormToggle)}
-          </div>
-        </form>
-      </div>
+            <div className="loginFormContentWrapper">
+              <div className="inputFieldContainer">
+                <InputComponent name="email" />
+                <InputComponent name="password" type="password" />
+              </div>
+            </div>
+            <p id="failTextElement">{authFormFailText(this.state)}</p>
+            <div className="submissionContainer">
+              <button
+                className="primaryButton"
+                type="submit"
+                name="submit"
+                id="submitButton"
+              >
+                {authFormSubmitText(this.state)}
+              </button>
+              {authToggleText(this.state, this.handleFormToggle)}
+            </div>
+          </form>
+        </div>
+      </authContext.Provider>
     );
   }
 }

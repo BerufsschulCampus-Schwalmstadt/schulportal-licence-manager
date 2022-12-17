@@ -3,7 +3,8 @@
     "concurrently": "^7.6.0",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-prettier": "^4.2.1",
-    "eslint-plugin-react": "^7.31.11"
+    "eslint-plugin-react": "^7.31.11",
+    "react-router-guards": "^1.0.2"
   },
   "engines": {
     "node": "18.x"

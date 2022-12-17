@@ -1,5 +1,10 @@
-import React from 'react';
+import React, {Component} from 'react';
+import {authContext} from '../auth-page/auth-form/authForm';
 
-export default function Dashboard() {
-  return <div>Dashboard</div>;
+export default class Dashboard extends Component {
+  static contextType = authContext;
+  render() {
+    console.log(this.context);
+    return <div>hey: {JSON.stringify(this.context)}</div>;
+  }
 }
