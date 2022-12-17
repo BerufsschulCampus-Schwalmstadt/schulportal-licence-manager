@@ -248,10 +248,12 @@ export function updateUserInfo(
   userInfoEditor: UserInfoEditor,
   response: apiAuthResponse
 ) {
-  userInfoEditor('authenticated', true);
-  userInfoEditor('userId', response.userId);
-  userInfoEditor('userEmail', response.userEmail);
-  userInfoEditor('userRole', response.userRole);
-  userInfoEditor('accessToken', response.accessToken);
-  userInfoEditor('refreshToken', response.refreshToken);
+  if (userInfoEditor) {
+    userInfoEditor('authenticated', true);
+    userInfoEditor('userId', response.userId);
+    userInfoEditor('userEmail', response.userEmail);
+    userInfoEditor('userRole', response.userRole);
+    userInfoEditor('accessToken', response.accessToken);
+    userInfoEditor('refreshToken', response.refreshToken);
+  }
 }

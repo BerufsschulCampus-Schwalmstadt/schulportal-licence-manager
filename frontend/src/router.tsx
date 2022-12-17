@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import {createBrowserRouter, RouterProvider} from 'react-router-dom';
 import AuthPage from './pages/auth-page/auth';
 import Dashboard from './pages/dashboard-page/dashboard';
+import {userContext} from './global/contexts';
 
 export type UserInfo = {
   authenticated: boolean;
@@ -12,10 +13,9 @@ export type UserInfo = {
   refreshToken?: string;
 };
 
-export type UserInfoEditor = (
-  propertyToSet: keyof UserInfo,
-  propertyValue: string | boolean
-) => void;
+export type UserInfoEditor =
+  | ((propertyToSet: keyof UserInfo, propertyValue: string | boolean) => void)
+  | undefined;
 
 export type GetAndSetUserInfo = {
   currentUserInfo: UserInfo;
@@ -54,7 +54,11 @@ export default class App extends Component<{}, UserInfo> {
       currentUserInfo: this.state,
       editUserInfo: this.handleUserInfoChange,
     };
-    return <RouterProvider router={createMyRouter(UserInfoGetterAndSetter)} />;
+    return (
+      <userContext.Provider value={UserInfoGetterAndSetter}>
+        <RouterProvider router={createMyRouter(UserInfoGetterAndSetter)} />
+      </userContext.Provider>
+    );
   }
 }
 

@@ -2,7 +2,6 @@ import React, {Component, FormEvent} from 'react';
 import './authForm.css';
 import InputComponent from '../../../components/inputComponent';
 import validator from 'email-validator';
-import assert from 'assert';
 import {
   AuthFormState,
   apiAuthRequest,
@@ -18,15 +17,14 @@ import {
   updateUserInfo,
 } from './authFormFunctions';
 import {Navigate} from 'react-router-dom';
+import {userContext} from '../../../global/contexts';
 import {GetAndSetUserInfo} from '../../../router';
 
 // ---------------------------  Class Component ------------------------------//
 
-export default class AuthForm extends Component<
-  GetAndSetUserInfo,
-  AuthFormState
-> {
-  constructor(props: GetAndSetUserInfo) {
+export default class AuthForm extends Component<{}, AuthFormState> {
+  static contextType = userContext;
+  constructor(props: {}) {
     super(props);
     this.state = new AuthFormState();
     this.handleFormToggle = this.handleFormToggle.bind(this);
@@ -62,9 +60,9 @@ export default class AuthForm extends Component<
 
     if (submission === 'valid submission') {
       const response = await apiAuthRequest(this.state);
-      assert(response);
       if (typeof response !== 'number') {
-        updateUserInfo(this.props.editUserInfo, response);
+        const userInfoEditor = (this.context as GetAndSetUserInfo).editUserInfo;
+        updateUserInfo(userInfoEditor, response);
       } else {
         this.setState({authFaillure: getFaillureType(response)});
       }
@@ -82,11 +80,11 @@ export default class AuthForm extends Component<
   // ---------------------------  Rendered HTML ------------------------------//
   authRef = React.createRef();
   render() {
+    const isAuthenticated = (this.context as GetAndSetUserInfo).currentUserInfo
+      .authenticated;
     return (
       <div id="loginFormWrapper">
-        {this.props.currentUserInfo.authenticated && (
-          <Navigate to="/dashboard" />
-        )}
+        {isAuthenticated && <Navigate to="/dashboard" />}
         <form
           id="loginForm"
           onChange={this.handleInputs}
