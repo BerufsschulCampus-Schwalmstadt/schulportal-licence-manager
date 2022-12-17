@@ -14,18 +14,25 @@ import {
   authToggleText,
   getFaillureType,
   newAuthType,
+  logoutUser,
+  updateUserInfo,
 } from './authFormFunctions';
-import {Navigate, useNavigate} from 'react-router-dom';
+import {Navigate} from 'react-router-dom';
+import {GetAndSetUserInfo} from '../../../router';
 
 // ---------------------------  Class Component ------------------------------//
 
-export default class AuthForm extends Component<{}, AuthFormState> {
-  constructor(props: {}) {
+export default class AuthForm extends Component<
+  GetAndSetUserInfo,
+  AuthFormState
+> {
+  constructor(props: GetAndSetUserInfo) {
     super(props);
     this.state = new AuthFormState();
     this.handleFormToggle = this.handleFormToggle.bind(this);
     this.handleInputs = this.handleInputs.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleLogout = this.handleLogout.bind(this);
   }
 
   handleFormToggle() {
@@ -57,10 +64,7 @@ export default class AuthForm extends Component<{}, AuthFormState> {
       const response = await apiAuthRequest(this.state);
       assert(response);
       if (typeof response !== 'number') {
-        const accessToken = response.accessToken;
-        const refreshToken = response.refreshToken;
-        localStorage.setItem('refreshToken', refreshToken);
-        this.setState({authenticated: true});
+        updateUserInfo(this.props.editUserInfo, response);
       } else {
         this.setState({authFaillure: getFaillureType(response)});
       }
@@ -69,12 +73,20 @@ export default class AuthForm extends Component<{}, AuthFormState> {
     }
   }
 
-  // ---------------------------  Rendered HTML ------------------------------//
+  async handleLogout() {
+    const refreshToken = localStorage.getItem('refreshToken');
+    logoutUser(refreshToken);
+    this.setState({authenticated: false});
+  }
 
+  // ---------------------------  Rendered HTML ------------------------------//
+  authRef = React.createRef();
   render() {
     return (
       <div id="loginFormWrapper">
-        {this.state.authenticated && <Navigate to="/dashboard" />}
+        {this.props.currentUserInfo.authenticated && (
+          <Navigate to="/dashboard" />
+        )}
         <form
           id="loginForm"
           onChange={this.handleInputs}

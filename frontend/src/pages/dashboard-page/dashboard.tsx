@@ -1,5 +1,14 @@
-import React from 'react';
+import React, {Component} from 'react';
+import {GetAndSetUserInfo} from '../../router';
 
-export default function Dashboard() {
-  return <div>Dashboard</div>;
+export default class Dashboard extends Component<GetAndSetUserInfo> {
+  render() {
+    console.log(this.props.currentUserInfo);
+    return (
+      <div>
+        Current user info:{' '}
+        {JSON.stringify(this.props.currentUserInfo.userEmail)}
+      </div>
+    );
+  }
 }
