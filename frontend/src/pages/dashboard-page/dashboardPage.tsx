@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
-import {userContext} from '../../global/contexts';
-import {GetAndSetUserInfo} from '../../global/global-types';
+import {userContext} from '../../globals/contexts';
+import {GetAndSetUserInfo} from '../../globals/global-types';
 
 export default class Dashboard extends Component {
   static contextType = userContext;

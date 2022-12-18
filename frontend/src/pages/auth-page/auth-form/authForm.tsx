@@ -17,8 +17,8 @@ import {
   updateUserInfo,
 } from './authFormFunctions';
 import {Navigate} from 'react-router-dom';
-import {userContext} from '../../../global/contexts';
-import {GetAndSetUserInfo} from '../../../global/global-types';
+import {userContext} from '../../../globals/contexts';
+import {GetAndSetUserInfo} from '../../../globals/global-types';
 
 // ---------------------------  Class Component ------------------------------//
 
