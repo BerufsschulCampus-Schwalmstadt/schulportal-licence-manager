@@ -1,16 +1,12 @@
 import React, {Component} from 'react';
-import {GetAndSetUserInfo} from '../../router';
 import {userContext} from '../../global/contexts';
+import {GetAndSetUserInfo} from '../../global/global-types';
 
-export default class Dashboard extends Component<GetAndSetUserInfo> {
+export default class Dashboard extends Component {
+  static contextType = userContext;
   render() {
-    return (
-      <userContext.Provider value={this.props}>
-        <div>
-          Current user info:{' '}
-          {JSON.stringify(this.props.currentUserInfo.userEmail)}
-        </div>
-      </userContext.Provider>
-    );
+    const {...currentUserInfo} = (this.context as GetAndSetUserInfo)
+      .currentUserInfo;
+    return <div>Current user info: {JSON.stringify(currentUserInfo)}</div>;
   }
 }

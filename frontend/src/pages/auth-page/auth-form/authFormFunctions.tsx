@@ -1,7 +1,7 @@
 import React, {MouseEventHandler} from 'react';
 import axios, {AxiosError, AxiosResponse} from 'axios';
 import validator from 'email-validator';
-import {UserInfoEditor} from '../../../router';
+import {UserInfoEditor} from '../../../global/global-types';
 const apiAddress = process.env.REACT_APP_APIBASEADDRESS;
 console.log(apiAddress);
 

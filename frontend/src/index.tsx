@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './global/global-styles.css';
-import App from './router';
+import App from './global/app';
 
 export const userContext = React.createContext({});
 /* Creating a root element and rendering the app into it. */
