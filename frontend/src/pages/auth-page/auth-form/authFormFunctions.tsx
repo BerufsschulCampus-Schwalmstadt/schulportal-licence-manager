@@ -1,11 +1,11 @@
 import React, {MouseEventHandler} from 'react';
 import axios, {AxiosError, AxiosResponse} from 'axios';
 import validator from 'email-validator';
-import {UserInfoEditor} from '../../../router';
+import {UserInfoEditor} from '../../../globals/global-types';
 const apiAddress = process.env.REACT_APP_APIBASEADDRESS;
 console.log(apiAddress);
 
-// ---------------- Constants (type, class, object) -------------------------//
+// ---------------- definitions (type, class, object) -------------------------//
 
 export const authFaillures = {
   // form
@@ -21,6 +21,7 @@ export const authFaillures = {
 } as const;
 
 export type authFaillureCodes = keyof typeof authFaillures;
+
 export type authFaillureType = typeof authFaillures[authFaillureCodes] | null;
 
 export class AuthFormState {
@@ -167,18 +168,6 @@ export function generateUserObject(formState: AuthFormState) {
     formState;
   return authObject;
 }
-
-// export function objectToMap(object: object): Map<string, any> {
-//   const map = new Map();
-//   const keys = Object.keys(object);
-//   const values = Object.values(object);
-
-//   // map each key to the value in the object
-//   for (let i = 0; i < keys.length; i++) {
-//     map.set(keys[i], values[i]);
-//   }
-//   return map;
-// }
 
 // ----------------- API/Server access functions ---------------///
 

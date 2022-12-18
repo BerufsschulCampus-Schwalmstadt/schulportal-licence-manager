@@ -1,14 +1,13 @@
 import React from 'react';
 import AuthForm from './auth-form/authForm';
 import TeaserPanel from './teaser-panel/teaserPanel';
-import './auth.css';
-import {GetAndSetUserInfo} from '../../router';
+import './authPage.css';
 
-export default function AuthPage(props: GetAndSetUserInfo) {
+export default function AuthPage() {
   return (
     <div id="loginSignupPage">
       <TeaserPanel />
-      <AuthForm {...props} />
+      <AuthForm />
     </div>
   );
 }

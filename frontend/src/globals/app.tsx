@@ -1,26 +1,8 @@
 import React, {Component} from 'react';
-import {createBrowserRouter, RouterProvider} from 'react-router-dom';
-import AuthPage from './pages/auth-page/auth';
-import Dashboard from './pages/dashboard-page/dashboard';
-import {userContext} from './global/contexts';
-
-export type UserInfo = {
-  authenticated: boolean;
-  userId?: string;
-  userEmail?: string;
-  userRole?: string;
-  accessToken?: string;
-  refreshToken?: string;
-};
-
-export type UserInfoEditor =
-  | ((propertyToSet: keyof UserInfo, propertyValue: string | boolean) => void)
-  | undefined;
-
-export type GetAndSetUserInfo = {
-  currentUserInfo: UserInfo;
-  editUserInfo: UserInfoEditor;
-};
+import {RouterProvider} from 'react-router-dom';
+import {userContext} from './contexts';
+import {UserInfo} from './global-types';
+import router from './router';
 
 export default class App extends Component<{}, UserInfo> {
   constructor(props: {}) {
@@ -56,21 +38,8 @@ export default class App extends Component<{}, UserInfo> {
     };
     return (
       <userContext.Provider value={UserInfoGetterAndSetter}>
-        <RouterProvider router={createMyRouter(UserInfoGetterAndSetter)} />
+        <RouterProvider router={router} />
       </userContext.Provider>
     );
   }
-}
-
-function createMyRouter(userInfoGetterAndSetter: GetAndSetUserInfo) {
-  return createBrowserRouter([
-    {
-      path: '/',
-      element: <AuthPage {...userInfoGetterAndSetter} />,
-    },
-    {
-      path: '/dashboard/*',
-      element: <Dashboard {...userInfoGetterAndSetter} />,
-    },
-  ]);
 }
