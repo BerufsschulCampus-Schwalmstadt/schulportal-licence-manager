@@ -60,7 +60,7 @@ export default class AuthForm extends Component<{}, AuthFormState> {
       const response = await apiAuthRequest(this.state);
       if (typeof response !== 'number') {
         const userInfoEditor = (this.context as GetAndSetUserInfo).editUserInfo;
-        updateUserInfo(userInfoEditor, response);
+        updateUserInfo(userInfoEditor, response, true);
       } else {
         this.setState({authFaillure: getFaillureType(response)});
       }
