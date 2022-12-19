@@ -77,8 +77,12 @@ exports.authRouter.post('/signup', (req, res) => __awaiter(void 0, void 0, void 
             userEmail: createdUser.email,
             userRole: createdUser.accountType,
             accessToken: accessToken,
-            refreshToken: refreshToken,
         };
+        console.log(responseInfo);
+        res.cookie('refreshToken', refreshToken, {
+            httpOnly: true,
+            maxAge: 3 * 24 * 60 * 60 * 1000,
+        });
         res.send(responseInfo).status(200);
         console.log('user created successfully');
     }
@@ -104,12 +108,16 @@ exports.authRouter.post('/login', (req, res) => __awaiter(void 0, void 0, void 0
             const accessToken = (0, tokens_1.generateAccessToken)(userIdAndEmail);
             const refreshToken = yield (0, tokens_1.generateRefreshToken)(userIdAndEmail);
             const responseInfo = {
-                userID: userToLogin.id,
+                userId: userToLogin.id,
                 userEmail: userToLogin.email,
                 userRole: userToLogin.accountType,
                 accessToken: accessToken,
-                refreshToken: refreshToken,
             };
+            res.cookie('refreshToken', refreshToken, {
+                httpOnly: true,
+                maxAge: 3 * 24 * 60 * 60 * 1000,
+            });
+            console.log(responseInfo);
             res.send(responseInfo).status(200);
             console.log('user logged in successfully');
         }
@@ -120,7 +128,7 @@ exports.authRouter.post('/login', (req, res) => __awaiter(void 0, void 0, void 0
     }
 }));
 exports.authRouter.post('/logout', (req, res) => {
-    (0, database_1.deleteRefreshToken)(req.body.token);
+    (0, database_1.deleteRefreshToken)(req.cookies.refreshToken);
     res.sendStatus(204);
     console.log('successfully loged out');
 });

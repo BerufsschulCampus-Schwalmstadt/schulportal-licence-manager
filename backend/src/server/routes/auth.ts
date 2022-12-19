@@ -57,8 +57,13 @@ authRouter.post('/signup', async (req, res) => {
       userEmail: createdUser.email,
       userRole: createdUser.accountType,
       accessToken: accessToken,
-      refreshToken: refreshToken,
     };
+    console.log(responseInfo);
+    // send refreshtoken as a cookie and the rest as a json
+    res.cookie('refreshToken', refreshToken, {
+      httpOnly: true,
+      maxAge: 3 * 24 * 60 * 60 * 1000, //3days
+    });
     res.send(responseInfo).status(200);
     console.log('user created successfully');
   }
@@ -97,12 +102,18 @@ authRouter.post('/login', async (req, res) => {
       const accessToken = generateAccessToken(userIdAndEmail);
       const refreshToken = await generateRefreshToken(userIdAndEmail);
       const responseInfo = {
-        userID: userToLogin.id,
+        userId: userToLogin.id,
         userEmail: userToLogin.email,
         userRole: userToLogin.accountType,
         accessToken: accessToken,
-        refreshToken: refreshToken,
       };
+
+      // send refreshtoken as a cookie and the rest as a json
+      res.cookie('refreshToken', refreshToken, {
+        httpOnly: true,
+        maxAge: 3 * 24 * 60 * 60 * 1000, //3days
+      });
+      console.log(responseInfo);
       res.send(responseInfo).status(200);
       console.log('user logged in successfully');
     } else {
@@ -113,7 +124,7 @@ authRouter.post('/login', async (req, res) => {
 });
 
 authRouter.post('/logout', (req, res) => {
-  deleteRefreshToken(req.body.token);
+  deleteRefreshToken(req.cookies.refreshToken);
   res.sendStatus(204);
   console.log('successfully loged out');
 });

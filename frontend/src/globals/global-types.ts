@@ -4,15 +4,17 @@ export type UserInfo = {
   userEmail?: string;
   userRole?: string;
   accessToken?: string;
-  refreshToken?: string;
-};
+}; // + refresh token in cookies
 
 export type UserInfoEditor = (
   propertyToSet: keyof UserInfo,
   propertyValue: string | boolean
 ) => void;
 
+export type UserInfoGetter = () => Promise<void>;
+
 export type GetAndSetUserInfo = {
   currentUserInfo: UserInfo;
   editUserInfo: UserInfoEditor;
+  getUserInfo: UserInfoGetter;
 };
