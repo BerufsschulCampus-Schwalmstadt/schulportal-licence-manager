@@ -20,7 +20,7 @@ export default class App extends Component<{}, UserInfo> {
   async getUserInfo() {
     const response = await apiUserInfoRequest();
     if (response) {
-      updateUserInfo(this.handleUserInfoChange, response);
+      updateUserInfo(this.handleUserInfoChange, response, true);
     } else {
       this.setState({authenticated: false});
     }

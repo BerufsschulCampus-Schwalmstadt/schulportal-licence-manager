@@ -1,4 +1,3 @@
-import {AxiosError, AxiosResponse} from 'axios';
 import {generateAxiosInstance} from './axios-config';
 import {UserInfo, UserInfoEditor} from './global-types';
 
@@ -6,18 +5,22 @@ export async function apiUserInfoRequest() {
   const refreshRoute = '/refresh';
   const axios = generateAxiosInstance();
   const refreshResponseObject = await axios.get(refreshRoute).catch(error => {
-    console.log(error.toJSON() as AxiosError);
+    if (error) {
+      console.log('Cannot get user info, make sure the user has logged in');
+    }
   });
-
-  const response = (refreshResponseObject as AxiosResponse).data;
-  return response as UserInfo | undefined;
+  if (refreshResponseObject) {
+    return refreshResponseObject.data as UserInfo;
+  }
+  return undefined;
 }
 
 export function updateUserInfo(
   userInfoEditor: UserInfoEditor,
-  response: UserInfo
+  response: UserInfo,
+  authenticationStatus: boolean
 ) {
-  userInfoEditor('authenticated', true);
+  userInfoEditor('authenticated', authenticationStatus);
   userInfoEditor('userId', response.userId as string);
   userInfoEditor('userEmail', response.userEmail as string);
   userInfoEditor('userRole', response.userRole as string);

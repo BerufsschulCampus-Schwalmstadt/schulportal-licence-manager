@@ -9,6 +9,7 @@ export default class Dashboard extends Component {
   constructor(props: {}) {
     super(props);
   }
+
   async componentDidMount() {
     await this.context.getUserInfo();
   }
