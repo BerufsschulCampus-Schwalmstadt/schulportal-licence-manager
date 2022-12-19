@@ -15,6 +15,7 @@ export default class App extends Component<{}, UserInfo> {
     this.state = {authenticated: false};
     this.handleUserInfoChange = this.handleUserInfoChange.bind(this);
     this.getUserInfo = this.getUserInfo.bind(this);
+    this.handleLogout = this.handleLogout.bind(this);
   }
 
   async getUserInfo() {
