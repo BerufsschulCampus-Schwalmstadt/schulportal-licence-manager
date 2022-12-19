@@ -13,11 +13,9 @@ import {
   authToggleText,
   getFaillureType,
   newAuthType,
-  logoutUser,
 } from './authFormFunctions';
-import {userContext} from '../../../globals/contexts';
+import {userContext} from '../../../globals/app-contexts';
 import {GetAndSetUserInfo} from '../../../globals/global-types';
-import {Navigate} from 'react-router-dom';
 import {updateUserInfo} from '../../../globals/global-functions';
 
 // ---------------------------  Class Component ------------------------------//
@@ -32,7 +30,6 @@ export default class AuthForm extends Component<{}, AuthFormState> {
     this.handleFormToggle = this.handleFormToggle.bind(this);
     this.handleInputs = this.handleInputs.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
-    this.handleLogout = this.handleLogout.bind(this);
   }
 
   handleFormToggle() {
@@ -57,7 +54,6 @@ export default class AuthForm extends Component<{}, AuthFormState> {
   async handleSubmit(event: FormEvent) {
     event.preventDefault();
     this.setState({authFaillure: null});
-    console.log(this.state.authType);
     const submission = checkSubmission(this.state);
 
     if (submission === 'valid submission') {
@@ -73,19 +69,10 @@ export default class AuthForm extends Component<{}, AuthFormState> {
     }
   }
 
-  async handleLogout() {
-    const refreshToken = localStorage.getItem('refreshToken');
-    logoutUser(refreshToken);
-    this.context.editUserInfo('authenticated', false);
-  }
-
   // ---------------------------  Rendered HTML ------------------------------//
   render() {
     return (
       <div id="loginFormWrapper">
-        {this.context.currentUserInfo.authenticated && (
-          <Navigate to="/dashboard" />
-        )}
         <form
           id="loginForm"
           onChange={this.handleInputs}

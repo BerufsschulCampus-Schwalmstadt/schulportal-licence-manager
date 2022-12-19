@@ -47,13 +47,6 @@ export default class inputComponent extends Component<
     this.handlechange = this.handlechange.bind(this);
   }
 
-  // ----------Input event handler
-  /**
-   * A function that handles the change of the input fields.
-   * @param {ChangeEvent<HTMLInputElement>} event -
-   * ChangeEvent<HTMLInputElement> - this is the event that
-   * is triggered when the input field changes
-   */
   handlechange(event: ChangeEvent<HTMLInputElement>) {
     this.setState({inputFieldValue: event.target.value});
   }

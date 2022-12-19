@@ -1,5 +1,5 @@
 import {AxiosError, AxiosResponse} from 'axios';
-import {generateAxiosInstance} from './axios';
+import {generateAxiosInstance} from './axios-config';
 import {UserInfo, UserInfoEditor} from './global-types';
 
 export async function apiUserInfoRequest() {
@@ -22,4 +22,9 @@ export function updateUserInfo(
   userInfoEditor('userEmail', response.userEmail as string);
   userInfoEditor('userRole', response.userRole as string);
   userInfoEditor('accessToken', response.accessToken as string);
+}
+
+export async function logoutUser() {
+  const axios = generateAxiosInstance();
+  await axios.delete('/auth/logout');
 }

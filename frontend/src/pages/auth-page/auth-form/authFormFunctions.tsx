@@ -1,10 +1,8 @@
 import React, {MouseEventHandler} from 'react';
 import {AxiosError, AxiosResponse} from 'axios';
-import {generateAxiosInstance} from '../../../globals/axios';
+import {generateAxiosInstance} from '../../../globals/axios-config';
 import validator from 'email-validator';
 import {UserInfo} from '../../../globals/global-types';
-const apiAddress = process.env.REACT_APP_APIBASEADDRESS;
-console.log(apiAddress);
 
 // ---------------- definitions (type, class, object) -------------------------//
 
@@ -149,11 +147,20 @@ export function checkSubmission(
   }
 }
 
-export function generateUserObject(formState: AuthFormState) {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const {authFaillure, authType, hasEverLoggedIn, password, ...authObject} =
-    formState;
-  return authObject;
+/**
+ * It takes a response status code and returns the corresponding authFaillure type
+ * @param {number | string} responseStatus - The response status code from the server.
+ * @returns The value of the key in the object that matches the responseStatus.
+ */
+export function getFaillureType(
+  responseStatus: number | string
+): authFaillureType {
+  if (typeof responseStatus === 'number') {
+    responseStatus = String(responseStatus);
+  }
+  const failCodes = Object.keys(authFaillures);
+  const index = failCodes.indexOf(responseStatus);
+  return Object.values(authFaillures)[index] as authFaillureType;
 }
 
 // ----------------- API/Server access functions ---------------///
@@ -189,25 +196,4 @@ export async function apiAuthRequest(formState: AuthFormState) {
   } else {
     return 500;
   }
-}
-
-/**
- * It takes a response status code and returns the corresponding authFaillure type
- * @param {number | string} responseStatus - The response status code from the server.
- * @returns The value of the key in the object that matches the responseStatus.
- */
-export function getFaillureType(
-  responseStatus: number | string
-): authFaillureType {
-  if (typeof responseStatus === 'number') {
-    responseStatus = String(responseStatus);
-  }
-  const failCodes = Object.keys(authFaillures);
-  const index = failCodes.indexOf(responseStatus);
-  return Object.values(authFaillures)[index] as authFaillureType;
-}
-
-export async function logoutUser(refreshToken: string | null) {
-  const axios = generateAxiosInstance();
-  await axios.post(apiAddress + '/auth/logout', refreshToken);
 }
