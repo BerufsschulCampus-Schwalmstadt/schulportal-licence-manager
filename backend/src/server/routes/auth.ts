@@ -123,7 +123,7 @@ authRouter.post('/login', async (req, res) => {
   }
 });
 
-authRouter.post('/logout', (req, res) => {
+authRouter.delete('/logout', (req, res) => {
   deleteRefreshToken(req.cookies.refreshToken);
   res.sendStatus(204);
   console.log('successfully loged out');

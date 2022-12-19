@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {userContext} from '../../globals/contexts';
+import {userContext} from '../../globals/app-contexts';
 import {Navigate} from 'react-router-dom';
 
 export default class Dashboard extends Component {

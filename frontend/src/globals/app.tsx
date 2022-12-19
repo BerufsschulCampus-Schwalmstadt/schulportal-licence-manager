@@ -1,9 +1,13 @@
 import React, {Component} from 'react';
 import {RouterProvider} from 'react-router-dom';
-import {userContext} from './contexts';
+import {userContext} from './app-contexts';
 import {UserInfo} from './global-types';
 import router from './router';
-import {apiUserInfoRequest, updateUserInfo} from './global-functions';
+import {
+  apiUserInfoRequest,
+  logoutUser,
+  updateUserInfo,
+} from './global-functions';
 
 export default class App extends Component<{}, UserInfo> {
   constructor(props: {}) {
@@ -38,6 +42,11 @@ export default class App extends Component<{}, UserInfo> {
     } else if (propertyToSet === 'accessToken') {
       this.setState({accessToken: propertyValue as string});
     }
+  }
+
+  async handleLogout() {
+    logoutUser();
+    this.setState({authenticated: false});
   }
 
   render() {
