@@ -19,7 +19,7 @@ export type IdAndEmail = {
  */
 export function generateAccessToken(userIdAndEmail: IdAndEmail) {
   return jwt.sign(userIdAndEmail, process.env.ACCESS_TOKEN_SECRET as Secret, {
-    expiresIn: '20s',
+    expiresIn: '3s',
   });
 }
 
@@ -31,7 +31,8 @@ export function generateAccessToken(userIdAndEmail: IdAndEmail) {
 export async function generateRefreshToken(userIdAndEmail: IdAndEmail) {
   const refreshToken = jwt.sign(
     userIdAndEmail,
-    process.env.REFRESH_TOKEN_SECRET as Secret
+    process.env.REFRESH_TOKEN_SECRET as Secret,
+    {expiresIn: '10s'}
   );
   await pushRefreshToken(refreshToken, userIdAndEmail.id);
   return refreshToken;
@@ -55,6 +56,7 @@ export function authenticateToken(
 ) {
   const authHeader = req.headers['authorization'];
   const token = authHeader && authHeader.split(' ')[1];
+  console.log(req.headers);
   if (!token) return res.sendStatus(401);
 
   jwt.verify(
@@ -71,9 +73,10 @@ export function authenticateToken(
 //------------------ refresh route controller ---------------------//
 
 /* A route that takes in a refresh token, and returns a new access token. */
-tokenRefreshRouter.post('/', async (req, res) => {
-  const refreshToken: string = req.body.token;
-  if (!refreshToken) return res.sendStatus(401);
+tokenRefreshRouter.get('/', async (req, res) => {
+  const cookies = req.cookies;
+  if (!cookies?.refreshToken) return res.sendStatus(401);
+  const refreshToken: string = cookies.refreshToken;
   const refreshTokenUser = (await findUserByRefreshToken(refreshToken))
     ?.joyrUser;
   if (!refreshTokenUser) return res.sendStatus(403);
@@ -83,12 +86,19 @@ tokenRefreshRouter.post('/', async (req, res) => {
     (err, decodedElement) => {
       if (err) return res.sendStatus(403);
       const decodedElementObject = JSON.parse(JSON.stringify(decodedElement));
+      if (decodedElementObject.id !== refreshTokenUser.id) return 403;
       const userIdAndEmail: IdAndEmail = {
         id: decodedElementObject.id,
         email: decodedElementObject.email,
       };
       const newAccessToken = generateAccessToken(userIdAndEmail);
-      res.send({accessToken: newAccessToken});
+      const responseInfo = {
+        userId: refreshTokenUser.id,
+        userEmail: refreshTokenUser.email,
+        userRole: refreshTokenUser.accountType,
+        accessToken: newAccessToken,
+      };
+      res.send(responseInfo);
       console.log('new access token generated');
     }
   );

@@ -1,7 +1,8 @@
 import React, {MouseEventHandler} from 'react';
-import axios, {AxiosError, AxiosResponse} from 'axios';
+import {AxiosError, AxiosResponse} from 'axios';
+import {generateAxiosInstance} from '../../../globals/axios';
 import validator from 'email-validator';
-import {UserInfoEditor} from '../../../globals/global-types';
+import {UserInfo} from '../../../globals/global-types';
 const apiAddress = process.env.REACT_APP_APIBASEADDRESS;
 console.log(apiAddress);
 
@@ -30,28 +31,14 @@ export class AuthFormState {
   email?: string;
   password?: string;
   authFaillure: authFaillureType;
-  authenticated: boolean;
-  userId?: string;
-  userRole?: string;
-  accessToken?: string;
-  refreshToken?: string;
 
   constructor() {
     this.hasEverLoggedIn =
       localStorage.getItem('hasEverLoggedIn') === 'true' ? true : false;
     this.authType = this.hasEverLoggedIn ? 'login' : 'signup';
     this.authFaillure = null;
-    this.authenticated = false;
   }
 }
-
-export type apiAuthResponse = {
-  userId: string;
-  userEmail: string;
-  userRole: string;
-  accessToken: string;
-  refreshToken: string;
-};
 
 // ---------------------------- JSX Elements -------------------------------//
 
@@ -180,12 +167,12 @@ export function generateUserObject(formState: AuthFormState) {
  */
 export async function apiAuthRequest(formState: AuthFormState) {
   const requestType = formState.authType;
-  const apiAddressToAccess = apiAddress + '/api/auth/' + requestType;
+  const apiAddressToAccess = '/auth/' + requestType;
   const formInputs = {
     email: formState.email,
     password: formState.password,
   };
-
+  const axios = generateAxiosInstance();
   const responseObject = await axios
     .post(apiAddressToAccess, formInputs)
     .catch(error => {
@@ -196,7 +183,7 @@ export async function apiAuthRequest(formState: AuthFormState) {
   const status = responseObject.status;
 
   if (status === 200) {
-    return (responseObject as AxiosResponse).data as apiAuthResponse;
+    return (responseObject as AxiosResponse).data as UserInfo;
   } else if (typeof status === 'number') {
     return status;
   } else {
@@ -220,29 +207,7 @@ export function getFaillureType(
   return Object.values(authFaillures)[index] as authFaillureType;
 }
 
-// function authenticatedAxiosInstance(accessToken: string) {
-//   return axios.create({
-//     headers: {
-//       'Content-Type': 'application/json',
-//       authorization: 'Bearer ' + accessToken,
-//     },
-//   });
-// }
-
 export async function logoutUser(refreshToken: string | null) {
+  const axios = generateAxiosInstance();
   await axios.post(apiAddress + '/auth/logout', refreshToken);
-}
-
-export function updateUserInfo(
-  userInfoEditor: UserInfoEditor,
-  response: apiAuthResponse
-) {
-  if (userInfoEditor) {
-    userInfoEditor('authenticated', true);
-    userInfoEditor('userId', response.userId);
-    userInfoEditor('userEmail', response.userEmail);
-    userInfoEditor('userRole', response.userRole);
-    userInfoEditor('accessToken', response.accessToken);
-    userInfoEditor('refreshToken', response.refreshToken);
-  }
 }

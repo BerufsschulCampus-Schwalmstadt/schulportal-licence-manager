@@ -44,13 +44,13 @@ exports.tokenRefreshRouter = express_1.default.Router();
 dotenv.config();
 function generateAccessToken(userIdAndEmail) {
     return jsonwebtoken_1.default.sign(userIdAndEmail, process.env.ACCESS_TOKEN_SECRET, {
-        expiresIn: '20s',
+        expiresIn: '3s',
     });
 }
 exports.generateAccessToken = generateAccessToken;
 function generateRefreshToken(userIdAndEmail) {
     return __awaiter(this, void 0, void 0, function* () {
-        const refreshToken = jsonwebtoken_1.default.sign(userIdAndEmail, process.env.REFRESH_TOKEN_SECRET);
+        const refreshToken = jsonwebtoken_1.default.sign(userIdAndEmail, process.env.REFRESH_TOKEN_SECRET, { expiresIn: '10s' });
         yield (0, database_1.pushRefreshToken)(refreshToken, userIdAndEmail.id);
         return refreshToken;
     });
@@ -59,6 +59,7 @@ exports.generateRefreshToken = generateRefreshToken;
 function authenticateToken(req, res, next) {
     const authHeader = req.headers['authorization'];
     const token = authHeader && authHeader.split(' ')[1];
+    console.log(req.headers);
     if (!token)
         return res.sendStatus(401);
     jsonwebtoken_1.default.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, userIdAndEmail) => {
@@ -69,11 +70,12 @@ function authenticateToken(req, res, next) {
     });
 }
 exports.authenticateToken = authenticateToken;
-exports.tokenRefreshRouter.post('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.tokenRefreshRouter.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     var _a;
-    const refreshToken = req.body.token;
-    if (!refreshToken)
+    const cookies = req.cookies;
+    if (!(cookies === null || cookies === void 0 ? void 0 : cookies.refreshToken))
         return res.sendStatus(401);
+    const refreshToken = cookies.refreshToken;
     const refreshTokenUser = (_a = (yield (0, database_1.findUserByRefreshToken)(refreshToken))) === null || _a === void 0 ? void 0 : _a.joyrUser;
     if (!refreshTokenUser)
         return res.sendStatus(403);
@@ -81,12 +83,20 @@ exports.tokenRefreshRouter.post('/', (req, res) => __awaiter(void 0, void 0, voi
         if (err)
             return res.sendStatus(403);
         const decodedElementObject = JSON.parse(JSON.stringify(decodedElement));
+        if (decodedElementObject.id !== refreshTokenUser.id)
+            return 403;
         const userIdAndEmail = {
             id: decodedElementObject.id,
             email: decodedElementObject.email,
         };
         const newAccessToken = generateAccessToken(userIdAndEmail);
-        res.send({ accessToken: newAccessToken });
+        const responseInfo = {
+            userId: refreshTokenUser.id,
+            userEmail: refreshTokenUser.email,
+            userRole: refreshTokenUser.accountType,
+            accessToken: newAccessToken,
+        };
+        res.send(responseInfo);
         console.log('new access token generated');
     });
 }));

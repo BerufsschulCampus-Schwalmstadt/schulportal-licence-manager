@@ -25,6 +25,7 @@ const client_1 = require("@prisma/client");
 const auth_1 = require("./routes/auth");
 const dashboard_1 = require("./routes/dashboard");
 const tokens_1 = require("./tokens");
+const cookie_parser_1 = __importDefault(require("cookie-parser"));
 exports.prisma = new client_1.PrismaClient();
 exports.prisma.refreshToken
     .deleteMany()
@@ -32,14 +33,12 @@ exports.prisma.refreshToken
     .then(() => exports.prisma.joyrUser.deleteMany().then(count => console.log(count)));
 const app = (0, express_1.default)();
 const port = Number(process.env.PORT) || 3001;
-exports.prisma.refreshToken.deleteMany();
-exports.prisma.joyrUser.deleteMany();
-exports.prisma.joyrUser.findMany();
 app.use(body_parser_1.default.json());
 app.use(body_parser_1.default.urlencoded({
     extended: true,
 }));
-app.use((0, cors_1.default)());
+app.use((0, cookie_parser_1.default)());
+app.use((0, cors_1.default)({ credentials: true, origin: 'http://localhost:3000' }));
 app.use(express_1.default.static(path_1.default.resolve(__dirname, '../../../frontend/build')));
 let loginObject;
 app.get('/api', (req, res) => {

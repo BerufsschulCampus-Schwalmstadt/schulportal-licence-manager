@@ -14,16 +14,18 @@ import {
   getFaillureType,
   newAuthType,
   logoutUser,
-  updateUserInfo,
 } from './authFormFunctions';
-import {Navigate} from 'react-router-dom';
 import {userContext} from '../../../globals/contexts';
 import {GetAndSetUserInfo} from '../../../globals/global-types';
+import {Navigate} from 'react-router-dom';
+import {updateUserInfo} from '../../../globals/global-functions';
 
 // ---------------------------  Class Component ------------------------------//
 
 export default class AuthForm extends Component<{}, AuthFormState> {
   static contextType = userContext;
+  context!: React.ContextType<typeof userContext>;
+
   constructor(props: {}) {
     super(props);
     this.state = new AuthFormState();
@@ -74,17 +76,16 @@ export default class AuthForm extends Component<{}, AuthFormState> {
   async handleLogout() {
     const refreshToken = localStorage.getItem('refreshToken');
     logoutUser(refreshToken);
-    this.setState({authenticated: false});
+    this.context.editUserInfo('authenticated', false);
   }
 
   // ---------------------------  Rendered HTML ------------------------------//
-  authRef = React.createRef();
   render() {
-    const isAuthenticated = (this.context as GetAndSetUserInfo).currentUserInfo
-      .authenticated;
     return (
       <div id="loginFormWrapper">
-        {isAuthenticated && <Navigate to="/dashboard" />}
+        {this.context.currentUserInfo.authenticated && (
+          <Navigate to="/dashboard" />
+        )}
         <form
           id="loginForm"
           onChange={this.handleInputs}

@@ -1,12 +1,24 @@
 import React, {Component} from 'react';
 import {userContext} from '../../globals/contexts';
-import {GetAndSetUserInfo} from '../../globals/global-types';
+import {Navigate} from 'react-router-dom';
 
 export default class Dashboard extends Component {
   static contextType = userContext;
+  context!: React.ContextType<typeof userContext>;
+
+  constructor(props: {}) {
+    super(props);
+  }
+  async componentDidMount() {
+    await this.context.getUserInfo();
+  }
+
   render() {
-    const {...currentUserInfo} = (this.context as GetAndSetUserInfo)
-      .currentUserInfo;
-    return <div>Current user info: {JSON.stringify(currentUserInfo)}</div>;
+    return (
+      <div>
+        {!this.context.currentUserInfo.authenticated && <Navigate to="/" />}
+        Current user info: {JSON.stringify(this.context.currentUserInfo)}
+      </div>
+    );
   }
 }

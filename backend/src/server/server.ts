@@ -13,8 +13,10 @@ import {PrismaClient} from '@prisma/client';
 import {authRouter} from './routes/auth';
 import {dashboardRouter} from './routes/dashboard';
 import {authenticateToken, tokenRefreshRouter} from './tokens';
+import cookieParser from 'cookie-parser';
 export const prisma = new PrismaClient();
 
+// clear database on each server launch (for testing purposes)
 prisma.refreshToken
   .deleteMany()
   .then(count => console.log(count))
@@ -22,25 +24,27 @@ prisma.refreshToken
 
 // ---------------------------  initialize ------------------------------//
 
-/* This is setting up the server. */
+// initialize server
 const app = express();
 const port = Number(process.env.PORT) || 3001;
-prisma.refreshToken.deleteMany();
-prisma.joyrUser.deleteMany();
-prisma.joyrUser.findMany();
 
-/* This is setting up the body parser and cors. */
+// handle json type data
 app.use(bodyParser.json());
 
+// handle urlencoded type data
 app.use(
   bodyParser.urlencoded({
     extended: true,
   })
 );
 
-app.use(cors());
+// handle cookie type data
+app.use(cookieParser());
 
-/* This is the code that serves the React app. */
+// enable cors (origin acccess control)
+app.use(cors({credentials: true, origin: 'http://localhost:3000'}));
+
+// code that serves static app
 app.use(express.static(path.resolve(__dirname, '../../../frontend/build')));
 
 let loginObject: PuppeteerObject;
