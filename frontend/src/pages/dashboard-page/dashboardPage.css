@@ -1,0 +1,11 @@
+.sideBarContainer {
+    height: 100vh;
+}
+
+.verticalIconButtonContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0px;
+    gap: 16px;
+}

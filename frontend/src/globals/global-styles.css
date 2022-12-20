@@ -37,12 +37,12 @@ and setting the width and height. */
 /* This is setting the font weight, size, line height, margin, text transform, and color for the h1
 tag. */
 h1 {
-    font-weight: 700;
-    font-size: 36px;
-    line-height: 54px;
-    margin: 0;
+  font-weight: 700;
+  font-size: 36px;
+  line-height: 54px;
+  margin: 0;
 
-    text-transform: capitalize;
+  text-transform: capitalize;
 }
 
 h2 {
@@ -56,19 +56,19 @@ h2 {
 
 /* This is setting the font weight, size, line height, margin, and color for the h2 tag. */
 h3 {
-    font-weight: 400;
-    font-size: 18.5px;
-    line-height: 28px;
-    margin: 0;    
+  font-weight: 400;
+  font-size: 18.5px;
+  line-height: 28px;
+  margin: 0;
 }
 
 /* Setting the margin to 0 for all p tags. */
-p{
-    margin: 0;
+p {
+  margin: 0;
 }
 
 /* Making the cursor change to a pointer when hovering over buttons. */
-button{
+button {
   cursor: pointer;
 }
 
@@ -80,7 +80,7 @@ button{
   align-items: center;
   padding: 13.6698px 34.9867px;
   gap: 8.46px;
-  
+
   background: #302CCC;
   border-radius: 9.54184px;
   border: 0;
@@ -105,4 +105,30 @@ button{
 
 .primaryButton:active {
   background: #1F1F3B;
+}
+
+/* icon button */
+
+.iconButton {
+  color: black;
+  padding: 10px;
+  border-radius: 5px;
+}
+
+.iconButton.selected {
+  color: #302CCC;
+  background-color: #B3B1EC;
+}
+
+.iconButton:hover {
+  color: #2926A1;
+}
+
+.iconButton :active {
+  color: #1F1F3B;
+  background-color: #B3B1EC;
+}
+
+.iconButton :focus {
+  color: #1F1F3B;
 }
