@@ -1,0 +1,42 @@
+.sideMenuBarContainer {
+    box-sizing: border-box;
+
+    /* Auto layout */
+
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    padding: 33px 0px 0px;
+
+    height: 100vh;
+
+    background: #FFFFFF;
+    border-right: 1px solid #CCCCCC;
+}
+
+.verticalIconButtonContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0px;
+    gap: 16px;
+}
+
+.sideMenuBarColouredBottomContainer {
+    /* Auto layout */
+
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    padding: 26px 9px;
+
+    background: #302CCC;
+
+    /* Inside auto layout */
+
+    flex: none;
+    order: 1;
+    flex-grow: 0;
+} 
+

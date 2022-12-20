@@ -1,0 +1,64 @@
+/*  top/regular */
+.iconButtonContainer {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    border-radius: 5px;
+
+    transition: all .3s ease;
+}
+
+.iconButtonContainer:hover {
+    background: #2826a111;
+}
+
+.iconButtonContainer.selected {
+    background: #B3B1EC;
+}
+
+/* top icons svgs */
+.iconButtonContainer>span {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+
+    margin: 0;
+}
+
+/* menu bar bottom */
+.bottomIconButtonContainer {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    border-radius: 5px;
+
+    transition: all .5s ease;
+}
+
+.bottomIconButtonContainer:hover {
+    background: #69689c11;
+}
+
+.bottomIconButtonContainer.selected {
+    background-color: #ffffff;
+    border-radius: 5px;
+    box-shadow: 0px 5px 20px rgba(0, 0, 0, 0.3);
+}
+
+/* bottom icons svgs */
+.bottomIconButtonContainer>span {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+
+    margin: 0;
+}
+

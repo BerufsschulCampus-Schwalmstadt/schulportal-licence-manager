@@ -1,6 +1,6 @@
 import React, {Component, FormEvent} from 'react';
 import './authForm.css';
-import InputComponent from '../../../components/inputComponent';
+import InputComponent from '../../../components/input/inputComponent';
 import validator from 'email-validator';
 import {
   AuthFormState,
