@@ -1,5 +1,7 @@
 import React, {Component} from 'react';
 import {userContext} from '../../globals/app-contexts';
+// eslint-disable-next-line node/no-extraneous-import
+import {Home} from '@mui/icons-material';
 
 export default class Dashboard extends Component {
   static contextType = userContext;
@@ -7,8 +9,8 @@ export default class Dashboard extends Component {
 
   render() {
     return (
-      <div>
-        Current user info: {JSON.stringify(this.context.currentUserInfo)}
+      <div className="sideBar">
+        <Home />
       </div>
     );
   }

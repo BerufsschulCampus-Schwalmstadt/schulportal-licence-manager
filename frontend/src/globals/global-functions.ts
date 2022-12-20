@@ -20,7 +20,6 @@ export function updateUserInfo(
   response: UserInfo,
   authenticationStatus: boolean
 ) {
-  console.log(authenticationStatus);
   userInfoEditor('authenticated', authenticationStatus);
   userInfoEditor('userId', response.userId as string);
   userInfoEditor('userEmail', response.userEmail as string);

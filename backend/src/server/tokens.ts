@@ -32,7 +32,7 @@ export async function generateRefreshToken(userIdAndEmail: IdAndEmail) {
   const refreshToken = jwt.sign(
     userIdAndEmail,
     process.env.REFRESH_TOKEN_SECRET as Secret,
-    {expiresIn: '10s'} // for testing
+    {expiresIn: '1d'} // for testing
   );
   await pushRefreshToken(refreshToken, userIdAndEmail.id);
   return refreshToken;

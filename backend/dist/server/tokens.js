@@ -50,7 +50,7 @@ function generateAccessToken(userIdAndEmail) {
 exports.generateAccessToken = generateAccessToken;
 function generateRefreshToken(userIdAndEmail) {
     return __awaiter(this, void 0, void 0, function* () {
-        const refreshToken = jsonwebtoken_1.default.sign(userIdAndEmail, process.env.REFRESH_TOKEN_SECRET, { expiresIn: '10s' });
+        const refreshToken = jsonwebtoken_1.default.sign(userIdAndEmail, process.env.REFRESH_TOKEN_SECRET, { expiresIn: '1d' });
         yield (0, database_1.pushRefreshToken)(refreshToken, userIdAndEmail.id);
         return refreshToken;
     });
