@@ -1,24 +1,17 @@
 import React, {Component} from 'react';
 import {userContext} from '../../globals/app-contexts';
-import {Navigate} from 'react-router-dom';
+import './dashboardPage.css';
+import SideMenuBar from '../../components/side-menu-bar/sideMenuBar';
 
 export default class Dashboard extends Component {
   static contextType = userContext;
   context!: React.ContextType<typeof userContext>;
 
-  constructor(props: {}) {
-    super(props);
-  }
-
-  async componentDidMount() {
-    await this.context.getUserInfo();
-  }
-
   render() {
     return (
       <div>
-        {!this.context.currentUserInfo.authenticated && <Navigate to="/" />}
-        Current user info: {JSON.stringify(this.context.currentUserInfo)}
+        <SideMenuBar />
+        <div className="dashboardWrapper"></div>
       </div>
     );
   }

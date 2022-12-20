@@ -5,6 +5,5 @@ export function generateAxiosInstance(accessToken?: string) {
   authAxios.defaults.headers.common['authorization'] = accessToken;
   authAxios.defaults.withCredentials = true;
   authAxios.defaults.baseURL = process.env.REACT_APP_APIBASEADDRESS + '/api';
-  console.log(authAxios);
   return authAxios;
 }

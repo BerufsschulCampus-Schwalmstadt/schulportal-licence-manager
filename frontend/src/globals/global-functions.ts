@@ -1,9 +1,9 @@
 import {generateAxiosInstance} from './axios-config';
 import {UserInfo, UserInfoEditor} from './global-types';
 
-export async function apiUserInfoRequest() {
-  const refreshRoute = '/refresh';
-  const axios = generateAxiosInstance();
+export async function apiUserInfoRequest(accessToken: string) {
+  const refreshRoute = '/dashboard';
+  const axios = generateAxiosInstance(accessToken);
   const refreshResponseObject = await axios.get(refreshRoute).catch(error => {
     if (error) {
       console.log('Cannot get user info, make sure the user has logged in');

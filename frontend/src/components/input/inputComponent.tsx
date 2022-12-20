@@ -35,7 +35,7 @@ class InputComponentState {
 
 // ---------------------------  Class Component ------------------------------//
 
-export default class inputComponent extends Component<
+export default class InputComponent extends Component<
   InputComponentProps,
   InputComponentState
 > {

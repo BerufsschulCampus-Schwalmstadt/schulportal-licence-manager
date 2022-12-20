@@ -28,7 +28,7 @@ export async function findUserByEmail(emailToQuery: string) {
 
 export async function findUserById(idToQuery: string) {
   return await prisma.joyrUser.findUnique({
-    where: {email: idToQuery},
+    where: {id: idToQuery},
   });
 }
 

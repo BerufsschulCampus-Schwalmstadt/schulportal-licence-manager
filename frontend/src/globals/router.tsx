@@ -1,17 +1,26 @@
 import React from 'react';
-import {createBrowserRouter} from 'react-router-dom';
+import {Navigate, createBrowserRouter} from 'react-router-dom';
 import AuthPage from '../pages/auth-page/authPage';
 import Dashboard from '../pages/dashboard-page/dashboardPage';
 
-const router = createBrowserRouter([
+export const authRouter = createBrowserRouter([
   {
     path: '/',
     element: <AuthPage />,
   },
   {
-    path: '/dashboard/*',
-    element: <Dashboard />,
+    path: '/*',
+    element: <Navigate to="/" />,
   },
 ]);
 
-export default router;
+export const appRouter = createBrowserRouter([
+  {
+    path: '/dashboard/*',
+    element: <Dashboard />,
+  },
+  {
+    path: '/*',
+    element: <Navigate to="/dashboard" />,
+  },
+]);
