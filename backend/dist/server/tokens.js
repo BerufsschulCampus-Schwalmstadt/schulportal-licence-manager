@@ -35,7 +35,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.authenticateToken = exports.generateRefreshToken = exports.generateAccessToken = exports.tokenRefreshRouter = void 0;
+exports.refreshAccess = exports.authenticateToken = exports.generateRefreshToken = exports.generateAccessToken = exports.tokenRefreshRouter = void 0;
 const express_1 = __importDefault(require("express"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const database_1 = require("../database/database");
@@ -57,19 +57,61 @@ function generateRefreshToken(userIdAndEmail) {
 }
 exports.generateRefreshToken = generateRefreshToken;
 function authenticateToken(req, res, next) {
-    const authHeader = req.headers['authorization'];
-    const token = authHeader && authHeader.split(' ')[1];
-    console.log(req.headers);
-    if (!token)
-        return res.sendStatus(401);
-    jsonwebtoken_1.default.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, userIdAndEmail) => {
-        if (err)
-            return res.sendStatus(403);
-        req.userIdAndEmail = userIdAndEmail;
-        next();
+    return __awaiter(this, void 0, void 0, function* () {
+        console.log('testing auth');
+        const accessToken = req.headers['authorization'];
+        if (!accessToken)
+            return res.sendStatus(401);
+        console.log('got token');
+        jsonwebtoken_1.default.verify(accessToken, process.env.ACCESS_TOKEN_SECRET, (err, userIdAndEmail) => __awaiter(this, void 0, void 0, function* () {
+            if (err) {
+                console.log('current token expired');
+                refreshAccess(req, res, next);
+            }
+            else {
+                req.userIdAndEmail = userIdAndEmail;
+                req.accessToken = accessToken;
+                next();
+            }
+        }));
     });
 }
 exports.authenticateToken = authenticateToken;
+function refreshAccess(req, res, next) {
+    var _a;
+    return __awaiter(this, void 0, void 0, function* () {
+        console.log('attempting to refresh');
+        const cookies = req.cookies;
+        if (!(cookies === null || cookies === void 0 ? void 0 : cookies.refreshToken))
+            return res.sendStatus(401);
+        const refreshToken = cookies.refreshToken;
+        const refreshTokenUser = (_a = (yield (0, database_1.findUserByRefreshToken)(refreshToken))) === null || _a === void 0 ? void 0 : _a.joyrUser;
+        if (!refreshTokenUser) {
+            console.log('refresh token not associated to a user');
+            return res.sendStatus(403);
+        }
+        console.log('attempting to refresh');
+        jsonwebtoken_1.default.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, decodedElement) => {
+            if (err) {
+                console.log('Invalid refresh token - please login (token may be expired)');
+                return res.sendStatus(403);
+            }
+            const decodedElementObject = JSON.parse(JSON.stringify(decodedElement));
+            if (decodedElementObject.id !== refreshTokenUser.id)
+                return 403;
+            const userIdAndEmail = {
+                id: decodedElementObject.id,
+                email: decodedElementObject.email,
+            };
+            const newAccessToken = generateAccessToken(userIdAndEmail);
+            console.log('refresh successful');
+            req.user = refreshTokenUser;
+            req.accessToken = newAccessToken;
+            next();
+        });
+    });
+}
+exports.refreshAccess = refreshAccess;
 exports.tokenRefreshRouter.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     var _a;
     const cookies = req.cookies;

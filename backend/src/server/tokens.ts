@@ -49,22 +49,71 @@ export async function generateRefreshToken(userIdAndEmail: IdAndEmail) {
  * middleware.
  * @returns The userId and email of the user.
  */
-export function authenticateToken(
+export async function authenticateToken(
   req: Request,
   res: Response,
   next: NextFunction
 ) {
-  const authHeader = req.headers['authorization'];
-  const token = authHeader && authHeader.split(' ')[1];
-  console.log(req.headers);
-  if (!token) return res.sendStatus(401);
+  console.log('testing auth');
+
+  const accessToken = req.headers['authorization'];
+  if (!accessToken) return res.sendStatus(401);
+
+  console.log('got token');
 
   jwt.verify(
-    token,
+    accessToken,
     process.env.ACCESS_TOKEN_SECRET as Secret,
-    (err, userIdAndEmail) => {
-      if (err) return res.sendStatus(403);
-      req.userIdAndEmail = userIdAndEmail;
+    async (err, userIdAndEmail) => {
+      if (err) {
+        console.log('current token expired');
+        refreshAccess(req, res, next);
+      } else {
+        req.userIdAndEmail = userIdAndEmail;
+        req.accessToken = accessToken;
+        next();
+      }
+    }
+  );
+}
+
+export async function refreshAccess(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  console.log('attempting to refresh');
+
+  const cookies = req.cookies;
+  if (!cookies?.refreshToken) return res.sendStatus(401);
+  const refreshToken: string = cookies.refreshToken;
+  const refreshTokenUser = (await findUserByRefreshToken(refreshToken))
+    ?.joyrUser;
+  if (!refreshTokenUser) {
+    console.log('refresh token not associated to a user');
+    return res.sendStatus(403);
+  }
+  console.log('attempting to refresh');
+  jwt.verify(
+    refreshToken,
+    process.env.REFRESH_TOKEN_SECRET as Secret,
+    (err, decodedElement) => {
+      if (err) {
+        console.log(
+          'Invalid refresh token - please login (token may be expired)'
+        );
+        return res.sendStatus(403);
+      }
+      const decodedElementObject = JSON.parse(JSON.stringify(decodedElement));
+      if (decodedElementObject.id !== refreshTokenUser.id) return 403;
+      const userIdAndEmail: IdAndEmail = {
+        id: decodedElementObject.id,
+        email: decodedElementObject.email,
+      };
+      const newAccessToken = generateAccessToken(userIdAndEmail);
+      console.log('refresh successful');
+      req.user = refreshTokenUser;
+      req.accessToken = newAccessToken;
       next();
     }
   );

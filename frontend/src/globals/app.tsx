@@ -2,23 +2,30 @@ import React, {Component} from 'react';
 import {RouterProvider} from 'react-router-dom';
 import {userContext} from './app-contexts';
 import {UserInfo} from './global-types';
-import router from './router';
 import {
   apiUserInfoRequest,
   logoutUser,
   updateUserInfo,
 } from './global-functions';
+import {appRouter, authRouter} from './router';
 
 export default class App extends Component<{}, UserInfo> {
   constructor(props: {}) {
     super(props);
     this.state = {authenticated: false};
-    this.handleUserInfoChange = this.handleUserInfoChange.bind(this);
     this.getUserInfo = this.getUserInfo.bind(this);
+    this.handleUserInfoChange = this.handleUserInfoChange.bind(this);
+    this.handleLogout = this.handleLogout.bind(this);
+  }
+
+  componentDidMount() {
+    this.getUserInfo();
   }
 
   async getUserInfo() {
-    const response = await apiUserInfoRequest();
+    const response = await apiUserInfoRequest(
+      localStorage.getItem('accessToken') as string
+    );
     if (response) {
       updateUserInfo(this.handleUserInfoChange, response, true);
     } else {
@@ -55,9 +62,12 @@ export default class App extends Component<{}, UserInfo> {
       editUserInfo: this.handleUserInfoChange,
       getUserInfo: this.getUserInfo,
     };
+
     return (
       <userContext.Provider value={UserInfoGetterAndSetter}>
-        <RouterProvider router={router} />
+        <RouterProvider
+          router={this.state.authenticated ? appRouter : authRouter}
+        />
       </userContext.Provider>
     );
   }

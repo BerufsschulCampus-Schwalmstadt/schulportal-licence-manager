@@ -33,7 +33,7 @@ exports.findUserByEmail = findUserByEmail;
 function findUserById(idToQuery) {
     return __awaiter(this, void 0, void 0, function* () {
         return yield server_1.prisma.joyrUser.findUnique({
-            where: { email: idToQuery },
+            where: { id: idToQuery },
         });
     });
 }

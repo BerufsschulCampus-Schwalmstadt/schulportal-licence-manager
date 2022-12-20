@@ -117,7 +117,6 @@ exports.authRouter.post('/login', (req, res) => __awaiter(void 0, void 0, void 0
                 httpOnly: true,
                 maxAge: 3 * 24 * 60 * 60 * 1000,
             });
-            console.log(responseInfo);
             res.send(responseInfo).status(200);
             console.log('user logged in successfully');
         }

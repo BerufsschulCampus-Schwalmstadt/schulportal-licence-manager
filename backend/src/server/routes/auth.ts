@@ -113,7 +113,6 @@ authRouter.post('/login', async (req, res) => {
         httpOnly: true,
         maxAge: 3 * 24 * 60 * 60 * 1000, //3days
       });
-      console.log(responseInfo);
       res.send(responseInfo).status(200);
       console.log('user logged in successfully');
     } else {

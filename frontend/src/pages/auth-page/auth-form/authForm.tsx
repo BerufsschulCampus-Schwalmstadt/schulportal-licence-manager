@@ -15,7 +15,6 @@ import {
   newAuthType,
 } from './authFormFunctions';
 import {userContext} from '../../../globals/app-contexts';
-import {GetAndSetUserInfo} from '../../../globals/global-types';
 import {updateUserInfo} from '../../../globals/global-functions';
 
 // ---------------------------  Class Component ------------------------------//
@@ -59,7 +58,7 @@ export default class AuthForm extends Component<{}, AuthFormState> {
     if (submission === 'valid submission') {
       const response = await apiAuthRequest(this.state);
       if (typeof response !== 'number') {
-        const userInfoEditor = (this.context as GetAndSetUserInfo).editUserInfo;
+        const userInfoEditor = this.context.editUserInfo;
         updateUserInfo(userInfoEditor, response, true);
       } else {
         this.setState({authFaillure: getFaillureType(response)});
