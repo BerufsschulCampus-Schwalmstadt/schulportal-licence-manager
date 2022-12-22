@@ -26,10 +26,11 @@ exports.dashboardRouter.get('/*', (req, res) => __awaiter(void 0, void 0, void 0
         user = (yield (0, database_1.findUserById)(req.userIdAndEmail.id));
     }
     const responseInfo = {
+        authenticated: true,
         userId: user.id,
         userEmail: user.email,
         userRole: user.accountType,
         accessToken: req.accessToken,
     };
-    res.send(responseInfo).status(200);
+    return res.send(responseInfo).status(200);
 }));

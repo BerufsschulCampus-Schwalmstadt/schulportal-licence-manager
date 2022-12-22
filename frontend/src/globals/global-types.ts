@@ -1,5 +1,5 @@
 export type UserInfo = {
-  authenticated: boolean;
+  authenticated?: boolean;
   userId?: string;
   userEmail?: string;
   userRole?: string;

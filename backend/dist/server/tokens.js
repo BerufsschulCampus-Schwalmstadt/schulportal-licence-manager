@@ -44,7 +44,7 @@ exports.tokenRefreshRouter = express_1.default.Router();
 dotenv.config();
 function generateAccessToken(userIdAndEmail) {
     return jsonwebtoken_1.default.sign(userIdAndEmail, process.env.ACCESS_TOKEN_SECRET, {
-        expiresIn: '3s',
+        expiresIn: '10s',
     });
 }
 exports.generateAccessToken = generateAccessToken;
@@ -66,7 +66,7 @@ function authenticateToken(req, res, next) {
         jsonwebtoken_1.default.verify(accessToken, process.env.ACCESS_TOKEN_SECRET, (err, userIdAndEmail) => __awaiter(this, void 0, void 0, function* () {
             if (err) {
                 console.log('current token expired');
-                refreshAccess(req, res, next);
+                return refreshAccess(req, res, next);
             }
             else {
                 req.userIdAndEmail = userIdAndEmail;
@@ -80,7 +80,6 @@ exports.authenticateToken = authenticateToken;
 function refreshAccess(req, res, next) {
     var _a;
     return __awaiter(this, void 0, void 0, function* () {
-        console.log('attempting to refresh');
         const cookies = req.cookies;
         if (!(cookies === null || cookies === void 0 ? void 0 : cookies.refreshToken))
             return res.sendStatus(401);
@@ -133,6 +132,7 @@ exports.tokenRefreshRouter.get('/', (req, res) => __awaiter(void 0, void 0, void
         };
         const newAccessToken = generateAccessToken(userIdAndEmail);
         const responseInfo = {
+            authenticated: true,
             userId: refreshTokenUser.id,
             userEmail: refreshTokenUser.email,
             userRole: refreshTokenUser.accountType,

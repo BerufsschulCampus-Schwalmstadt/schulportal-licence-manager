@@ -9,18 +9,16 @@ export async function apiUserInfoRequest(accessToken: string) {
       console.log('Cannot get user info, make sure the user has logged in');
     }
   });
-  if (refreshResponseObject) {
-    return refreshResponseObject.data as UserInfo;
-  }
+  if (refreshResponseObject) return refreshResponseObject.data as UserInfo;
   return undefined;
 }
 
 export function updateUserInfo(
   userInfoEditor: UserInfoEditor,
-  response: UserInfo,
-  authenticationStatus: boolean
+  response: UserInfo
 ) {
-  userInfoEditor('authenticated', authenticationStatus);
+  console.log(response);
+  userInfoEditor('authenticated', response.authenticated as boolean);
   userInfoEditor('userId', response.userId as string);
   userInfoEditor('userEmail', response.userEmail as string);
   userInfoEditor('userRole', response.userRole as string);
@@ -29,5 +27,9 @@ export function updateUserInfo(
 
 export async function logoutUser() {
   const axios = generateAxiosInstance();
-  await axios.delete('/auth/logout');
+  await axios.delete('/auth/logout').catch(error => {
+    if (error) {
+      console.log('Could not log the user out');
+    }
+  });
 }

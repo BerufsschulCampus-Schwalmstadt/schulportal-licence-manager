@@ -56,7 +56,9 @@ export default class SideMenuBar extends Component<
     for (let i = 0; i < iconNames.length; i++) {
       const currentIcon = iconNames[i];
       if (i) {
-        iconButtonsToRender[i + dividerCount] = <HorizontalDivider />;
+        iconButtonsToRender[i + dividerCount] = (
+          <HorizontalDivider key={'horizontalDivider' + {i}} />
+        );
       }
       dividerCount++;
       iconButtonsToRender[i + dividerCount] = (

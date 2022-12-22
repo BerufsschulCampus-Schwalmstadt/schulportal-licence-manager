@@ -19,7 +19,7 @@ export type IdAndEmail = {
  */
 export function generateAccessToken(userIdAndEmail: IdAndEmail) {
   return jwt.sign(userIdAndEmail, process.env.ACCESS_TOKEN_SECRET as Secret, {
-    expiresIn: '3s',
+    expiresIn: '10s',
   });
 }
 
@@ -67,7 +67,7 @@ export async function authenticateToken(
     async (err, userIdAndEmail) => {
       if (err) {
         console.log('current token expired');
-        refreshAccess(req, res, next);
+        return refreshAccess(req, res, next);
       } else {
         req.userIdAndEmail = userIdAndEmail;
         req.accessToken = accessToken;
@@ -82,8 +82,6 @@ export async function refreshAccess(
   res: Response,
   next: NextFunction
 ) {
-  console.log('attempting to refresh');
-
   const cookies = req.cookies;
   if (!cookies?.refreshToken) return res.sendStatus(401);
   const refreshToken: string = cookies.refreshToken;
@@ -142,6 +140,7 @@ tokenRefreshRouter.get('/', async (req, res) => {
       };
       const newAccessToken = generateAccessToken(userIdAndEmail);
       const responseInfo = {
+        authenticated: true,
         userId: refreshTokenUser.id,
         userEmail: refreshTokenUser.email,
         userRole: refreshTokenUser.accountType,

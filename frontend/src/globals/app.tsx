@@ -1,5 +1,5 @@
-import React, {Component} from 'react';
-import {RouterProvider} from 'react-router-dom';
+import React, {Component, Suspense} from 'react';
+import {BrowserRouter, Navigate, Route, RouterProvider} from 'react-router-dom';
 import {userContext} from './app-contexts';
 import {UserInfo} from './global-types';
 import {
@@ -19,18 +19,22 @@ export default class App extends Component<{}, UserInfo> {
   }
 
   componentDidMount() {
-    this.getUserInfo();
+    const userInfoIsAquired = localStorage.getItem('userInfoAcquired');
+    if (!userInfoIsAquired || userInfoIsAquired === 'false') {
+      localStorage.setItem('userInfoIsAquired', 'true');
+      this.getUserInfo();
+    }
   }
+
+  // componentWillUnmount() {
+  //   localStorage.removeItem('userInfoAcquired');
+  // }
 
   async getUserInfo() {
     const response = await apiUserInfoRequest(
       localStorage.getItem('accessToken') as string
     );
-    if (response) {
-      updateUserInfo(this.handleUserInfoChange, response, true);
-    } else {
-      this.setState({authenticated: false});
-    }
+    updateUserInfo(this.handleUserInfoChange, response as UserInfo);
   }
 
   handleUserInfoChange(
@@ -52,7 +56,7 @@ export default class App extends Component<{}, UserInfo> {
   }
 
   async handleLogout() {
-    logoutUser();
+    await logoutUser();
     this.setState({authenticated: false});
   }
 

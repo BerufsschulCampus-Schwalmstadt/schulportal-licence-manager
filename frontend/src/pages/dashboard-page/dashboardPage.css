@@ -1,0 +1,12 @@
+.dashboardWrapper {
+    display: flex;
+    align-self: stretch;
+    flex-grow: 1;
+}
+
+.dashboardContentContainer {
+    padding: 18px;
+
+    order: 2;
+    flex-grow: 1;
+}

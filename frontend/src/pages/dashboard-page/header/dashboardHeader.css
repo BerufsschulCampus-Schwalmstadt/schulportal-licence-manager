@@ -1,0 +1,11 @@
+.dashboardHeaderWrapper {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    align-self: stretch;
+    margin: 8px;
+    gap: 30px;
+
+    flex-grow: 1;
+}
