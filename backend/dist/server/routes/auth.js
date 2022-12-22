@@ -62,7 +62,7 @@ exports.authRouter.post('/signup', (req, res) => __awaiter(void 0, void 0, void 
     const userAlreadyExists = yield (0, database_1.findUserByEmail)(reqEmail);
     if (userAlreadyExists) {
         console.log('user already exists');
-        res.sendStatus(409);
+        return res.send({ authenticated: false }).status(409);
     }
     else {
         const createdUser = yield (0, database_1.newUser)(reqEmail, reqPassword);
@@ -73,6 +73,7 @@ exports.authRouter.post('/signup', (req, res) => __awaiter(void 0, void 0, void 
         const accessToken = (0, tokens_1.generateAccessToken)(userIdAndEmail);
         const refreshToken = yield (0, tokens_1.generateRefreshToken)(userIdAndEmail);
         const responseInfo = {
+            authenticated: true,
             userId: createdUser.id,
             userEmail: createdUser.email,
             userRole: createdUser.accountType,
@@ -94,8 +95,8 @@ exports.authRouter.post('/login', (req, res) => __awaiter(void 0, void 0, void 0
     console.log(reqPassword);
     const userToLogin = yield (0, database_1.findUserByEmail)(reqEmail);
     if (!userToLogin) {
-        res.sendStatus(404);
         console.log('user not found');
+        return res.send({ authenticated: false }).status(404);
     }
     else {
         const databasePassword = userToLogin.password;
@@ -108,6 +109,7 @@ exports.authRouter.post('/login', (req, res) => __awaiter(void 0, void 0, void 0
             const accessToken = (0, tokens_1.generateAccessToken)(userIdAndEmail);
             const refreshToken = yield (0, tokens_1.generateRefreshToken)(userIdAndEmail);
             const responseInfo = {
+                authenticated: true,
                 userId: userToLogin.id,
                 userEmail: userToLogin.email,
                 userRole: userToLogin.accountType,
@@ -117,17 +119,17 @@ exports.authRouter.post('/login', (req, res) => __awaiter(void 0, void 0, void 0
                 httpOnly: true,
                 maxAge: 3 * 24 * 60 * 60 * 1000,
             });
-            res.send(responseInfo).status(200);
             console.log('user logged in successfully');
+            return res.send(responseInfo).status(200);
         }
         else {
-            res.sendStatus(401);
             console.log('wrong credentials');
+            return res.send({ authenticated: false }).status(401);
         }
     }
 }));
 exports.authRouter.delete('/logout', (req, res) => {
     (0, database_1.deleteRefreshToken)(req.cookies.refreshToken);
-    res.sendStatus(204);
     console.log('successfully loged out');
+    return res.send({ authenticated: false }).status(204);
 });

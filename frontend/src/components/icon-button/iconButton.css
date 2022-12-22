@@ -5,10 +5,12 @@
     justify-content: center;
     align-items: center;
     padding: 10px;
-
+    cursor: pointer;
+    position: relative;
+    z-index: 1;
 
     gap: 10px;
-    border-radius: 5px;
+    border-radius: 14px;
 
     transition: all .3s ease;
 }
@@ -34,10 +36,12 @@
     justify-content: center;
     align-items: center;
     padding: 10px;
-
+    cursor: pointer;
+    position: relative;
+    z-index: 1;
 
     gap: 10px;
-    border-radius: 5px;
+    border-radius: 14px;
 
     transition: all .5s ease;
 }

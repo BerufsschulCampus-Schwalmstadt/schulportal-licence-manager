@@ -5,8 +5,12 @@ import './iconButton.css';
 class IconButtonProps {
   iconName: IconName;
   clickHandler: (iconName: IconName) => void;
-  text?: string;
+  text?: {
+    text: string;
+    textPosition: 'front' | 'back';
+  };
   filled?: string;
+  outlined?: {colour: string};
   menuBarBottomPosition?: boolean;
   size?: 'lg' | 'md' | 'sm';
   colour?: string;
@@ -17,6 +21,7 @@ class IconButtonProps {
       iconName,
       size,
       text,
+      outlined,
       filled,
       colour,
       activityStatus,
@@ -25,11 +30,13 @@ class IconButtonProps {
     } = passedProps;
     this.iconName = iconName;
     this.clickHandler = clickHandler;
+    this.text = text ? text : undefined;
     if (text) {
       this.filled = filled || '#E6E6E6';
     } else if (filled) {
       this.filled = filled;
     }
+    this.outlined = outlined;
     this.size = size ? size : 'md';
     this.activityStatus = activityStatus ? activityStatus : 'default';
     this.colour = colour ? colour : 'black';
@@ -49,6 +56,7 @@ export default class IconButton extends Component<IconButtonProps> {
       activityStatus,
       size,
       text,
+      outlined,
       filled,
       colour,
       clickHandler,
@@ -68,7 +76,18 @@ export default class IconButton extends Component<IconButtonProps> {
     const fontSize = String(iconSize) + 'px';
 
     // container params initialisation
-    let containerBackgroundColor: string = filled ? filled : 'transparent';
+    let containerBackgroundColor: string;
+
+    if (filled) {
+      if (filled === 'default') {
+        containerBackgroundColor = '#E6E6E6';
+      } else {
+        containerBackgroundColor = filled;
+      }
+    } else {
+      containerBackgroundColor = 'transparent';
+    }
+
     let containerClass: string;
 
     let iconColor: string;
@@ -90,18 +109,26 @@ export default class IconButton extends Component<IconButtonProps> {
       }
     }
 
+    const borderStyle = outlined ? '2px solid #B3B1EC' : '0px';
+
     return (
       <div
         className={containerClass}
-        style={{fontSize: fontSize, backgroundColor: containerBackgroundColor}}
+        style={{
+          fontSize: fontSize,
+          backgroundColor: containerBackgroundColor,
+          border: borderStyle,
+        }}
+        onClick={() => clickHandler(iconName)}
       >
+        {text && text.textPosition === 'front' && text.text}
         <Icon
           icon={iconName}
           size={iconSize}
           color={iconColor}
           onClick={() => clickHandler(iconName)}
         />
-        {text}
+        {text && text.textPosition === 'back' && text.text}
       </div>
     );
   }

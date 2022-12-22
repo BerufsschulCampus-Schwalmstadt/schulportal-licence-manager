@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import {userContext} from '../../globals/app-contexts';
 import './dashboardPage.css';
 import SideMenuBar from '../../components/side-menu-bar/sideMenuBar';
+import DashboardHeader from './header/dashboardHeader';
 
 export default class Dashboard extends Component {
   static contextType = userContext;
@@ -9,9 +10,11 @@ export default class Dashboard extends Component {
 
   render() {
     return (
-      <div>
+      <div className="dashboardWrapper">
         <SideMenuBar />
-        <div className="dashboardWrapper"></div>
+        <div className="dashboardContentContainer">
+          <DashboardHeader />
+        </div>
       </div>
     );
   }
