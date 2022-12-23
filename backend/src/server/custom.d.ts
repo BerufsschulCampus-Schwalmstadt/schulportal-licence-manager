@@ -1,5 +1,5 @@
 import {joyrUser} from '@prisma/client';
-import IdAndEmail from './tokens';
+import IdAndEmail from './routes/tokens';
 
 declare global {
   namespace Express {

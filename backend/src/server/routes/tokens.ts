@@ -1,6 +1,9 @@
 import express, {Request, Response, NextFunction} from 'express';
 import jwt, {Secret} from 'jsonwebtoken';
-import {findUserByRefreshToken, pushRefreshToken} from '../database/database';
+import {
+  findUserByRefreshToken,
+  pushRefreshToken,
+} from '../../database/database';
 import * as dotenv from 'dotenv';
 export const tokenRefreshRouter = express.Router();
 dotenv.config();
@@ -57,7 +60,7 @@ export async function authenticateToken(
   console.log('testing auth');
 
   const accessToken = req.headers['authorization'];
-  if (!accessToken) return res.sendStatus(401);
+  if (!accessToken) return res.status(401).send({authenticated: false});
 
   console.log('got token');
 
@@ -83,13 +86,14 @@ export async function refreshAccess(
   next: NextFunction
 ) {
   const cookies = req.cookies;
-  if (!cookies?.refreshToken) return res.sendStatus(401);
+  if (!cookies?.refreshToken)
+    return res.status(401).send({authenticated: false});
   const refreshToken: string = cookies.refreshToken;
   const refreshTokenUser = (await findUserByRefreshToken(refreshToken))
     ?.joyrUser;
   if (!refreshTokenUser) {
     console.log('refresh token not associated to a user');
-    return res.sendStatus(403);
+    return res.status(403).send({authenticated: false});
   }
   console.log('attempting to refresh');
   jwt.verify(
@@ -100,10 +104,12 @@ export async function refreshAccess(
         console.log(
           'Invalid refresh token - please login (token may be expired)'
         );
-        return res.sendStatus(403);
+        return res.status(403).send({authenticated: false});
       }
       const decodedElementObject = JSON.parse(JSON.stringify(decodedElement));
-      if (decodedElementObject.id !== refreshTokenUser.id) return 403;
+      if (decodedElementObject.id !== refreshTokenUser.id) {
+        return res.status(403).send({authenticated: false});
+      }
       const userIdAndEmail: IdAndEmail = {
         id: decodedElementObject.id,
         email: decodedElementObject.email,
@@ -122,18 +128,21 @@ export async function refreshAccess(
 /* A route that takes in a refresh token, and returns a new access token. */
 tokenRefreshRouter.get('/', async (req, res) => {
   const cookies = req.cookies;
-  if (!cookies?.refreshToken) return res.sendStatus(401);
+  if (!cookies?.refreshToken)
+    return res.status(401).send({authenticated: false});
   const refreshToken: string = cookies.refreshToken;
   const refreshTokenUser = (await findUserByRefreshToken(refreshToken))
     ?.joyrUser;
-  if (!refreshTokenUser) return res.sendStatus(403);
+  if (!refreshTokenUser) return res.status(403).send({authenticated: false});
   jwt.verify(
     refreshToken,
     process.env.REFRESH_TOKEN_SECRET as Secret,
     (err, decodedElement) => {
-      if (err) return res.sendStatus(403);
+      if (err) return res.status(403).send({authenticated: false});
       const decodedElementObject = JSON.parse(JSON.stringify(decodedElement));
-      if (decodedElementObject.id !== refreshTokenUser.id) return 403;
+      if (decodedElementObject.id !== refreshTokenUser.id) {
+        return res.status(403).send({authenticated: false});
+      }
       const userIdAndEmail: IdAndEmail = {
         id: decodedElementObject.id,
         email: decodedElementObject.email,

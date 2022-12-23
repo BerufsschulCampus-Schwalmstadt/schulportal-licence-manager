@@ -1,4 +1,5 @@
 export type UserInfo = {
+  infoAcquired?: boolean;
   authenticated?: boolean;
   userId?: string;
   userEmail?: string;

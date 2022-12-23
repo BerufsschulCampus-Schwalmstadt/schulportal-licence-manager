@@ -6,7 +6,7 @@ import {
   newUser,
 } from '../../database/database';
 import * as dotenv from 'dotenv';
-import {generateAccessToken, generateRefreshToken, IdAndEmail} from '../tokens';
+import {generateAccessToken, generateRefreshToken, IdAndEmail} from './tokens';
 dotenv.config();
 export const authRouter = express.Router();
 
@@ -42,7 +42,7 @@ authRouter.post('/signup', async (req, res) => {
   const userAlreadyExists = await findUserByEmail(reqEmail);
   if (userAlreadyExists) {
     console.log('user already exists');
-    return res.send({authenticated: false}).status(409);
+    return res.status(409).send({authenticated: false});
   } else {
     const createdUser = await newUser(reqEmail, reqPassword);
     const userIdAndEmail: IdAndEmail = {
@@ -65,7 +65,7 @@ authRouter.post('/signup', async (req, res) => {
       httpOnly: true,
       maxAge: 3 * 24 * 60 * 60 * 1000, //3days
     });
-    res.send(responseInfo).status(200);
+    res.status(200).send(responseInfo);
     console.log('user created successfully');
   }
 });
@@ -87,7 +87,7 @@ authRouter.post('/login', async (req, res) => {
 
   if (!userToLogin) {
     console.log('user not found');
-    return res.send({authenticated: false}).status(404);
+    return res.status(404).send({authenticated: false});
   } else {
     const databasePassword = userToLogin.password;
     const isCorrectCredentials = await verifyPassword(
@@ -116,10 +116,10 @@ authRouter.post('/login', async (req, res) => {
         maxAge: 3 * 24 * 60 * 60 * 1000, //3days
       });
       console.log('user logged in successfully');
-      return res.send(responseInfo).status(200);
+      return res.send(responseInfo).sendStatus(200);
     } else {
       console.log('wrong credentials');
-      return res.send({authenticated: false}).status(401);
+      return res.status(401).send({authenticated: false});
     }
   }
 });
@@ -127,5 +127,5 @@ authRouter.post('/login', async (req, res) => {
 authRouter.delete('/logout', (req, res) => {
   deleteRefreshToken(req.cookies.refreshToken);
   console.log('successfully loged out');
-  return res.send({authenticated: false}).status(204);
+  return res.status(204).send({authenticated: false});
 });
