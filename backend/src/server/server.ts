@@ -12,7 +12,7 @@ dotenv.config;
 import {PrismaClient} from '@prisma/client';
 import {authRouter} from './routes/auth';
 import {dashboardRouter} from './routes/dashboard';
-import {authenticateToken, tokenRefreshRouter} from './tokens';
+import {authenticateToken, tokenRefreshRouter} from './routes/tokens';
 import cookieParser from 'cookie-parser';
 export const prisma = new PrismaClient();
 

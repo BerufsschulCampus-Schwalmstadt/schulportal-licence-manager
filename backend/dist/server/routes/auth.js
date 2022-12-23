@@ -40,7 +40,7 @@ const express_1 = __importDefault(require("express"));
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const database_1 = require("../../database/database");
 const dotenv = __importStar(require("dotenv"));
-const tokens_1 = require("../tokens");
+const tokens_1 = require("./tokens");
 dotenv.config();
 exports.authRouter = express_1.default.Router();
 function encryptPassword(password) {
@@ -62,7 +62,7 @@ exports.authRouter.post('/signup', (req, res) => __awaiter(void 0, void 0, void 
     const userAlreadyExists = yield (0, database_1.findUserByEmail)(reqEmail);
     if (userAlreadyExists) {
         console.log('user already exists');
-        return res.send({ authenticated: false }).status(409);
+        return res.status(409).send({ authenticated: false });
     }
     else {
         const createdUser = yield (0, database_1.newUser)(reqEmail, reqPassword);
@@ -84,7 +84,7 @@ exports.authRouter.post('/signup', (req, res) => __awaiter(void 0, void 0, void 
             httpOnly: true,
             maxAge: 3 * 24 * 60 * 60 * 1000,
         });
-        res.send(responseInfo).status(200);
+        res.status(200).send(responseInfo);
         console.log('user created successfully');
     }
 }));
@@ -96,7 +96,7 @@ exports.authRouter.post('/login', (req, res) => __awaiter(void 0, void 0, void 0
     const userToLogin = yield (0, database_1.findUserByEmail)(reqEmail);
     if (!userToLogin) {
         console.log('user not found');
-        return res.send({ authenticated: false }).status(404);
+        return res.status(404).send({ authenticated: false });
     }
     else {
         const databasePassword = userToLogin.password;
@@ -120,16 +120,16 @@ exports.authRouter.post('/login', (req, res) => __awaiter(void 0, void 0, void 0
                 maxAge: 3 * 24 * 60 * 60 * 1000,
             });
             console.log('user logged in successfully');
-            return res.send(responseInfo).status(200);
+            return res.send(responseInfo).sendStatus(200);
         }
         else {
             console.log('wrong credentials');
-            return res.send({ authenticated: false }).status(401);
+            return res.status(401).send({ authenticated: false });
         }
     }
 }));
 exports.authRouter.delete('/logout', (req, res) => {
     (0, database_1.deleteRefreshToken)(req.cookies.refreshToken);
     console.log('successfully loged out');
-    return res.send({ authenticated: false }).status(204);
+    return res.status(204).send({ authenticated: false });
 });

@@ -61,7 +61,7 @@ function authenticateToken(req, res, next) {
         console.log('testing auth');
         const accessToken = req.headers['authorization'];
         if (!accessToken)
-            return res.sendStatus(401);
+            return res.status(401).send({ authenticated: false });
         console.log('got token');
         jsonwebtoken_1.default.verify(accessToken, process.env.ACCESS_TOKEN_SECRET, (err, userIdAndEmail) => __awaiter(this, void 0, void 0, function* () {
             if (err) {
@@ -82,22 +82,23 @@ function refreshAccess(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
         const cookies = req.cookies;
         if (!(cookies === null || cookies === void 0 ? void 0 : cookies.refreshToken))
-            return res.sendStatus(401);
+            return res.status(401).send({ authenticated: false });
         const refreshToken = cookies.refreshToken;
         const refreshTokenUser = (_a = (yield (0, database_1.findUserByRefreshToken)(refreshToken))) === null || _a === void 0 ? void 0 : _a.joyrUser;
         if (!refreshTokenUser) {
             console.log('refresh token not associated to a user');
-            return res.sendStatus(403);
+            return res.status(403).send({ authenticated: false });
         }
         console.log('attempting to refresh');
         jsonwebtoken_1.default.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, decodedElement) => {
             if (err) {
                 console.log('Invalid refresh token - please login (token may be expired)');
-                return res.sendStatus(403);
+                return res.status(403).send({ authenticated: false });
             }
             const decodedElementObject = JSON.parse(JSON.stringify(decodedElement));
-            if (decodedElementObject.id !== refreshTokenUser.id)
-                return 403;
+            if (decodedElementObject.id !== refreshTokenUser.id) {
+                return res.status(403).send({ authenticated: false });
+            }
             const userIdAndEmail = {
                 id: decodedElementObject.id,
                 email: decodedElementObject.email,
@@ -115,17 +116,18 @@ exports.tokenRefreshRouter.get('/', (req, res) => __awaiter(void 0, void 0, void
     var _a;
     const cookies = req.cookies;
     if (!(cookies === null || cookies === void 0 ? void 0 : cookies.refreshToken))
-        return res.sendStatus(401);
+        return res.status(401).send({ authenticated: false });
     const refreshToken = cookies.refreshToken;
     const refreshTokenUser = (_a = (yield (0, database_1.findUserByRefreshToken)(refreshToken))) === null || _a === void 0 ? void 0 : _a.joyrUser;
     if (!refreshTokenUser)
-        return res.sendStatus(403);
+        return res.status(403).send({ authenticated: false });
     jsonwebtoken_1.default.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, decodedElement) => {
         if (err)
-            return res.sendStatus(403);
+            return res.status(403).send({ authenticated: false });
         const decodedElementObject = JSON.parse(JSON.stringify(decodedElement));
-        if (decodedElementObject.id !== refreshTokenUser.id)
-            return 403;
+        if (decodedElementObject.id !== refreshTokenUser.id) {
+            return res.status(403).send({ authenticated: false });
+        }
         const userIdAndEmail = {
             id: decodedElementObject.id,
             email: decodedElementObject.email,

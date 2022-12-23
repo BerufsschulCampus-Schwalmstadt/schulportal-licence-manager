@@ -185,8 +185,8 @@ export async function apiAuthRequest(formState: AuthFormState) {
     .catch(error => {
       return error.toJSON() as AxiosError;
     });
-
   console.log(responseObject);
+
   const status = responseObject.status;
 
   if (status === 200) {
