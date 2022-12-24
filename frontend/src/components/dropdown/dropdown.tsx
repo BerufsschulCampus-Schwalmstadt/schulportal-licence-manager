@@ -1,61 +1,69 @@
-import React, {Children, Component, RefObject} from 'react';
+import React, {Component} from 'react';
 import IconButton from '../icon-button/iconButton';
 import './dropdown.css';
-import HorizontalDivider from '../horizontalDivider';
 import assert from 'assert';
+import {DropdownProps} from './dropdownFunctions';
+import {getIconSize} from '../icon-button/IconButtonFunctions';
 
 export default class Dropdown extends Component<
-  {text: string; id: string},
+  DropdownProps,
   {listVisible: 'none' | 'flex'}
 > {
-  constructor(props: {text: string; id: string}) {
+  constructor(props: DropdownProps) {
     super(props);
     this.state = {listVisible: 'none'};
     this.handleclick = this.handleclick.bind(this);
   }
+
+  createOptions() {}
+
   handleclick() {
     if (this.state.listVisible === 'none') {
       this.setState({listVisible: 'flex'});
-    } else {
+      document.addEventListener('click', (event: MouseEvent) => {
+        event.stopPropagation();
+        this.handleclick;
+      });
+    } else if (this.state.listVisible === 'flex') {
+      console.log('heylo');
       this.setState({listVisible: 'none'});
+      document.removeEventListener('click', (event: MouseEvent) => {
+        event.stopPropagation();
+        this.handleclick;
+      });
     }
   }
 
-  componentDidMount(): void {
-    const thisDropdownInstance = document.getElementById(this.props.id);
-    assert(thisDropdownInstance);
-    const children = document.querySelectorAll('#' + this.props.id + '>' + '*');
-    console.log(children);
-    const arr = Array.from(children);
-    assert(children);
-    document.addEventListener('click', (event: MouseEvent) => {
-      const trigger = event.target as HTMLElement;
-      console.log(trigger);
-      if (
-        trigger !== thisDropdownInstance &&
-        !arr.includes(trigger) &&
-        this.state.listVisible === 'flex'
-      ) {
-        this.setState({listVisible: 'none'});
-      }
-    });
-  }
   render() {
+    const {
+      id,
+      options,
+      iconName,
+      clickHandler,
+      colour,
+      filled,
+      outlined,
+      size,
+    } = new DropdownProps(this.props);
+    assert(iconName);
+    assert(options);
+
     return (
-      <div className="dropDownWrapper" id={this.props.id}>
+      <div className="dropDownWrapper" id={id}>
         <IconButton
-          text={{
-            text: 'No SMS account linked',
-            textPosition: 'front',
-          }}
-          outlined={{colour: '#B3B1EC'}}
-          filled={'white'}
-          iconName="caret-down"
+          iconName={iconName}
+          buttonText={{text: options[0], textPosition: 'front'}}
           clickHandler={this.handleclick}
+          colour={colour}
+          outlined={outlined}
+          filled={filled}
         />
         <div className="dropdownList" style={{display: this.state.listVisible}}>
-          <p style={{fontSize: '20px'}} className="dropdownListItem">
-            {this.props.text}
+          <p
+            style={{fontSize: String(getIconSize(size as string)) + 'px'}}
+            className="dropdownListItem"
+          >
+            {this.props.options}
           </p>
         </div>
       </div>

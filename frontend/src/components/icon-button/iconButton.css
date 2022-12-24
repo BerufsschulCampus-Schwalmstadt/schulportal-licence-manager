@@ -15,43 +15,22 @@
     transition: all .3s ease;
 }
 
+.iconButtonContainer.bottom {
+    transition: all .5s ease;
+}
+
 .iconButtonContainer:hover {
     background: #2826a111;
 }
 
-/* top icons svgs */
-.iconButtonContainer>span {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-
-    margin: 0;
-}
-
-/* menu bar bottom */
-.bottomIconButtonContainer {
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-    padding: 10px;
-    cursor: pointer;
-    position: relative;
-    z-index: 1;
-
-    gap: 10px;
-    border-radius: 14px;
-
-    transition: all .5s ease;
-}
-
-.bottomIconButtonContainer:hover {
+.iconButtonContainer.bottom:hover {
     background: #69689c11;
 }
 
-/* bottom icons svgs */
-.bottomIconButtonContainer>span {
+/* top icons svgs */
+.iconButtonContainer>span,
+.iconButtonContainer.bottom>span
+ {
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -59,4 +38,5 @@
 
     margin: 0;
 }
+
 

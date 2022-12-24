@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {userContext} from '../../globals/app-contexts';
+import {userContext} from '../../app/userContext';
 import './dashboardPage.css';
 import SideMenuBar from '../../components/side-menu-bar/sideMenuBar';
 import DashboardHeader from './header/dashboardHeader';

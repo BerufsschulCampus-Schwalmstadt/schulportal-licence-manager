@@ -1,11 +1,11 @@
 import React, {Component} from 'react';
-import {userContext} from './app-contexts';
-import {UserInfo} from './global-types';
+import {userContext} from './userContext';
+import {UserInfo} from '../globals/global-types';
 import {
   apiUserInfoRequest,
   logoutUser,
   updateUserInfo,
-} from './global-functions';
+} from '../globals/global-functions';
 import {RouterProvider} from 'react-router-dom';
 import {appRouter, authRouter} from './router';
 
