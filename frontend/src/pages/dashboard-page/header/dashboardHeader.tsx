@@ -8,7 +8,12 @@ export default class DashboardHeader extends Component {
     return (
       <div className="dashboardHeaderWrapper">
         <h4>Licence account</h4>
-        <Dropdown text="No SMS account linked" id="licenceAccountDropdown" />
+        <Dropdown
+          id={'licenceAccountDropdown'}
+          filled={'white'}
+          outlined={{colour: '#B3B1EC'}}
+          options={['619888398273', '619218398273', '619768398273']}
+        />
         <p>Last synced 5 days ago</p>
         <IconButton
           clickHandler={() => {}}
@@ -18,7 +23,7 @@ export default class DashboardHeader extends Component {
         <IconButton
           clickHandler={() => {}}
           iconName="arrow-down"
-          text={{text: 'Download as CSV', textPosition: 'back'}}
+          buttonText={{text: 'Download as CSV', textPosition: 'back'}}
         />
         <IconButton
           clickHandler={() => {}}

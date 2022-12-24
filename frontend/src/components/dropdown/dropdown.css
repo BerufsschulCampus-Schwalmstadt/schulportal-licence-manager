@@ -11,22 +11,36 @@
     display: flex;
     flex-direction: column;
     justify-content: center;
-    align-items: flex-start;
-    padding: 30px 17px 25px;
-    gap: 13px;
+    align-items: center;
+    gap: 10px;
 
-    box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.15);
+    padding: 20px 0px 15px;
+    box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.10);
     position: absolute;
-    margin-top: 35px;
-    margin-left: 10px;
+    transform: translateY(40px);
     z-index: 0;
 
     background: #FFFFFF;
     border-radius: 0px 0px 20px 20px;
+    overflow: hidden;
 
     flex: none;
 }
 
 .dropdownListItem {
+    padding: 5px 25px;
+    width: 170px;
     cursor: pointer;
+
+    align-self: stretch;
+    text-align: center;
+}
+
+.dropdownListItem.selected {
+    background-color: #b3b1eb5f;
+    color: #2f2ccc;
+}
+
+.dropdownListItem:hover {
+    background-color: #e6e6e65d;
 }

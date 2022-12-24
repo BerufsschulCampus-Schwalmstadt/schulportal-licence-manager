@@ -1,50 +1,13 @@
 import React, {Component} from 'react';
-import {Icon, IconName} from '@blueprintjs/core';
+import {Icon} from '@blueprintjs/core';
 import './iconButton.css';
-
-class IconButtonProps {
-  iconName: IconName;
-  clickHandler: (iconName: IconName) => void;
-  text?: {
-    text: string;
-    textPosition: 'front' | 'back';
-  };
-  filled?: string;
-  outlined?: {colour: string};
-  menuBarBottomPosition?: boolean;
-  size?: 'lg' | 'md' | 'sm';
-  colour?: string;
-  activityStatus?: 'default' | 'active';
-
-  constructor(passedProps: IconButtonProps) {
-    const {
-      iconName,
-      size,
-      text,
-      outlined,
-      filled,
-      colour,
-      activityStatus,
-      clickHandler,
-      menuBarBottomPosition,
-    } = passedProps;
-    this.iconName = iconName;
-    this.clickHandler = clickHandler;
-    this.text = text ? text : undefined;
-    if (text) {
-      this.filled = filled || '#E6E6E6';
-    } else if (filled) {
-      this.filled = filled;
-    }
-    this.outlined = outlined;
-    this.size = size ? size : 'md';
-    this.activityStatus = activityStatus ? activityStatus : 'default';
-    this.colour = colour ? colour : 'black';
-    this.menuBarBottomPosition = menuBarBottomPosition
-      ? menuBarBottomPosition
-      : false;
-  }
-}
+import {
+  IconButtonProps,
+  getClassName,
+  getContainerBackground,
+  getIconColor,
+  getIconSize,
+} from './IconButtonFunctions';
 
 export default class IconButton extends Component<IconButtonProps> {
   constructor(props: IconButtonProps) {
@@ -55,59 +18,29 @@ export default class IconButton extends Component<IconButtonProps> {
     const {
       activityStatus,
       size,
-      text,
+      buttonText,
       outlined,
       filled,
       colour,
       clickHandler,
       iconName,
+      dropdown,
       menuBarBottomPosition,
     } = new IconButtonProps(this.props);
 
-    // icon
-    let iconSize: 16 | 20 | 26;
-    if (size === 'lg') {
-      iconSize = 26;
-    } else if (size === 'md') {
-      iconSize = 20;
-    } else {
-      iconSize = 16;
-    }
+    const iconSize = getIconSize(size as string);
+
     const fontSize = String(iconSize) + 'px';
 
-    // container params initialisation
-    let containerBackgroundColor: string;
+    const containerBackgroundColor = getContainerBackground(
+      filled,
+      menuBarBottomPosition,
+      activityStatus
+    );
 
-    if (filled) {
-      if (filled === 'default') {
-        containerBackgroundColor = '#E6E6E6';
-      } else {
-        containerBackgroundColor = filled;
-      }
-    } else {
-      containerBackgroundColor = 'transparent';
-    }
+    const containerClass = getClassName(menuBarBottomPosition, dropdown);
 
-    let containerClass: string;
-
-    let iconColor: string;
-    if (menuBarBottomPosition) {
-      containerClass = 'bottomIconButtonContainer';
-      if (activityStatus === 'active') {
-        containerBackgroundColor = 'white';
-        iconColor = '#302CCC';
-      } else {
-        iconColor = colour as string;
-      }
-    } else {
-      containerClass = 'iconButtonContainer';
-      if (activityStatus === 'active') {
-        containerBackgroundColor = '#B3B1EC';
-        iconColor = '#302CCC';
-      } else {
-        iconColor = colour as string;
-      }
-    }
+    const iconColor = getIconColor(activityStatus, colour);
 
     const borderStyle = outlined ? '2px solid #B3B1EC' : '0px';
 
@@ -121,14 +54,14 @@ export default class IconButton extends Component<IconButtonProps> {
         }}
         onClick={() => clickHandler(iconName)}
       >
-        {text && text.textPosition === 'front' && text.text}
+        {buttonText && buttonText.textPosition === 'front' && buttonText.text}
         <Icon
           icon={iconName}
           size={iconSize}
           color={iconColor}
-          onClick={() => clickHandler(iconName)}
+          onClick={() => {}}
         />
-        {text && text.textPosition === 'back' && text.text}
+        {buttonText && buttonText.textPosition === 'back' && buttonText.text}
       </div>
     );
   }

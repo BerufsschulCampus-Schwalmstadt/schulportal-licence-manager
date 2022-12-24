@@ -14,7 +14,7 @@ import {
   getFaillureType,
   newAuthType,
 } from './authFormFunctions';
-import {userContext} from '../../../globals/app-contexts';
+import {userContext} from '../../../app/userContext';
 import {updateUserInfo} from '../../../globals/global-functions';
 
 // ---------------------------  Class Component ------------------------------//
