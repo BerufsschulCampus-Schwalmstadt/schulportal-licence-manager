@@ -24,6 +24,7 @@ export default class IconButton extends Component<IconButtonProps> {
       colour,
       clickHandler,
       iconName,
+      dropdown,
       menuBarBottomPosition,
     } = new IconButtonProps(this.props);
 
@@ -37,7 +38,7 @@ export default class IconButton extends Component<IconButtonProps> {
       activityStatus
     );
 
-    const containerClass = getClassName(menuBarBottomPosition);
+    const containerClass = getClassName(menuBarBottomPosition, dropdown);
 
     const iconColor = getIconColor(activityStatus, colour);
 
@@ -58,7 +59,7 @@ export default class IconButton extends Component<IconButtonProps> {
           icon={iconName}
           size={iconSize}
           color={iconColor}
-          onClick={() => clickHandler(iconName)}
+          onClick={() => {}}
         />
         {buttonText && buttonText.textPosition === 'back' && buttonText.text}
       </div>

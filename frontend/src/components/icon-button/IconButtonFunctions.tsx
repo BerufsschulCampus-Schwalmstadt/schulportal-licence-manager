@@ -1,4 +1,5 @@
 import {IconName} from '@blueprintjs/core';
+import Dropdown from '../dropdown/dropdown';
 
 export class IconButtonProps {
   iconName: IconName;
@@ -12,6 +13,7 @@ export class IconButtonProps {
   outlined?: {colour: string};
   colour?: string;
   activityStatus?: 'default' | 'active';
+  dropdown?: boolean;
   menuBarBottomPosition?: boolean;
 
   constructor(passedProps: IconButtonProps) {
@@ -24,6 +26,7 @@ export class IconButtonProps {
       outlined,
       colour,
       activityStatus,
+      dropdown,
       menuBarBottomPosition,
     } = passedProps;
     this.iconName = iconName;
@@ -38,6 +41,7 @@ export class IconButtonProps {
     this.outlined = outlined;
     this.colour = colour ? colour : 'black';
     this.activityStatus = activityStatus ? activityStatus : 'default';
+    this.dropdown = dropdown;
     this.menuBarBottomPosition = menuBarBottomPosition
       ? menuBarBottomPosition
       : false;
@@ -70,8 +74,12 @@ export function getContainerBackground(
   }
 }
 
-export function getClassName(menuBarBottomPosition?: boolean) {
+export function getClassName(
+  menuBarBottomPosition?: boolean,
+  dropdown?: boolean
+) {
   if (menuBarBottomPosition) return 'iconButtonContainer bottom';
+  else if (dropdown) return 'iconButtonContainer dropdown';
   return 'iconButtonContainer';
 }
 

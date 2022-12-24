@@ -1,70 +1,98 @@
-import React, {Component} from 'react';
+import React, {Component, createRef} from 'react';
 import IconButton from '../icon-button/iconButton';
 import './dropdown.css';
 import assert from 'assert';
-import {DropdownProps} from './dropdownFunctions';
-import {getIconSize} from '../icon-button/IconButtonFunctions';
-
-export default class Dropdown extends Component<
+import {
   DropdownProps,
-  {listVisible: 'none' | 'flex'}
-> {
+  DropdownState,
+  generateOptions,
+} from './dropdownFunctions';
+
+export default class Dropdown extends Component<DropdownProps, DropdownState> {
+  private fullprops: DropdownProps;
+  private componentRef = createRef<HTMLDivElement>();
+  private clickCount = 0;
   constructor(props: DropdownProps) {
     super(props);
-    this.state = {listVisible: 'none'};
-    this.handleclick = this.handleclick.bind(this);
+    this.state = {
+      listVisibility: 'closed',
+      selectedOption: 0,
+    };
+    this.fullprops = new DropdownProps(this.props);
+    this.handleSelect = this.handleSelect.bind(this);
+    this.handleClose = this.handleClose.bind(this);
   }
 
-  createOptions() {}
+  componentDidMount(): void {
+    this.componentRef.current?.addEventListener(
+      'click',
+      (event: MouseEvent) => {
+        console.log(event.target + 'mount');
+        event.stopImmediatePropagation();
+        if (this.clickCount === 1) {
+          console.log(this.clickCount);
+          this.handleClose(event);
+        } else {
+          this.setState({listVisibility: 'open'});
+          this.clickCount++;
+        }
+      }
+    );
+  }
 
-  handleclick() {
-    if (this.state.listVisible === 'none') {
-      this.setState({listVisible: 'flex'});
-      document.addEventListener('click', (event: MouseEvent) => {
-        event.stopPropagation();
-        this.handleclick;
-      });
-    } else if (this.state.listVisible === 'flex') {
-      console.log('heylo');
-      this.setState({listVisible: 'none'});
-      document.removeEventListener('click', (event: MouseEvent) => {
-        event.stopPropagation();
-        this.handleclick;
-      });
+  handleClose(event: MouseEvent) {
+    this.handleSelect(event.target as HTMLElement);
+    this.setState({listVisibility: 'closed'});
+    this.clickCount = 0;
+  }
+
+  componentDidUpdate(
+    prevProps: Readonly<DropdownProps>,
+    prevState: Readonly<DropdownState>
+  ): void {
+    if (
+      prevState.listVisibility === 'closed' &&
+      this.state.listVisibility === 'open'
+    ) {
+      document.addEventListener('click', this.handleClose);
+    } else {
+      document.removeEventListener('click', this.handleClose);
     }
   }
 
+  handleSelect(trigger: HTMLElement) {
+    const triggerText = trigger.textContent;
+    console.log(triggerText);
+    if (!triggerText) return;
+    const selectionIndex = this.fullprops.options?.indexOf(triggerText);
+    if (selectionIndex === undefined || selectionIndex === -1) return;
+    this.setState({selectedOption: selectionIndex});
+  }
+
   render() {
-    const {
-      id,
-      options,
-      iconName,
-      clickHandler,
-      colour,
-      filled,
-      outlined,
-      size,
-    } = new DropdownProps(this.props);
+    const {id, options, iconName, colour, filled, outlined, size} =
+      this.fullprops;
     assert(iconName);
     assert(options);
 
+    const {listVisibility, selectedOption} = this.state;
+
     return (
-      <div className="dropDownWrapper" id={id}>
+      <div ref={this.componentRef} className="dropDownWrapper" id={id}>
         <IconButton
           iconName={iconName}
-          buttonText={{text: options[0], textPosition: 'front'}}
-          clickHandler={this.handleclick}
+          buttonText={{text: options[selectedOption], textPosition: 'front'}}
+          clickHandler={() => {}}
           colour={colour}
           outlined={outlined}
           filled={filled}
+          dropdown={true}
         />
-        <div className="dropdownList" style={{display: this.state.listVisible}}>
-          <p
-            style={{fontSize: String(getIconSize(size as string)) + 'px'}}
-            className="dropdownListItem"
-          >
-            {this.props.options}
-          </p>
+        <div
+          className="dropdownList"
+          style={{display: listVisibility === 'open' ? 'flex' : 'none'}}
+        >
+          {generateOptions(options, size as string, this.state.selectedOption)}
         </div>
       </div>
     );
