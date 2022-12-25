@@ -170,17 +170,20 @@ export async function login(
   const passSelector = '#Password';
   const loginBttnSelector = 'input[value="Login"]';
   const loginObject = await new PuppeteerObjectPromise().resolve();
+  loginObject.page.setDefaultNavigationTimeout(120000); // 2min timeout
 
   // initialisation
   await loginObject.page.goto(loginURL);
   assert(loginObject.page.url() === loginURL);
-
+  console.log('reached auth page');
   // enter user name & password
   await loginObject.page.type(userSelector, username);
   await loginObject.page.type(passSelector, password);
+  console.log('entered credentials');
 
   // click login button
   const clickResponse = await clickElement(loginObject.page, loginBttnSelector);
+  console.log(clickResponse ? 'submit succeeded' : 'submit failled');
 
   // check if we succesfully logged in
   if (
@@ -189,10 +192,13 @@ export async function login(
     loginObject.page.url() === loginSuccesURL
   ) {
     loginObject.response = true;
+    console.log('login successfull');
   } else {
     loginObject.response = false;
+    console.log('login failled');
   }
 
+  console.log('returning');
   return loginObject;
 }
 
@@ -304,6 +310,24 @@ async function getTable(
 }
 
 // ------------------------  CSV Export Functions ------------------------//
+
+/**
+ * It navigates to the table page, then generates a table object from all license pages
+ * @param {PuppeteerObject} puppeteerObject - PuppeteerObject
+ * @returns An object with the following properties:
+ *   heading: an array of strings
+ *   body: an array of arrays of strings
+ *   bodyLen: a number
+ */
+export async function generateLicenceTableObject(
+  puppeteerObject: PuppeteerObject
+): Promise<{heading: string[]; body: string[][]; bodyLen: number}> {
+  // go to table repo/page
+  await navToTablePage(puppeteerObject.page as Page);
+
+  // generate a table object from all license pages
+  return await getTable(puppeteerObject.page as Page);
+}
 
 /**
  * It navigates to the table page, generates a table object from all license pages, and then generates

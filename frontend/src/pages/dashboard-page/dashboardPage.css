@@ -1,6 +1,7 @@
 .dashboardWrapper {
     display: flex;
     align-self: stretch;
+    height: 100vh;
     flex-grow: 1;
 
     background-color: #F2F2F2;
@@ -11,4 +12,8 @@
 
     order: 2;
     flex-grow: 1;
+}
+
+.dashboardWrapper>.dashboardContentContainer {
+    flex-basis: 80;
 }

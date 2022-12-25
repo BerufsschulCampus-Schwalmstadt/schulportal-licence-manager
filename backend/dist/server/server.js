@@ -17,7 +17,7 @@ const express_1 = __importDefault(require("express"));
 const body_parser_1 = __importDefault(require("body-parser"));
 const cors_1 = __importDefault(require("cors"));
 const fs_1 = __importDefault(require("fs"));
-const licenceDataExport_1 = require("./api-features/licenceDataExport");
+const licenceDataFunctions_1 = require("./features/licenceDataFunctions");
 const path_1 = __importDefault(require("path"));
 const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config;
@@ -26,6 +26,7 @@ const auth_1 = require("./routes/auth");
 const dashboard_1 = require("./routes/dashboard");
 const tokens_1 = require("./routes/tokens");
 const cookie_parser_1 = __importDefault(require("cookie-parser"));
+const licenceData_1 = require("./routes/licenceData");
 exports.prisma = new client_1.PrismaClient();
 exports.prisma.refreshToken
     .deleteMany()
@@ -48,8 +49,9 @@ app.use('/api/auth', auth_1.authRouter);
 app.use('/api/refresh', tokens_1.tokenRefreshRouter);
 app.use(tokens_1.authenticateToken);
 app.use('/api/dashboard', dashboard_1.dashboardRouter);
+app.use('/api/licence-data', licenceData_1.licenceDataRouter);
 app.get('/api/CSVExport', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const csvFilePath = yield (0, licenceDataExport_1.generateCSVFile)(loginObject);
+    const csvFilePath = yield (0, licenceDataFunctions_1.generateCSVFile)(loginObject);
     res.download(csvFilePath, err => {
         if (err)
             console.log(err);

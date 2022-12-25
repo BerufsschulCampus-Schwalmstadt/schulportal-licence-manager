@@ -5,7 +5,7 @@ import fs from 'fs';
 import {
   PuppeteerObject,
   generateCSVFile,
-} from './api-features/licenceDataExport';
+} from './features/licenceDataFunctions';
 import path from 'path';
 import dotenv from 'dotenv';
 dotenv.config;
@@ -14,6 +14,7 @@ import {authRouter} from './routes/auth';
 import {dashboardRouter} from './routes/dashboard';
 import {authenticateToken, tokenRefreshRouter} from './routes/tokens';
 import cookieParser from 'cookie-parser';
+import {licenceDataRouter} from './routes/licenceData';
 export const prisma = new PrismaClient();
 
 // clear database on each server launch (for testing purposes)
@@ -73,9 +74,11 @@ app.use('/api/refresh', tokenRefreshRouter);
 app.use(authenticateToken);
 // everything after this will need to be authenticated to be accessed
 
-// ------------------------  GET (dashboard/home) -------------------------//
+// ------------------------  GET (dashboard/licencedata) -----------------------//
 
 app.use('/api/dashboard', dashboardRouter);
+
+app.use('/api/licence-data', licenceDataRouter);
 
 // ---------------------------  GET (Export) ------------------------------//
 
