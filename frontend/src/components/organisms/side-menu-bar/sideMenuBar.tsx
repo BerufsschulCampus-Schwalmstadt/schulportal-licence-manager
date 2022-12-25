@@ -1,9 +1,9 @@
 import React, {Component} from 'react';
-import IconButton from '../icon-button/iconButton';
+import IconButton from '../../molecules/icon-button/iconButton';
 import {IconName} from '@blueprintjs/core';
 import assert from 'assert';
 import './sideMenuBar.css';
-import HorizontalDivider from '../horizontalDivider';
+import HorizontalDivider from '../../atoms/horizontalDivider';
 
 class SideMenuBarProps {
   iconNames?: IconName[];

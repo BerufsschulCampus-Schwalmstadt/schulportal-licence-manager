@@ -1,5 +1,4 @@
 import {IconName} from '@blueprintjs/core';
-import Dropdown from '../dropdown/dropdown';
 
 export class IconButtonProps {
   iconName: IconName;
@@ -89,4 +88,24 @@ export function getIconColor(
 ) {
   if (activityStatus === 'active') return '#302CCC';
   return colour as string;
+}
+
+export function generateProps(
+  fontSize: string,
+  containerBackgroundColor: string,
+  borderStyle: string,
+  buttonText?: {
+    text: string;
+    textPosition: 'front' | 'back';
+  }
+) {
+  const baseProps = {
+    fontSize: fontSize,
+    backgroundColor: containerBackgroundColor,
+    border: borderStyle,
+  };
+
+  const altProps = {...baseProps, padding: '10px 20px'};
+
+  return buttonText ? altProps : baseProps;
 }

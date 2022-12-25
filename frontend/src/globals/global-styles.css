@@ -63,6 +63,13 @@ h3 {
 }
 
 h4 {
+  font-weight: 400;
+  font-size: 21.1651px;
+  line-height: 32px;
+  margin: 0;
+}
+
+h5 {
   font-weight: 600;
   font-size: 21.1651px;
   line-height: 32px;

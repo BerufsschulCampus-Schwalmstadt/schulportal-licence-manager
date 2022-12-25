@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import {Icon} from '@blueprintjs/core';
 import './iconButton.css';
+import {generateProps} from './IconButtonFunctions';
 import {
   IconButtonProps,
   getClassName,
@@ -44,24 +45,29 @@ export default class IconButton extends Component<IconButtonProps> {
 
     const borderStyle = outlined ? '2px solid #B3B1EC' : '0px';
 
+    const containerPropsToUse = generateProps(
+      fontSize,
+      containerBackgroundColor,
+      borderStyle,
+      buttonText
+    );
+
+    const iconPropsToUse = {
+      icon: iconName,
+      size: iconSize,
+      color: iconColor,
+      onClick: () => {},
+    };
+
     return (
       <div
         className={containerClass}
-        style={{
-          fontSize: fontSize,
-          backgroundColor: containerBackgroundColor,
-          border: borderStyle,
-        }}
+        style={{...containerPropsToUse}}
         onClick={() => clickHandler(iconName)}
       >
-        {buttonText && buttonText.textPosition === 'front' && buttonText.text}
-        <Icon
-          icon={iconName}
-          size={iconSize}
-          color={iconColor}
-          onClick={() => {}}
-        />
-        {buttonText && buttonText.textPosition === 'back' && buttonText.text}
+        {buttonText?.textPosition === 'front' && buttonText.text}
+        <Icon {...iconPropsToUse} />
+        {buttonText?.textPosition === 'back' && buttonText.text}
       </div>
     );
   }

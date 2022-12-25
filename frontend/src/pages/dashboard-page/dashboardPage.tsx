@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {userContext} from '../../app/userContext';
 import './dashboardPage.css';
-import SideMenuBar from '../../components/side-menu-bar/sideMenuBar';
+import SideMenuBar from '../../components/organisms/side-menu-bar/sideMenuBar';
 import DashboardHeader from './header/dashboardHeader';
 
 export default class Dashboard extends Component {
