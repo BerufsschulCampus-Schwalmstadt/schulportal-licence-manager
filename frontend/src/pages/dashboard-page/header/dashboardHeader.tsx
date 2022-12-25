@@ -1,14 +1,14 @@
 import Dropdown from '../../../components/molecules/dropdown/dropdown';
 import IconButton from '../../../components/molecules/icon-button/iconButton';
-import DashboardMessage from '../message/dashboardMessage';
 import './dashboardHeader.css';
 import React, {Component} from 'react';
+import Toast from '../../../components/molecules/toast/toast';
 
 export default class DashboardHeader extends Component {
   render() {
     return (
-      <>
-        <div className="dashboardHeaderWrapper">
+      <div className="dashboardHeaderWrapper">
+        <div className="dashboardHeaderTogglesContainer">
           <div className="dashboardHeaderleftContainer">
             <h5>Licence account</h5>
             <Dropdown
@@ -38,13 +38,13 @@ export default class DashboardHeader extends Component {
             />
           </div>
         </div>
-        <DashboardMessage
+        <Toast
           messageImportantPart={'Welcome to the SMS licence manager!'}
           messageRest={
             'We’re happy to have you,  press the sync button at the top right to get started'
           }
         />
-      </>
+      </div>
     );
   }
 }

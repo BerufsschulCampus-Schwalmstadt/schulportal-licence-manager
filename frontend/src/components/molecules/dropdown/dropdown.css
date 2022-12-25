@@ -17,6 +17,7 @@
     padding: 20px 0px 15px;
     box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.10);
     position: absolute;
+    width: 100%;
     transform: translateY(40px);
     z-index: 0;
 
@@ -29,7 +30,6 @@
 
 .dropdownListItem {
     padding: 5px 25px;
-    width: 170px;
     cursor: pointer;
 
     align-self: stretch;

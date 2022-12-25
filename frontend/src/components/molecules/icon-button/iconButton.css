@@ -20,9 +20,7 @@
 }
 
 .iconButtonContainer.dropdown {
-    width: 180px;
     justify-content: space-between;
-    padding: 10px 20px;
 }
 
 .iconButtonContainer:hover,

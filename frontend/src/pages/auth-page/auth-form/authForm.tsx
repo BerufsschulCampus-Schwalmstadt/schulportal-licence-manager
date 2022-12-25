@@ -83,8 +83,21 @@ export default class AuthForm extends Component<{}, AuthFormState> {
           </div>
           <div className="loginFormContentWrapper">
             <div className="inputFieldContainer">
-              <InputComponent name="email" />
-              <InputComponent name="password" type="password" />
+              <InputComponent
+                name="email"
+                size="sm"
+                label={true}
+                filled="white"
+                outlined="0.795153px solid #302CCC"
+              />
+              <InputComponent
+                name="password"
+                size="sm"
+                label={true}
+                type="password"
+                filled="white"
+                outlined="0.795153px solid #302CCC"
+              />
             </div>
           </div>
           <p id="failTextElement">{authFormFailText(this.state)}</p>

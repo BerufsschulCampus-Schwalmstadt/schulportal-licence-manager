@@ -45,11 +45,21 @@ export default class IconButton extends Component<IconButtonProps> {
 
     const borderStyle = outlined ? '2px solid #B3B1EC' : '0px';
 
+    let padding;
+    if (size === 'md') {
+      padding = '10px 20px';
+    } else if (size === 'lg') {
+      padding = '16px 18px';
+    } else {
+      padding = '10px 20px';
+    }
+
     const containerPropsToUse = generateProps(
       fontSize,
       containerBackgroundColor,
       borderStyle,
-      buttonText
+      buttonText,
+      padding
     );
 
     const iconPropsToUse = {
