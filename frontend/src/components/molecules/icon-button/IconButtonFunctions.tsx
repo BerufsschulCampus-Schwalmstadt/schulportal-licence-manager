@@ -14,6 +14,8 @@ export class IconButtonProps {
   activityStatus?: 'default' | 'active';
   dropdown?: boolean;
   menuBarBottomPosition?: boolean;
+  iconId?: string;
+  buttonId?: string;
 
   constructor(passedProps: IconButtonProps) {
     const {
@@ -27,6 +29,8 @@ export class IconButtonProps {
       activityStatus,
       dropdown,
       menuBarBottomPosition,
+      iconId,
+      buttonId,
     } = passedProps;
     this.iconName = iconName;
     this.clickHandler = clickHandler;
@@ -44,6 +48,8 @@ export class IconButtonProps {
     this.menuBarBottomPosition = menuBarBottomPosition
       ? menuBarBottomPosition
       : false;
+    this.iconId = iconId;
+    this.buttonId = buttonId;
   }
 }
 

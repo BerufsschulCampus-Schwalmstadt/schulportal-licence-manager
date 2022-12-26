@@ -27,6 +27,8 @@ export default class IconButton extends Component<IconButtonProps> {
       iconName,
       dropdown,
       menuBarBottomPosition,
+      iconId,
+      buttonId,
     } = new IconButtonProps(this.props);
 
     const iconSize = getIconSize(size as string);
@@ -74,9 +76,10 @@ export default class IconButton extends Component<IconButtonProps> {
         className={containerClass}
         style={{...containerPropsToUse}}
         onClick={() => clickHandler(iconName)}
+        id={buttonId}
       >
         {buttonText?.textPosition === 'front' && buttonText.text}
-        <Icon {...iconPropsToUse} />
+        <Icon {...iconPropsToUse} id={iconId} />
         {buttonText?.textPosition === 'back' && buttonText.text}
       </div>
     );

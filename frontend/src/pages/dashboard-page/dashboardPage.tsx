@@ -7,31 +7,28 @@ import {
   GetAndSetLicenceData,
   getLicenceData,
   identifyLatestLicenceData,
-  licenceDataOptions,
+  initialiseDataState,
+  licenceDataState,
 } from './licenceDataFunctions';
 import {licenceDataContext} from './licenceDataContext';
 import {licenceData} from '../../globals/global-types';
 import LicenceDataTable from './licenceDataTable/licenceDataTable';
 
-export default class Dashboard extends Component<{}, licenceDataOptions> {
+export default class Dashboard extends Component<{}, licenceDataState> {
   static contextType = userContext;
   context!: React.ContextType<typeof userContext>;
 
   constructor(props: {}) {
     super(props);
-
-    const previousDataString = localStorage.getItem('licenceData');
-    if (previousDataString) {
-      this.state = {previousData: JSON.parse(previousDataString)};
-    }
-
+    this.state = initialiseDataState();
     this.handleLicenceDataSync = this.handleLicenceDataSync.bind(this);
   }
 
   async handleLicenceDataSync() {
+    this.setState({gettingData: true});
     const currentAccessToken = this.context.currentUserInfo.accessToken;
     const newLicenceData = await getLicenceData(currentAccessToken as string);
-    this.setState({fetchedData: newLicenceData});
+    this.setState({fetchedData: newLicenceData, gettingData: false});
   }
 
   render() {
@@ -39,6 +36,7 @@ export default class Dashboard extends Component<{}, licenceDataOptions> {
     const licenceDataContextValues: GetAndSetLicenceData = {
       currentLicenceData: latestLicenceData as licenceData,
       syncToLatestData: this.handleLicenceDataSync,
+      gettingData: this.state.gettingData,
     };
 
     return (

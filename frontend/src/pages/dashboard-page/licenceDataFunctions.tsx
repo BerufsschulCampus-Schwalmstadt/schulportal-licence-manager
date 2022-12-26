@@ -1,9 +1,10 @@
 import {generateAxiosInstance} from '../../globals/axios-config';
 import {licenceData} from '../../globals/global-types';
 
-export type licenceDataOptions = {
+export type licenceDataState = {
   previousData?: licenceData;
   fetchedData?: licenceData;
+  gettingData: boolean;
 };
 
 export type licenceDataSyncHandler = () => Promise<void>;
@@ -11,6 +12,7 @@ export type licenceDataSyncHandler = () => Promise<void>;
 export type GetAndSetLicenceData = {
   currentLicenceData: licenceData;
   syncToLatestData: licenceDataSyncHandler;
+  gettingData: boolean;
 };
 
 export async function getLicenceData(accessToken: string) {
@@ -28,8 +30,21 @@ export async function getLicenceData(accessToken: string) {
   }
 }
 
-export function identifyLatestLicenceData(availableData: licenceDataOptions) {
+export function identifyLatestLicenceData(availableData: licenceDataState) {
   const previousData = availableData.previousData;
   const fetchedData = availableData.fetchedData;
   return fetchedData ? fetchedData : previousData;
+}
+
+export function initialiseDataState() {
+  const previousDataString = localStorage.getItem('licenceData');
+
+  if (previousDataString) {
+    return {
+      previousData: JSON.parse(previousDataString),
+      gettingData: false,
+    };
+  } else {
+    return {gettingData: false};
+  }
 }
