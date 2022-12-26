@@ -29,6 +29,11 @@ Thus now enabling the user to have a csv version of their license applications f
 
 ### Preview
 
+- Currently build auth page
+
+![auth page image](https://user-images.githubusercontent.com/79291357/209575086-bbe07a74-4eee-4b15-9f47-e91bbf799365.png)
+
 - Currently built home screen:
 
 ![dashboard image](https://user-images.githubusercontent.com/79291357/209574727-fac23284-a90a-405c-8087-04216d49bf2d.png)
+
