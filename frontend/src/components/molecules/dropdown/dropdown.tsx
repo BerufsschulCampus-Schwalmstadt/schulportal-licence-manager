@@ -87,6 +87,7 @@ export default class Dropdown extends Component<DropdownProps, DropdownState> {
           outlined={outlined}
           filled={filled}
           dropdown={true}
+          size={'sm'}
         />
         <div
           className="dropdownList"

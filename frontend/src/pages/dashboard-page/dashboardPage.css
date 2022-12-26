@@ -1,12 +1,15 @@
 .dashboardWrapper {
     display: flex;
     align-self: stretch;
+    height: 100vh;
     flex-grow: 1;
+    overflow: hidden;
+
+    background-color: #F2F2F2;
 }
 
 .dashboardContentContainer {
     padding: 18px;
-
+    height: 100vh;
     order: 2;
-    flex-grow: 1;
 }

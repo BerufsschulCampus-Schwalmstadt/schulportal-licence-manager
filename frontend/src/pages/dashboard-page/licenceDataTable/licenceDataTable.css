@@ -1,0 +1,17 @@
+.licenceDataTableWrapper {
+    display: flex;
+    flex-direction: column;
+    padding: 5px 0;
+    gap: 22px;
+    height: 100vh;
+}
+
+.tableWrapper {
+    height: 100%;
+}
+
+.tableContainer {
+    height: 90%;
+    transition: all 1s ease;
+
+}

@@ -1,10 +1,17 @@
 .dashboardHeaderWrapper {
     display: flex;
+    flex-direction: column;
+    padding: 10px 0;
+    gap: 16px;
+}
+
+.dashboardHeaderTogglesContainer {
+    display: flex;
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
     align-self: stretch;
-    margin: 12px;
+    margin: 0 12px;
     gap: 30px;
 
     flex-grow: 1;

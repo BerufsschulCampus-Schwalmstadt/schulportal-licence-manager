@@ -1,17 +1,14 @@
 import React, {Component} from 'react';
-import './dashboardMessage.css';
-import IconButton from '../../../components/molecules/icon-button/iconButton';
+import './toast.css';
+import IconButton from '../icon-button/iconButton';
 
-type DashboardMessageProps = {
-  messageImportantPart: string;
-  messageRest: string;
+type ToastProps = {
+  messageImportantPart?: string;
+  messageRest?: string;
 };
 
-export default class DashboardMessage extends Component<
-  DashboardMessageProps,
-  {visibility: string}
-> {
-  constructor(props: DashboardMessageProps) {
+export default class Toast extends Component<ToastProps, {visibility: string}> {
+  constructor(props: ToastProps) {
     super(props);
     this.state = {visibility: 'flex'};
     this.hideMessage = this.hideMessage.bind(this);
@@ -37,6 +34,7 @@ export default class DashboardMessage extends Component<
           iconName={'cross'}
           colour="white"
           clickHandler={this.hideMessage}
+          size={'sm'}
         />
       </div>
     );

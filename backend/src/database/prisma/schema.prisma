@@ -48,15 +48,7 @@ model licenceAccount {
 
 model licenceData {
   lastSyncedDateTime DateTime       @updatedAt
-  applicationNumber  String
-  subservice         String
-  type               String
-  processingOffice   String
-  assignedPeron      String
-  submittedDate      String
-  updatedDate        String
-  status             String
-  actions            String
+  data               String
   licenceAccountId   String         @unique
   licenceAccount     licenceAccount @relation(fields: [licenceAccountId], references: [licenceAccountId])
 }

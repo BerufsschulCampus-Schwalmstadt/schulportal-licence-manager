@@ -97,7 +97,8 @@ export function generateProps(
   buttonText?: {
     text: string;
     textPosition: 'front' | 'back';
-  }
+  },
+  padding?: string
 ) {
   const baseProps = {
     fontSize: fontSize,
@@ -105,7 +106,7 @@ export function generateProps(
     border: borderStyle,
   };
 
-  const altProps = {...baseProps, padding: '10px 20px'};
+  const altProps = {...baseProps, padding: padding};
 
   return buttonText ? altProps : baseProps;
 }
