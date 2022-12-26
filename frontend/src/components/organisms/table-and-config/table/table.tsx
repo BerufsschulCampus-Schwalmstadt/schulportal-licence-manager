@@ -1,6 +1,6 @@
 import React from 'react';
 import './table.css';
-import {generateTable, placeholderTable} from './tableFunctions';
+import {generateLoadingTable, generateTable} from './tableFunctions';
 import {licenceData} from '../../../../globals/global-types';
 
 export default function Table(props: licenceData) {
@@ -10,7 +10,7 @@ export default function Table(props: licenceData) {
       <div className="tableContainer">
         {body && bodyLen && heading
           ? generateTable({body, bodyLen, heading})
-          : placeholderTable}
+          : generateLoadingTable()}
       </div>
     </div>
   );

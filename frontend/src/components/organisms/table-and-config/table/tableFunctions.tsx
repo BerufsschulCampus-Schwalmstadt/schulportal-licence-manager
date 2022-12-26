@@ -55,19 +55,59 @@ export function generateTable(data: {
   return table;
 }
 
-export const placeholderTable = (
-  <table>
-    <thead>
-      <tr>
-        <th>Application number</th>
-        <th>Status</th>
-        <th>Processing office</th>
-        <th>Assigned person</th>
-        <th>Submitted date</th>
-        <th>Subservice name</th>
-        <th>Type</th>
-        <th style={{borderRight: 'none'}}>Status</th>
-      </tr>
-    </thead>
-  </table>
-);
+export function generateLoadingTable() {
+  const skeletonRowArray: JSX.Element[] = [];
+  for (let i = 0; i <= 20; i++) {
+    // get all cells of current row
+    const skeletonCellArray: JSX.Element[] = [];
+    for (let k = 0; k <= 7; k++) {
+      let width;
+      if (k === 0 || k === 7) {
+        width = '120px';
+      } else if (k === 1 || k === 4 || k === 5) {
+        width = '170px';
+      } else if (k === 2) {
+        width = '50px';
+      } else if (k === 3) {
+        width = '280px';
+      } else {
+        width = '230px';
+      }
+
+      skeletonCellArray[k] = (
+        <td key={'cell' + k + 'ofRow' + i}>
+          <svg style={{width: width, height: '20px', borderRadius: '5px'}}>
+            <rect
+              className="skeletonText"
+              width={width}
+              height={'20px'}
+              fill={'#E6E6E6'}
+            />
+          </svg>
+        </td>
+      );
+    }
+
+    const skeletonRow: JSX.Element = <tr>{skeletonCellArray}</tr>;
+
+    skeletonRowArray[i] = skeletonRow;
+  }
+
+  return (
+    <table>
+      <thead>
+        <tr>
+          <th>Application number</th>
+          <th>Subservice Name</th>
+          <th>Type</th>
+          <th>Processing Office</th>
+          <th>Assigned Person’s Name</th>
+          <th>Submitted Date Licence Start Date</th>
+          <th>Status</th>
+          <th style={{borderRight: 'none'}}>Actions</th>
+        </tr>
+      </thead>
+      <tbody>{skeletonRowArray}</tbody>
+    </table>
+  );
+}
