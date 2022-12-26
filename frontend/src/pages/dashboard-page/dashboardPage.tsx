@@ -28,7 +28,11 @@ export default class Dashboard extends Component<{}, licenceDataState> {
     this.setState({gettingData: true});
     const currentAccessToken = this.context.currentUserInfo.accessToken;
     const newLicenceData = await getLicenceData(currentAccessToken as string);
-    this.setState({fetchedData: newLicenceData, gettingData: false});
+    this.setState({
+      fetchedData: newLicenceData,
+      gettingData: false,
+      lastSynced: new Date(),
+    });
   }
 
   render() {

@@ -5,6 +5,7 @@ export type licenceDataState = {
   previousData?: licenceData;
   fetchedData?: licenceData;
   gettingData: boolean;
+  lastSynced?: Date;
 };
 
 export type licenceDataSyncHandler = () => Promise<void>;

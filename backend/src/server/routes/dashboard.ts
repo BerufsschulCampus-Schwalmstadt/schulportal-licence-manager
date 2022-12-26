@@ -19,5 +19,5 @@ dashboardRouter.get('/*', async (req, res) => {
     userRole: user.accountType,
     accessToken: req.accessToken,
   };
-  return res.send(responseInfo).status(200);
+  return res.status(200).send(responseInfo);
 });

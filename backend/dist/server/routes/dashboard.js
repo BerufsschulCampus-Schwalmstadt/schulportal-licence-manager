@@ -32,5 +32,5 @@ exports.dashboardRouter.get('/*', (req, res) => __awaiter(void 0, void 0, void 0
         userRole: user.accountType,
         accessToken: req.accessToken,
     };
-    return res.send(responseInfo).status(200);
+    return res.status(200).send(responseInfo);
 }));
