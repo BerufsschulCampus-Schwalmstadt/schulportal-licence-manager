@@ -42,10 +42,11 @@ export default class DashboardHeader extends Component {
               iconName="refresh"
               outlined={{colour: '#B3B1EC'}}
               size={'sm'}
+              filled={'white'}
               iconId={'syncButtonIcon'}
             />
             <IconButton
-              clickHandler={() => {}}
+              clickHandler={this.context.exportData}
               iconName="arrow-down"
               buttonText={{text: 'Download as CSV', textPosition: 'back'}}
               size={'sm'}

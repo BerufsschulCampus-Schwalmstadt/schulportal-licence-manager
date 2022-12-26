@@ -5,6 +5,7 @@ import SideMenuBar from '../../components/organisms/side-menu-bar/sideMenuBar';
 import DashboardHeader from './header/dashboardHeader';
 import {
   GetAndSetLicenceData,
+  downloadAsCSV,
   getLicenceData,
   identifyLatestLicenceData,
   initialiseDataState,
@@ -22,6 +23,7 @@ export default class Dashboard extends Component<{}, licenceDataState> {
     super(props);
     this.state = initialiseDataState();
     this.handleLicenceDataSync = this.handleLicenceDataSync.bind(this);
+    this.handleLicenceDataExport = this.handleLicenceDataExport.bind(this);
   }
 
   async handleLicenceDataSync() {
@@ -35,12 +37,17 @@ export default class Dashboard extends Component<{}, licenceDataState> {
     });
   }
 
+  async handleLicenceDataExport() {
+    downloadAsCSV(this.state);
+  }
+
   render() {
     const latestLicenceData = identifyLatestLicenceData(this.state);
     const licenceDataContextValues: GetAndSetLicenceData = {
       currentLicenceData: latestLicenceData as licenceData,
       syncToLatestData: this.handleLicenceDataSync,
       gettingData: this.state.gettingData,
+      exportData: this.handleLicenceDataExport,
     };
 
     return (
