@@ -29,5 +29,6 @@ Thus now enabling the user to have a csv version of their license applications f
 
 ### Preview
 
-Currently built home screen:
+- Currently built home screen:
+
 ![dashboard image](https://user-images.githubusercontent.com/79291357/209574727-fac23284-a90a-405c-8087-04216d49bf2d.png)
