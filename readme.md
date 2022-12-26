@@ -1,8 +1,6 @@
 
 ![🇨🇦 Spectrum Management System (SMS) License Application Exporter](readme_ressources/Frame%203410.png)
 
-![dashboard image](https://user-images.githubusercontent.com/79291357/209574727-fac23284-a90a-405c-8087-04216d49bf2d.png)
-
 ### What is the spectrum management system?
 
 The Spectrum Management System (SMS) is a Canadian government online portal that provides access to a wide range of services provided by ISED’s *(the department of Innovation, Science and Economic Development Canada)* spectrum management program.
@@ -28,3 +26,8 @@ And then once the table is created the program will:
 - Export/create a csv file in the exports folder
 
 Thus now enabling the user to have a csv version of their license applications for their records instead of solely print in a single click! They can now put back their time to more core tasks that make use of their skills.
+
+### Preview
+
+Currently built home screen:
+![dashboard image](https://user-images.githubusercontent.com/79291357/209574727-fac23284-a90a-405c-8087-04216d49bf2d.png)
