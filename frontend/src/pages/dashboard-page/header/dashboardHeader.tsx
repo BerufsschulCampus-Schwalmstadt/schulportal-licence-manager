@@ -9,6 +9,18 @@ export default class DashboardHeader extends Component {
   static contextType = licenceDataContext;
   context!: React.ContextType<typeof licenceDataContext>;
 
+  componentDidUpdate() {
+    const syncButtonIcon = document.getElementById(
+      'syncButtonIcon'
+    ) as HTMLElement;
+
+    if (this.context.gettingData) {
+      syncButtonIcon.classList.add('rotateSync');
+    } else {
+      syncButtonIcon.classList.remove('rotateSync');
+    }
+  }
+
   render() {
     return (
       <div className="dashboardHeaderWrapper">
@@ -30,6 +42,7 @@ export default class DashboardHeader extends Component {
               iconName="refresh"
               outlined={{colour: '#B3B1EC'}}
               size={'sm'}
+              iconId={'syncButtonIcon'}
             />
             <IconButton
               clickHandler={() => {}}

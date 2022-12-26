@@ -32,3 +32,17 @@
     padding: 0px;
     gap: 21px;
 }
+
+.rotateSync {
+    animation: rotateSyncAnimation 1.5s ease infinite;
+}
+
+@keyframes rotateSyncAnimation {
+    0% {
+        rotate: 0deg;
+    }
+
+    100% {
+        rotate: 360deg;
+    }
+}
