@@ -1,6 +1,8 @@
 
 ![🇨🇦 Spectrum Management System (SMS) License Application Exporter](readme_ressources/Frame%203410.png)
 
+![dashboard image](https://user-images.githubusercontent.com/79291357/209574727-fac23284-a90a-405c-8087-04216d49bf2d.png)
+
 ### What is the spectrum management system?
 
 The Spectrum Management System (SMS) is a Canadian government online portal that provides access to a wide range of services provided by ISED’s *(the department of Innovation, Science and Economic Development Canada)* spectrum management program.
@@ -12,8 +14,6 @@ For registered radio or spectrum licensees the SMS only enables you access to pr
 Also simply copying the licences from the SMS isn't really an option because the engineers/users of the SMS typically have over 20 pages of tables, so everytime going in the SMS and copying everything over is not a reasonable use of their time and expertise.
 
 ### How does this project solve the problem?
-
-![dashboard image](https://user-images.githubusercontent.com/79291357/209574727-fac23284-a90a-405c-8087-04216d49bf2d.png)
 
 This node.js application in the background:
 
