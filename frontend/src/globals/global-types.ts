@@ -19,3 +19,9 @@ export type GetAndSetUserInfo = {
   editUserInfo: UserInfoEditor;
   getUserInfo: UserInfoGetter;
 };
+
+export type licenceData = {
+  heading?: string[];
+  body?: string[][];
+  bodyLen?: number;
+};

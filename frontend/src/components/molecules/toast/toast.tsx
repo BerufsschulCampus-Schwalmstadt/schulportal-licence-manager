@@ -34,6 +34,7 @@ export default class Toast extends Component<ToastProps, {visibility: string}> {
           iconName={'cross'}
           colour="white"
           clickHandler={this.hideMessage}
+          size={'sm'}
         />
       </div>
     );

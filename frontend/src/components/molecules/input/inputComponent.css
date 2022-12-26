@@ -67,6 +67,4 @@
 
 .inputComponentWrapper>span {
     position: absolute;
-    transform: translateY(7px);
-    margin-left: 25px;
 }

@@ -104,13 +104,21 @@ export default class InputComponent extends Component<
       borderRadius = '6px';
     }
 
+    let iconPosition;
+
+    if (size === 'md') {
+      iconPosition = {transform: 'translateY(7px)', marginLeft: '25px'};
+    } else if (size === 'sm') {
+      iconPosition = {transform: 'translateY(1px)', marginLeft: '15px'};
+    }
+
     return (
       <div
         className="inputComponentWrapper"
         style={{gap: labelText ? '9.11px' : 0}}
       >
         <p className="inputLabels">{labelText}</p>
-        <Icon icon={icon} size={iconSize} />
+        <Icon icon={icon} size={iconSize} style={iconPosition} />
         <input
           className="inputFields"
           name={name}
@@ -122,7 +130,11 @@ export default class InputComponent extends Component<
           style={{
             border: outlined,
             fontSize: fontSize,
-            padding: icon ? '10px 20px 10px 80px' : '9px 18px',
+            padding: icon
+              ? size === 'sm'
+                ? '10px 20px 10px 55px'
+                : '10px 20px 10px 80px'
+              : '9px 18px',
             background: filled ? filled : 'transparent',
             boxShadow: boxshadow ? '0px 4px 30px rgba(0, 0, 0, 0.05)' : 'none',
             borderRadius: borderRadius,

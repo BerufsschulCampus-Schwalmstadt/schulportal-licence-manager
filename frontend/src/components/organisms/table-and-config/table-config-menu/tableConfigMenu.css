@@ -1,0 +1,19 @@
+.fullTableWrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+    height: 100%;
+    overflow: hidden;
+}
+
+.tableConfigContainer {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 30px;
+}
+
+.tableConfigContainer>.inputComponentWrapper>.inputFields {
+    height: 100%;
+    width: 577px;
+}
