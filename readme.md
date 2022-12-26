@@ -13,6 +13,8 @@ Also simply copying the licences from the SMS isn't really an option because the
 
 ### How does this project solve the problem?
 
+![dashboard image](https://user-images.githubusercontent.com/79291357/209574727-fac23284-a90a-405c-8087-04216d49bf2d.png)
+
 This node.js application in the background:
 
 - Navigates to the SMS
