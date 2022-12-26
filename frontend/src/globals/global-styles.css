@@ -146,3 +146,16 @@ button {
 .iconButton :focus {
   color: #1F1F3B;
 }
+
+.skeletonText {
+  animation: skeletonText-loading 1s linear infinite alternate;
+}
+
+@keyframes skeletonText-loading {
+  0% {
+    fill: #EBEBEB;
+  }
+  100% {
+    fill: #DFDFDF;
+  }
+}
