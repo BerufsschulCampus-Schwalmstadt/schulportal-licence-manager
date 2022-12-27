@@ -15,7 +15,11 @@ licenceDataRouter.get('/', async (req, res) => {
   );
   console.log('sms login successfull');
   const data = await generateLicenceTableObject(loginObject);
+  const responseObject = {
+    data,
+    lastSynced: new Date(),
+  };
   loginObject.kill();
-  console.log(data);
-  return res.status(200).send(data);
+  console.log(responseObject.data);
+  return res.status(200).send(responseObject);
 });

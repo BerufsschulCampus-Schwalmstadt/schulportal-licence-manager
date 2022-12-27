@@ -120,7 +120,7 @@ exports.authRouter.post('/login', (req, res) => __awaiter(void 0, void 0, void 0
                 maxAge: 3 * 24 * 60 * 60 * 1000,
             });
             console.log('user logged in successfully');
-            return res.send(responseInfo).sendStatus(200);
+            return res.status(200).send(responseInfo);
         }
         else {
             console.log('wrong credentials');

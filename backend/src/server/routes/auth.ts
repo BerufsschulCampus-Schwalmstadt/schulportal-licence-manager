@@ -116,7 +116,7 @@ authRouter.post('/login', async (req, res) => {
         maxAge: 3 * 24 * 60 * 60 * 1000, //3days
       });
       console.log('user logged in successfully');
-      return res.send(responseInfo).sendStatus(200);
+      return res.status(200).send(responseInfo);
     } else {
       console.log('wrong credentials');
       return res.status(401).send({authenticated: false});

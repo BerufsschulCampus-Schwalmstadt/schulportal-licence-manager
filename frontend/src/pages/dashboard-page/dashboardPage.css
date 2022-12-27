@@ -11,5 +11,6 @@
 .dashboardContentContainer {
     padding: 18px;
     height: 100vh;
+    width: 100%;
     order: 2;
 }

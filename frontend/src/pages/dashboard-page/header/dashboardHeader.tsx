@@ -9,7 +9,7 @@ export default class DashboardHeader extends Component {
   static contextType = licenceDataContext;
   context!: React.ContextType<typeof licenceDataContext>;
 
-  componentDidUpdate() {
+  componentDidUpdate(): void {
     const syncButtonIcon = document.getElementById(
       'syncButtonIcon'
     ) as HTMLElement;
@@ -36,16 +36,17 @@ export default class DashboardHeader extends Component {
             />
           </div>
           <div className="dashboardHeaderRightContainer">
-            <h4>Last synced 5 days ago</h4>
+            <h4>{this.context.lastSyncedText}</h4>
             <IconButton
               clickHandler={this.context.syncToLatestData}
               iconName="refresh"
               outlined={{colour: '#B3B1EC'}}
               size={'sm'}
+              filled={'white'}
               iconId={'syncButtonIcon'}
             />
             <IconButton
-              clickHandler={() => {}}
+              clickHandler={this.context.exportData}
               iconName="arrow-down"
               buttonText={{text: 'Download as CSV', textPosition: 'back'}}
               size={'sm'}
