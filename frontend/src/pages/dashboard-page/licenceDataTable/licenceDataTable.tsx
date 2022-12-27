@@ -28,11 +28,9 @@ export default class LicenceDataTable extends Component<
     if (trigger.name === 'licenceSearchAndFilter') {
       this.setState({searchAndFilterInput: trigger.value});
     }
-    console.log(this.state.searchAndFilterInput);
   }
 
   componentDidUpdate(): void {
-    console.log('update');
     searchAndFilterTable(this.state.searchAndFilterInput, this.tableId);
   }
 

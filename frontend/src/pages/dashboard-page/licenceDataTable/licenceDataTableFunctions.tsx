@@ -9,7 +9,6 @@ export function searchAndFilterTable(input: string, tableId: string) {
   const tableBodyRows = table.querySelectorAll(
     'tbody > tr'
   ) as NodeListOf<HTMLTableRowElement>;
-  console.log(filter);
 
   for (let i = 0; i < tableBodyRows.length; i++) {
     const currentRow = tableBodyRows[i];
