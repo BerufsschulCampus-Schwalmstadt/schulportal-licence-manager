@@ -1,8 +1,11 @@
-export function generateTable(data: {
-  heading: string[];
-  body: string[][];
-  bodyLen: number;
-}) {
+export function generateTable(
+  data: {
+    heading: string[];
+    body: string[][];
+    bodyLen: number;
+  },
+  tableId?: string
+) {
   const {body, bodyLen, heading} = data;
 
   //-------------- create table head ---------------//
@@ -48,7 +51,9 @@ export function generateTable(data: {
 
   //----------- combine to create table ------------//
 
-  const table: JSX.Element = <table>{[theadElement, tbodyElement]}</table>;
+  const table: JSX.Element = (
+    <table id={tableId}>{[theadElement, tbodyElement]}</table>
+  );
 
   //----------------- return table ------------------//
 

@@ -1,14 +1,22 @@
-import React, {Component} from 'react';
+import React, {Component, FormEvent} from 'react';
 import './tableConfigMenu.css';
 import Dropdown from '../../../molecules/dropdown/dropdown';
 import InputComponent from '../../../molecules/input/inputComponent';
 
-export default class TableConfigMenu extends Component {
+export type searchAndFilterInputHandler = (event: FormEvent) => void;
+
+export default class TableConfigMenu extends Component<
+  {inputName?: string; inputHandler?: searchAndFilterInputHandler},
+  {}
+> {
   render() {
+    const {inputHandler, inputName} = this.props;
+    const inputNameToSet = inputName ? inputName : 'searchAndFilter';
+
     return (
-      <div className="tableConfigContainer">
+      <div className="tableConfigContainer" onInput={inputHandler}>
         <InputComponent
-          name={'licenceSearchAndFilter'}
+          name={inputNameToSet}
           label={false}
           placeholder={'Search and filter'}
           icon={'search'}

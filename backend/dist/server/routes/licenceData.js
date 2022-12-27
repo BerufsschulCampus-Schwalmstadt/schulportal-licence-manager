@@ -21,7 +21,11 @@ exports.licenceDataRouter.get('/', (req, res) => __awaiter(void 0, void 0, void 
     const loginObject = yield (0, licenceDataFunctions_1.login)('Rogers_TCS', 'Sf16}2dDA$)p');
     console.log('sms login successfull');
     const data = yield (0, licenceDataFunctions_1.generateLicenceTableObject)(loginObject);
+    const responseObject = {
+        data,
+        lastSynced: new Date(),
+    };
     loginObject.kill();
-    console.log(data);
-    return res.status(200).send(data);
+    console.log(responseObject.data);
+    return res.status(200).send(responseObject);
 }));
