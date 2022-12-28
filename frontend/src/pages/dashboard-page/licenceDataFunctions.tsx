@@ -6,9 +6,9 @@ import fileDownload from 'js-file-download';
 export type licenceDataState = {
   previousData?: licenceData;
   fetchedData?: licenceData;
+  lastSynced?: Date;
   lastSyncedText: string;
   gettingData: boolean;
-  lastSynced?: Date;
 };
 
 export type licenceDataSyncHandler = () => Promise<void>;

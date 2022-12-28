@@ -1,6 +1,15 @@
+import {createContext} from 'react';
+
 export type licenceDataTableState = {
   searchAndFilterInput: string;
+  indicesToSelect?: number[];
 };
+
+export type GetAndSetTableContext = {
+  indicesToSelect?: number[];
+};
+
+export const tableContext = createContext({} as GetAndSetTableContext);
 
 export function searchAndFilterTable(input: string, tableId: string) {
   const filter = input.toLowerCase();

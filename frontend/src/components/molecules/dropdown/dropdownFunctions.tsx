@@ -34,6 +34,45 @@ export class DropdownProps {
   }
 }
 
+export class DropdownCheckboxListProps {
+  id: string;
+  options?: string[];
+  iconName?: IconName;
+  clickHandler?: () => void;
+  indicesToSelect?: number[];
+  filled?: string;
+  outlined?: {colour: string};
+  size?: 'lg' | 'md' | 'sm';
+  colour?: string;
+  activityStatus?: 'default' | 'active';
+  columnToSelectEditor?: (index: number, operation: 'add' | 'remove') => void;
+
+  constructor(passedProps: DropdownCheckboxListProps) {
+    const {
+      id,
+      options,
+      iconName,
+      clickHandler,
+      filled,
+      outlined,
+      size,
+      colour,
+      indicesToSelect,
+      columnToSelectEditor,
+    } = passedProps;
+    this.id = id;
+    this.options = options ? options : ['No SMS account linked'];
+    this.iconName = iconName ? iconName : 'caret-down';
+    this.clickHandler = clickHandler;
+    this.filled = filled;
+    this.outlined = outlined;
+    this.size = size ? size : 'md';
+    this.colour = colour ? colour : 'black';
+    this.indicesToSelect = indicesToSelect;
+    this.columnToSelectEditor = columnToSelectEditor;
+  }
+}
+
 export type DropdownState = {
   listVisibility: 'closed' | 'open';
   selectedOption: number;
@@ -86,12 +125,23 @@ function toggle(event: React.MouseEvent, key: string) {
   }
 }
 
-export function generateCheckboxOptions(options: string[], size: string) {
+export function generateCheckboxOptions(
+  options: string[],
+  size: string,
+  indicesToSelect?: number[]
+) {
   const optionElements = [];
   for (let i = 1; i < options.length; i++) {
-    const classNameToUse = 'dropdownListItem';
-
-    optionElements[i] = (
+    let shouldCheck;
+    if (
+      (indicesToSelect && indicesToSelect.includes(i - 1)) ||
+      indicesToSelect === undefined
+    ) {
+      shouldCheck = true;
+    } else {
+      shouldCheck = false;
+    }
+    optionElements[i - 1] = (
       <div
         style={{
           fontSize: String(getIconSize(size)) + 'px',
@@ -101,11 +151,16 @@ export function generateCheckboxOptions(options: string[], size: string) {
           justifyContent: 'flex-start',
           gap: '5px',
         }}
-        className={classNameToUse}
+        className={'dropdownListItem'}
         key={options[i]}
         id={options[i]}
       >
-        <input type={'checkbox'} id={options[i] + 'Checkbox'} defaultChecked />
+        <input
+          type={'checkbox'}
+          id={options[i] + 'Checkbox'}
+          defaultChecked={shouldCheck}
+          name={String(i - 1)}
+        />
         <p style={{marginTop: '-3px'}}>{options[i]}</p>
       </div>
     );

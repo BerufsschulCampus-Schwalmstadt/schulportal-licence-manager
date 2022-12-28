@@ -5,7 +5,11 @@ export type searchAndFilterInputHandler = (event: FormEvent) => void;
 export type configMenuProps = {
   inputName?: string;
   inputHandler?: searchAndFilterInputHandler;
-  columnSetupOptions?: string[];
+  columnSetupOptions?: {
+    headings?: string[];
+    indicesToSelect?: number[];
+    columnToSelectEditor?: (index: number, operation: 'add' | 'remove') => void;
+  };
 };
 
 export type configMenuState = {scrolled: boolean};

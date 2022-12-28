@@ -4,7 +4,8 @@ export function generateTable(
     body: string[][];
     bodyLen: number;
   },
-  tableId?: string
+  tableId?: string,
+  indicesToShow?: number[]
 ) {
   const {body, bodyLen, heading} = data;
 
@@ -12,15 +13,10 @@ export function generateTable(
   const thElementArray: JSX.Element[] = [];
   for (let i = 0; i < heading.length; i++) {
     const currentHeader = heading[i];
-    if (i === heading.length - 1) {
-      thElementArray[i] = (
-        <th style={{borderRight: 'none'}} key={'th' + i}>
-          {currentHeader}
-        </th>
-      );
-    } else {
-      thElementArray[i] = <th key={'th' + i}>{currentHeader}</th>;
+    if (indicesToShow && !indicesToShow.includes(i)) {
+      continue;
     }
+    thElementArray[i] = <th key={'th' + i}>{currentHeader}</th>;
   }
 
   const theadElement = (
@@ -37,6 +33,9 @@ export function generateTable(
     // get all cells of current row
     const cellElementArray: JSX.Element[] = [];
     for (let k = 0; k < currentRow.length; k++) {
+      if (indicesToShow && !indicesToShow.includes(k)) {
+        continue;
+      }
       cellElementArray[k] = (
         <td key={'cell' + k + 'ofRow' + i}>{currentRow[k]}</td>
       );

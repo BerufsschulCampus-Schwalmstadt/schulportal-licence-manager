@@ -71,9 +71,13 @@ export default class TableConfigMenu extends Component<
           <DropdownCheckboxList
             id={'columnSetup'}
             options={
-              this.props.columnSetupOptions
-                ? ['Columns Setup', ...this.props.columnSetupOptions]
+              this.props.columnSetupOptions?.headings
+                ? ['Columns Setup', ...this.props.columnSetupOptions.headings]
                 : ['Columns Setup']
+            }
+            indicesToSelect={this.props.columnSetupOptions?.indicesToSelect}
+            columnToSelectEditor={
+              this.props.columnSetupOptions?.columnToSelectEditor
             }
             size={'sm'}
           />

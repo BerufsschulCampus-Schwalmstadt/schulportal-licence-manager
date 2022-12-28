@@ -3,30 +3,30 @@ import IconButton from '../icon-button/iconButton';
 import './dropdown.css';
 import assert from 'assert';
 import {
-  DropdownProps,
+  DropdownCheckboxListProps,
   DropdownState,
   generateCheckboxOptions,
-  generateOptions,
 } from './dropdownFunctions';
 
 export default class DropdownCheckboxList extends Component<
-  DropdownProps,
+  DropdownCheckboxListProps,
   DropdownState
 > {
-  private fullprops: DropdownProps;
+  private fullprops: DropdownCheckboxListProps;
   private componentRef = createRef<HTMLDivElement>();
   private dropdownClickCount = 0;
   private checkboxOptions;
-  constructor(props: DropdownProps) {
+  constructor(props: DropdownCheckboxListProps) {
     super(props);
     this.state = {
       listVisibility: 'closed',
       selectedOption: 0,
     };
-    this.fullprops = new DropdownProps(this.props);
+    this.fullprops = new DropdownCheckboxListProps(this.props);
     this.checkboxOptions = generateCheckboxOptions(
       this.fullprops.options as string[],
-      this.fullprops.size as string
+      this.fullprops.size as string,
+      this.fullprops.indicesToSelect
     );
     this.handleClose = this.handleClose.bind(this);
   }
@@ -53,11 +53,14 @@ export default class DropdownCheckboxList extends Component<
         event.stopImmediatePropagation();
         console.log('heyoo');
         const input = optionElement.querySelector('input');
+        const editor = this.props.columnToSelectEditor;
         if (!input) return;
         else if (input.checked) {
           input.checked = false;
+          if (editor) editor(Number(input.name), 'remove');
         } else {
           input.checked = true;
+          if (editor) editor(Number(input.name), 'add');
         }
       });
     });
@@ -69,7 +72,7 @@ export default class DropdownCheckboxList extends Component<
   }
 
   componentDidUpdate(
-    prevProps: Readonly<DropdownProps>,
+    prevProps: Readonly<DropdownCheckboxListProps>,
     prevState: Readonly<DropdownState>
   ): void {
     if (
