@@ -5,13 +5,18 @@ import assert from 'assert';
 import {
   DropdownProps,
   DropdownState,
+  generateCheckboxOptions,
   generateOptions,
 } from './dropdownFunctions';
 
-export default class Dropdown extends Component<DropdownProps, DropdownState> {
+export default class DropdownCheckboxList extends Component<
+  DropdownProps,
+  DropdownState
+> {
   private fullprops: DropdownProps;
   private componentRef = createRef<HTMLDivElement>();
-  private clickCount = 0;
+  private dropdownClickCount = 0;
+  private checkboxOptions;
   constructor(props: DropdownProps) {
     super(props);
     this.state = {
@@ -19,7 +24,10 @@ export default class Dropdown extends Component<DropdownProps, DropdownState> {
       selectedOption: 0,
     };
     this.fullprops = new DropdownProps(this.props);
-    this.handleSelect = this.handleSelect.bind(this);
+    this.checkboxOptions = generateCheckboxOptions(
+      this.fullprops.options as string[],
+      this.fullprops.size as string
+    );
     this.handleClose = this.handleClose.bind(this);
   }
 
@@ -29,21 +37,35 @@ export default class Dropdown extends Component<DropdownProps, DropdownState> {
       (event: MouseEvent) => {
         console.log(event.target + 'mount');
         event.stopImmediatePropagation();
-        if (this.clickCount === 1) {
-          console.log(this.clickCount);
-          this.handleClose(event);
+        if (this.dropdownClickCount === 1) {
+          this.handleClose();
+          console.log(this.dropdownClickCount);
         } else {
           this.setState({listVisibility: 'open'});
-          this.clickCount++;
+          this.dropdownClickCount++;
         }
       }
     );
+
+    this.checkboxOptions.forEach(option => {
+      const optionElement = document.getElementById(String(option.key));
+      optionElement?.addEventListener('click', (event: MouseEvent) => {
+        event.stopImmediatePropagation();
+        console.log('heyoo');
+        const input = optionElement.querySelector('input');
+        if (!input) return;
+        else if (input.checked) {
+          input.checked = false;
+        } else {
+          input.checked = true;
+        }
+      });
+    });
   }
 
-  handleClose(event: MouseEvent) {
-    this.handleSelect(event.target as HTMLElement);
+  handleClose() {
     this.setState({listVisibility: 'closed'});
-    this.clickCount = 0;
+    this.dropdownClickCount = 0;
   }
 
   componentDidUpdate(
@@ -58,15 +80,6 @@ export default class Dropdown extends Component<DropdownProps, DropdownState> {
     } else {
       document.removeEventListener('click', this.handleClose);
     }
-  }
-
-  handleSelect(trigger: HTMLElement) {
-    const triggerText = trigger.textContent;
-    console.log(triggerText);
-    if (!triggerText) return;
-    const selectionIndex = this.fullprops.options?.indexOf(triggerText);
-    if (selectionIndex === undefined || selectionIndex === -1) return;
-    this.setState({selectedOption: selectionIndex});
   }
 
   render() {
@@ -93,7 +106,7 @@ export default class Dropdown extends Component<DropdownProps, DropdownState> {
           className="dropdownList"
           style={{display: listVisibility === 'open' ? 'flex' : 'none'}}
         >
-          {generateOptions(options, size as string, this.state.selectedOption)}
+          {this.checkboxOptions}
         </div>
       </div>
     );

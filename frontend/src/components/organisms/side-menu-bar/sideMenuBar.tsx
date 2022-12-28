@@ -84,7 +84,7 @@ export default class SideMenuBar extends Component<
             activityStatus={
               this.state.activeIcon === bottomIconName ? 'active' : 'default'
             }
-            colour="white"
+            iconColour="white"
             clickHandler={this.handleToggling}
             menuBarBottomPosition={true}
           />

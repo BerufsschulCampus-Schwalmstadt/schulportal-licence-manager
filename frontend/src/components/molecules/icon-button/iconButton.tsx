@@ -22,7 +22,8 @@ export default class IconButton extends Component<IconButtonProps> {
       buttonText,
       outlined,
       filled,
-      colour,
+      iconColour,
+      textColour,
       clickHandler,
       iconName,
       dropdown,
@@ -43,7 +44,7 @@ export default class IconButton extends Component<IconButtonProps> {
 
     const containerClass = getClassName(menuBarBottomPosition, dropdown);
 
-    const iconColor = getIconColor(activityStatus, colour);
+    const iconColor = getIconColor(activityStatus, iconColour);
 
     const borderStyle = outlined ? '2px solid #B3B1EC' : '0px';
 
@@ -61,6 +62,7 @@ export default class IconButton extends Component<IconButtonProps> {
       containerBackgroundColor,
       borderStyle,
       buttonText,
+      textColour,
       padding
     );
 

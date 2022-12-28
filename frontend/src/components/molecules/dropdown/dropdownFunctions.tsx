@@ -73,3 +73,42 @@ export function generateOptions(
   }
   return optionElements;
 }
+
+function toggle(event: React.MouseEvent, key: string) {
+  const checkboxToToggleId = key + 'Checkbox';
+  const checkboxToToggle = document.getElementById(
+    checkboxToToggleId
+  ) as HTMLInputElement;
+  if (checkboxToToggle.checked) {
+    checkboxToToggle.checked = false;
+  } else {
+    checkboxToToggle.checked = true;
+  }
+}
+
+export function generateCheckboxOptions(options: string[], size: string) {
+  const optionElements = [];
+  for (let i = 1; i < options.length; i++) {
+    const classNameToUse = 'dropdownListItem';
+
+    optionElements[i] = (
+      <div
+        style={{
+          fontSize: String(getIconSize(size)) + 'px',
+          textAlign: 'left',
+          display: 'flex',
+          alignItems: 'flex-start',
+          justifyContent: 'flex-start',
+          gap: '5px',
+        }}
+        className={classNameToUse}
+        key={options[i]}
+        id={options[i]}
+      >
+        <input type={'checkbox'} id={options[i] + 'Checkbox'} defaultChecked />
+        <p style={{marginTop: '-3px'}}>{options[i]}</p>
+      </div>
+    );
+  }
+  return optionElements;
+}

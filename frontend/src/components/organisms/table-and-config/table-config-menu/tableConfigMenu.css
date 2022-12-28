@@ -1,19 +1,99 @@
-.fullTableWrapper {
-    display: flex;
-    flex-direction: column;
-    gap: 28px;
-    height: 100%;
-    overflow: hidden;
-}
-
 .tableConfigContainer {
     display: flex;
     flex-direction: row;
     align-items: center;
-    gap: 30px;
+    width: 100%;
+    gap: 1%;
+    z-index: 10;
+}
+
+#nextButton {
+    display: none;
+}
+
+.horizontalScrollableDiv {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    gap: 2%;
+    position: relative;
+    overflow-Y: visible;
+}
+
+.tableConfigContainer>.inputComponentWrapper {
+    width: 35%;
 }
 
 .tableConfigContainer>.inputComponentWrapper>.inputFields {
     height: 100%;
-    width: 577px;
+    width: 100%;
+}
+
+.filler {
+    display: none;
+}
+
+@media (max-width: 1727px) {
+    .tableConfigContainer {
+        gap: 0px;
+        transition: all 1s ease;
+        background-color: white;
+    }
+
+    .horizontalScrollableDiv {
+        background-color: rgb(255, 255, 255);
+        padding: 5px;
+        width: auto;
+        border-radius: 0px 14px 14px 0px;
+        right: -18px;
+        position: fixed;
+        gap: 1%;
+        transition: all 1s ease;
+    }
+
+    .tableConfigContainer>.inputComponentWrapper {
+        z-index: 100;
+        border-radius: 14px 0 0 14px;
+        padding-top: 5px;
+        padding-bottom: 5px;
+        background-color: white;
+
+    }
+
+    .tableConfigContainer>.inputComponentWrapper>.inputFields {
+        border-radius: 14px 0;
+        padding-right: 20px;
+        height: auto;
+        box-shadow: 24px 0px 26px rgba(0, 0, 0, 0.07);
+    }
+
+    .tableConfigContainer>.inputComponentWrapper>.inputFields:focus {
+        outline: 0;
+    }
+
+    #nextButton {
+        display: flex;
+        position: absolute;
+        right: 0px;
+        border-top-right-radius: 10px;
+        border-bottom-right-radius: 10px;
+        gap: -2px;
+
+        border-radius: 0 10px 10px 0;
+        z-index: 5;
+    }
+
+    #nextButton > .iconButtonContainer {
+        border-radius: 0;
+    }
+
+    .filler {
+        display: flex;
+        width: 18px;
+        height: 55px;
+        position: relative;
+        right: 0px;
+        background-color: #f2f2f2;
+        z-index: 2;
+    }
 }

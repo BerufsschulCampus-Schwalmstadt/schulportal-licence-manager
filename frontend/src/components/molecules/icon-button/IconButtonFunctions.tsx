@@ -1,8 +1,12 @@
 import {IconName} from '@blueprintjs/core';
 
+type iconButtonClickHandler =
+  | ((iconName: IconName) => void)
+  | ((event: IconName) => void);
+
 export class IconButtonProps {
   iconName: IconName;
-  clickHandler: (iconName: IconName) => void;
+  clickHandler: iconButtonClickHandler;
   buttonText?: {
     text: string;
     textPosition: 'front' | 'back';
@@ -10,12 +14,13 @@ export class IconButtonProps {
   size?: 'lg' | 'md' | 'sm';
   filled?: string;
   outlined?: {colour: string};
-  colour?: string;
+  iconColour?: string;
   activityStatus?: 'default' | 'active';
   dropdown?: boolean;
   menuBarBottomPosition?: boolean;
   iconId?: string;
   buttonId?: string;
+  textColour?: string;
 
   constructor(passedProps: IconButtonProps) {
     const {
@@ -25,7 +30,8 @@ export class IconButtonProps {
       size,
       filled,
       outlined,
-      colour,
+      iconColour,
+      textColour,
       activityStatus,
       dropdown,
       menuBarBottomPosition,
@@ -42,7 +48,8 @@ export class IconButtonProps {
       this.filled = filled;
     }
     this.outlined = outlined;
-    this.colour = colour ? colour : 'black';
+    this.iconColour = iconColour ? iconColour : 'black';
+    this.textColour = textColour ? textColour : 'black';
     this.activityStatus = activityStatus ? activityStatus : 'default';
     this.dropdown = dropdown;
     this.menuBarBottomPosition = menuBarBottomPosition
@@ -104,6 +111,7 @@ export function generateProps(
     text: string;
     textPosition: 'front' | 'back';
   },
+  textColour?: string,
   padding?: string
 ) {
   const baseProps = {
@@ -112,7 +120,7 @@ export function generateProps(
     border: borderStyle,
   };
 
-  const altProps = {...baseProps, padding: padding};
+  const altProps = {...baseProps, padding: padding, color: textColour};
 
-  return buttonText ? altProps : baseProps;
+  return buttonText && textColour ? altProps : baseProps;
 }

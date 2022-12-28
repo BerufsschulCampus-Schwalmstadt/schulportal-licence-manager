@@ -44,6 +44,7 @@ export default class LicenceDataTable extends Component<
         <TableConfigMenu
           inputHandler={this.handleInput}
           inputName="licenceSearchAndFilter"
+          columnSetupOptions={this.context.currentLicenceData.heading}
         />
         <Table {...tableProps} />
       </div>
