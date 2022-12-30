@@ -1,10 +1,27 @@
+import {licenceData} from '../../../../globals/global-types';
+
+export type TableProps = {
+  data: licenceData;
+  id?: string;
+  columnsToDisplayIndices?: number[];
+};
+
+export type TableState = {dataReceived: boolean};
+
+export type TableData = {
+  heading: string[];
+  body: string[][];
+  bodyLen: number;
+};
+
 export function generateTable(
   data: {
     heading: string[];
     body: string[][];
     bodyLen: number;
   },
-  tableId?: string
+  tableId?: string,
+  indicesToShow?: number[]
 ) {
   const {body, bodyLen, heading} = data;
 
@@ -12,19 +29,14 @@ export function generateTable(
   const thElementArray: JSX.Element[] = [];
   for (let i = 0; i < heading.length; i++) {
     const currentHeader = heading[i];
-    if (i === heading.length - 1) {
-      thElementArray[i] = (
-        <th style={{borderRight: 'none'}} key={'th' + i}>
-          {currentHeader}
-        </th>
-      );
-    } else {
-      thElementArray[i] = <th key={'th' + i}>{currentHeader}</th>;
+    if (indicesToShow && !indicesToShow.includes(i)) {
+      continue;
     }
+    thElementArray[i] = <th key={'th' + i}>{currentHeader}</th>;
   }
 
   const theadElement = (
-    <thead>
+    <thead key={'tableHead'}>
       <tr>{thElementArray}</tr>
     </thead>
   );
@@ -37,22 +49,29 @@ export function generateTable(
     // get all cells of current row
     const cellElementArray: JSX.Element[] = [];
     for (let k = 0; k < currentRow.length; k++) {
+      if (indicesToShow && !indicesToShow.includes(k)) {
+        continue;
+      }
       cellElementArray[k] = (
         <td key={'cell' + k + 'ofRow' + i}>{currentRow[k]}</td>
       );
     }
 
-    const rowElement: JSX.Element = <tr>{cellElementArray}</tr>;
+    const rowElement: JSX.Element = (
+      <tr key={'row' + i + 'ofTableBody'}>{cellElementArray}</tr>
+    );
 
     trElementArray[i] = rowElement;
   }
 
-  const tbodyElement = <tbody>{trElementArray}</tbody>;
+  const tbodyElement = <tbody key={'tableBody'}>{trElementArray}</tbody>;
 
   //----------- combine to create table ------------//
 
   const table: JSX.Element = (
-    <table id={tableId}>{[theadElement, tbodyElement]}</table>
+    <table id={tableId} key={tableId}>
+      {[theadElement, tbodyElement]}
+    </table>
   );
 
   //----------------- return table ------------------//
@@ -81,8 +100,12 @@ export function generateLoadingTable() {
 
       skeletonCellArray[k] = (
         <td key={'cell' + k + 'ofRow' + i}>
-          <svg style={{width: width, height: '20px', borderRadius: '5px'}}>
+          <svg
+            key={'svg' + k + 'ofRow' + i}
+            style={{width: width, height: '20px', borderRadius: '5px'}}
+          >
             <rect
+              key={'rect' + k + 'ofRow' + i}
               className="skeletonText"
               width={width}
               height={'20px'}
@@ -93,7 +116,9 @@ export function generateLoadingTable() {
       );
     }
 
-    const skeletonRow: JSX.Element = <tr>{skeletonCellArray}</tr>;
+    const skeletonRow: JSX.Element = (
+      <tr key={'row' + i + 'ofLoadTableBody'}>{skeletonCellArray}</tr>
+    );
 
     skeletonRowArray[i] = skeletonRow;
   }
@@ -115,4 +140,19 @@ export function generateLoadingTable() {
       <tbody>{skeletonRowArray}</tbody>
     </table>
   );
+}
+
+export function determineTableState(props: TableProps): TableState {
+  const {data, columnsToDisplayIndices, id} = props;
+  if (
+    data &&
+    data.body &&
+    data.bodyLen &&
+    data.heading &&
+    columnsToDisplayIndices &&
+    id
+  ) {
+    return {dataReceived: true};
+  }
+  return {dataReceived: false};
 }

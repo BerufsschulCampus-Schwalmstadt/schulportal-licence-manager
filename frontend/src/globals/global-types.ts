@@ -1,3 +1,7 @@
+export type size = 'sm' | 'md' | 'lg';
+
+export type status = 'idle' | 'active';
+
 export type UserInfo = {
   infoAcquired?: boolean;
   authenticated?: boolean;

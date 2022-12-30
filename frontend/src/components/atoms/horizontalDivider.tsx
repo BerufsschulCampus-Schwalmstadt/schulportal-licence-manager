@@ -10,6 +10,7 @@ export default function HorizontalDivider() {
         borderRadius: '10px',
         height: '2px',
         background: 'rgba(0, 0, 0, 0.18)',
+        zIndex: '5',
       }}
     ></div>
   );

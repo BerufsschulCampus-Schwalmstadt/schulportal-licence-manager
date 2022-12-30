@@ -1,6 +1,6 @@
 import React from 'react';
 
-export default function HorizontalDivider() {
+export default function VerticalDivider() {
   return (
     <div
       style={{
@@ -8,8 +8,9 @@ export default function HorizontalDivider() {
         alignSelf: 'stretch',
         margin: '5px 6px',
         borderRadius: '10px',
-        height: '2px',
+        width: '2px',
         background: 'rgba(0, 0, 0, 0.18)',
+        zIndex: '5',
       }}
     ></div>
   );

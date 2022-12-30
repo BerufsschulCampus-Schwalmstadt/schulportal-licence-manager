@@ -3,7 +3,11 @@
     flex-direction: column;
     padding: 5px 0;
     gap: 22px;
-    height: 100vh;
+    width: 100%;
+    min-height: 80%;
+    height: auto;
+    max-height: 91%;
+    overflow: hidden;
 }
 
 .tableWrapper {
@@ -11,7 +15,12 @@
 }
 
 .tableContainer {
-    height: 90%;
+    height: 100%;
     transition: all 1s ease;
+}
 
+table {
+    max-height: 80vh;
+    margin-bottom: 90px;
+    border-radius: 10px;
 }
