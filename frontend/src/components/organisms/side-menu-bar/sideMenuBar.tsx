@@ -1,20 +1,18 @@
 import React, {Component} from 'react';
 import IconButton from '../../molecules/icon-button/iconButton';
 import {IconName} from '@blueprintjs/core';
-import assert from 'assert';
 import './sideMenuBar.css';
 import HorizontalDivider from '../../atoms/horizontalDivider';
 
-class SideMenuBarProps {
-  iconNames?: IconName[];
-  bottomIconName?: IconName;
+type SideMenuBarProps = {
+  iconNames: IconName[];
+  bottomIconName: IconName;
+};
 
-  constructor(passedProps: SideMenuBarProps) {
-    const {iconNames, bottomIconName} = passedProps;
-    this.iconNames = iconNames ? iconNames : ['home', 'pie-chart'];
-    this.bottomIconName = bottomIconName ? bottomIconName : 'cog';
-  }
-}
+const defaultSideMenuProps: SideMenuBarProps = {
+  iconNames: ['home', 'pie-chart'],
+  bottomIconName: 'cog',
+};
 
 type SideMenuBarState = {
   activeIcon: IconName;
@@ -24,16 +22,13 @@ export default class SideMenuBar extends Component<
   SideMenuBarProps,
   SideMenuBarState
 > {
-  fullprops: SideMenuBarProps;
+  static defaultProps = defaultSideMenuProps;
   constructor(props: SideMenuBarProps) {
     super(props);
-    this.fullprops = new SideMenuBarProps(this.props);
-    const iconNames = this.fullprops.iconNames;
-    assert(iconNames);
     this.state = {
       activeIcon: localStorage.getItem('sideMenuBarActiveIcon')
         ? (localStorage.getItem('sideMenuBarActiveIcon') as IconName)
-        : iconNames[0],
+        : this.props.iconNames[0],
     };
     this.handleToggling = this.handleToggling.bind(this);
   }
@@ -48,8 +43,7 @@ export default class SideMenuBar extends Component<
   }
 
   render() {
-    const {iconNames, bottomIconName} = this.fullprops;
-    assert(iconNames);
+    const {iconNames, bottomIconName} = this.props;
     const iconButtonsToRender: JSX.Element[] = [];
 
     let dividerCount = 0;
@@ -66,7 +60,7 @@ export default class SideMenuBar extends Component<
           iconName={currentIcon}
           size="lg"
           activityStatus={
-            this.state.activeIcon === currentIcon ? 'active' : 'default'
+            this.state.activeIcon === currentIcon ? 'active' : 'idle'
           }
           clickHandler={this.handleToggling}
           key={currentIcon + i}
@@ -82,11 +76,11 @@ export default class SideMenuBar extends Component<
             iconName={bottomIconName as IconName}
             size="lg"
             activityStatus={
-              this.state.activeIcon === bottomIconName ? 'active' : 'default'
+              this.state.activeIcon === bottomIconName ? 'active' : 'idle'
             }
-            iconColour="white"
+            iconColor="white"
             clickHandler={this.handleToggling}
-            menuBarBottomPosition={true}
+            isBottomOfMenuBar={true}
           />
         </div>
       </div>

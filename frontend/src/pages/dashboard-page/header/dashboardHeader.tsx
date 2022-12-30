@@ -29,9 +29,9 @@ export default class DashboardHeader extends Component {
             <h5>Licence account</h5>
             <Dropdown
               id={'licenceAccountDropdown'}
-              filled={'white'}
-              outlined={{colour: '#B3B1EC'}}
-              options={['619888398273', '619218398273', '619768398273']}
+              fillColor={'white'}
+              outlineColor={'#B3B1EC'}
+              listItems={['619888398273', '619218398273', '619768398273']}
               size={'sm'}
             />
           </div>
@@ -40,21 +40,22 @@ export default class DashboardHeader extends Component {
             <IconButton
               clickHandler={this.context.syncToLatestData}
               iconName="refresh"
-              outlined={{colour: '#B3B1EC'}}
+              outlineColor={'#B3B1EC'}
               size={'sm'}
-              filled={'white'}
+              fillColor={'white'}
               iconId={'syncButtonIcon'}
             />
             <IconButton
               clickHandler={this.context.exportData}
               iconName="arrow-down"
               buttonText={{text: 'Download as CSV', textPosition: 'back'}}
+              fillColor="default"
               size={'sm'}
             />
             <IconButton
               clickHandler={() => {}}
               iconName="more"
-              filled="default"
+              fillColor="default"
               size={'md'}
             />
           </div>

@@ -1,18 +1,19 @@
-import React, {Component, FormEvent} from 'react';
+import React, {Component} from 'react';
 import './tableConfigMenu.css';
 import Dropdown from '../../../molecules/dropdown/dropdown';
 import {IconName} from '@blueprintjs/core';
 import {
   configMenuProps,
   configMenuState,
-  configMenuScroll,
+  initializeScrollContainer,
+  updateConfigMenuScroll,
 } from './tableConfigFunctions';
 import InputComponent from '../../../molecules/input/inputComponent';
 import IconButton from '../../../molecules/icon-button/iconButton';
-import DropdownCheckboxList from '../../../molecules/dropdown/dropdownCheckboxList';
+import CheckboxListDropdown from '../../../molecules/dropdown/checkboxList-dropdown/checkboxListDropdown';
 
 export default class TableConfigMenu extends Component<
-  configMenuProps,
+  Partial<configMenuProps>,
   configMenuState
 > {
   constructor(props: configMenuProps) {
@@ -23,10 +24,11 @@ export default class TableConfigMenu extends Component<
 
   componentDidMount(): void {
     document.addEventListener('resize', this.handleScrolling);
+    initializeScrollContainer();
   }
 
   handleScrolling() {
-    const valueToSet = configMenuScroll(this.state);
+    const valueToSet = updateConfigMenuScroll(this.state);
     if (valueToSet) this.setState(valueToSet);
   }
 
@@ -48,6 +50,7 @@ export default class TableConfigMenu extends Component<
 
     return (
       <div className="tableConfigContainer" onInput={inputHandler}>
+        <div className="filler"></div>
         <InputComponent
           name={inputNameToSet}
           label={false}
@@ -60,17 +63,17 @@ export default class TableConfigMenu extends Component<
         <div className="horizontalScrollableDiv">
           <Dropdown
             id={'submittedDateRangeSelector'}
-            options={['Submitted date: Dec 1, 2022 - Dec 12, 2022']}
+            listItems={['Submitted date: Dec 1, 2022 - Dec 12, 2022']}
             size={'sm'}
           />
           <Dropdown
             id={'licenceStartDateRangeSelector'}
-            options={['Licence start date: Dec 1, 2022 - Dec 12, 2022']}
+            listItems={['Licence start date: Dec 1, 2022 - Dec 12, 2022']}
             size={'sm'}
           />
-          <DropdownCheckboxList
+          <CheckboxListDropdown
             id={'columnSetup'}
-            options={
+            listItems={
               this.props.columnSetupOptions?.headings
                 ? ['Columns Setup', ...this.props.columnSetupOptions.headings]
                 : ['Columns Setup']
@@ -86,8 +89,12 @@ export default class TableConfigMenu extends Component<
           <IconButton
             iconName={icon}
             clickHandler={() => {}}
-            buttonText={{text: nextButtonText, textPosition: textPosition}}
-            filled={'white'}
+            buttonText={{
+              text: nextButtonText,
+              textColor: 'black',
+              textPosition: textPosition,
+            }}
+            fillColor={'white'}
             size={'sm'}
           />
           <div className="filler"></div>

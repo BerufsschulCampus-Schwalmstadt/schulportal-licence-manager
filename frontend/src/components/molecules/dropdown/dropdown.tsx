@@ -1,99 +1,94 @@
-import React, {Component, createRef} from 'react';
+import React, {Component} from 'react';
 import IconButton from '../icon-button/iconButton';
 import './dropdown.css';
-import assert from 'assert';
 import {
-  DropdownProps,
   DropdownState,
-  generateOptions,
-} from './dropdownFunctions';
+  FullDropdownProps,
+  defaultOptionalDropdownProps,
+} from './dropdown-types';
+import {generateOptions} from './dropdown-functions';
 
-export default class Dropdown extends Component<DropdownProps, DropdownState> {
-  private fullprops: DropdownProps;
-  private componentRef = createRef<HTMLDivElement>();
-  private clickCount = 0;
-  constructor(props: DropdownProps) {
+export default class Dropdown extends Component<
+  FullDropdownProps,
+  DropdownState
+> {
+  static defaultProps = defaultOptionalDropdownProps;
+  constructor(props: FullDropdownProps) {
     super(props);
     this.state = {
       listVisibility: 'closed',
       selectedOption: 0,
     };
-    this.fullprops = new DropdownProps(this.props);
+    this.handleDropdownButtonClick = this.handleDropdownButtonClick.bind(this);
     this.handleSelect = this.handleSelect.bind(this);
-    this.handleClose = this.handleClose.bind(this);
+    this.handleDocumentClickClose = this.handleDocumentClickClose.bind(this);
   }
 
-  componentDidMount(): void {
-    this.componentRef.current?.addEventListener(
-      'click',
-      (event: MouseEvent) => {
-        console.log(event.target + 'mount');
-        event.stopImmediatePropagation();
-        if (this.clickCount === 1) {
-          console.log(this.clickCount);
-          this.handleClose(event);
-        } else {
-          this.setState({listVisibility: 'open'});
-          this.clickCount++;
-        }
-      }
-    );
+  handleDropdownButtonClick(event: React.MouseEvent) {
+    event.stopPropagation();
+    if (this.state.listVisibility === 'open') {
+      document.removeEventListener('click', this.handleDocumentClickClose);
+      this.handleSelect(event.target as HTMLElement);
+      this.setState({listVisibility: 'closed'});
+    } else {
+      document.addEventListener('click', this.handleDocumentClickClose);
+      this.setState({listVisibility: 'open'});
+    }
   }
 
-  handleClose(event: MouseEvent) {
+  handleDocumentClickClose(event: MouseEvent) {
+    event.stopPropagation();
     this.handleSelect(event.target as HTMLElement);
     this.setState({listVisibility: 'closed'});
-    this.clickCount = 0;
-  }
-
-  componentDidUpdate(
-    prevProps: Readonly<DropdownProps>,
-    prevState: Readonly<DropdownState>
-  ): void {
-    if (
-      prevState.listVisibility === 'closed' &&
-      this.state.listVisibility === 'open'
-    ) {
-      document.addEventListener('click', this.handleClose);
-    } else {
-      document.removeEventListener('click', this.handleClose);
-    }
   }
 
   handleSelect(trigger: HTMLElement) {
     const triggerText = trigger.textContent;
     console.log(triggerText);
     if (!triggerText) return;
-    const selectionIndex = this.fullprops.options?.indexOf(triggerText);
+    const selectionIndex = this.props.listItems.indexOf(triggerText);
     if (selectionIndex === undefined || selectionIndex === -1) return;
     this.setState({selectedOption: selectionIndex});
   }
 
   render() {
-    const {id, options, iconName, colour, filled, outlined, size} =
-      this.fullprops;
-    assert(iconName);
-    assert(options);
-
+    const {
+      fillColor,
+      iconColor,
+      iconName,
+      id,
+      listItems,
+      outlineColor,
+      size,
+      clickHandler,
+    } = this.props;
     const {listVisibility, selectedOption} = this.state;
 
     return (
-      <div ref={this.componentRef} className="dropDownWrapper" id={id}>
+      <div
+        className="dropDownWrapper"
+        id={id}
+        onClick={this.handleDropdownButtonClick}
+      >
         <IconButton
           iconName={iconName}
-          buttonText={{text: options[selectedOption], textPosition: 'front'}}
-          clickHandler={() => {}}
-          iconColour={colour}
-          outlined={outlined}
-          filled={filled}
-          dropdown={true}
+          buttonText={{
+            text: listItems[selectedOption],
+            textColor: 'black',
+            textPosition: 'front',
+          }}
+          clickHandler={clickHandler}
+          iconColor={iconColor}
+          outlineColor={outlineColor}
+          fillColor={fillColor}
+          isDropdown={true}
           size={'sm'}
         />
         <div
           className="dropdownList"
           style={{display: listVisibility === 'open' ? 'flex' : 'none'}}
         >
-          {generateOptions(options, size as string, this.state.selectedOption)}
+          {generateOptions(listItems, size, this.state.selectedOption)}
         </div>
       </div>
     );

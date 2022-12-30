@@ -2,17 +2,19 @@ import React from 'react';
 import {ChangeEvent, Component} from 'react';
 import './inputComponent.css';
 import {Icon, IconName} from '@blueprintjs/core';
-import {getIconSize} from '../icon-button/IconButtonFunctions';
+import {getIconSize} from '../icon-button/iconButton-functions';
+import {size} from '../../../globals/global-types';
 
 // ---------------------------  Class Prop def ------------------------------//
 
 /* A class that defines the props that will be passed to the component. */
+
 class InputComponentProps {
   name: string;
   icon?: IconName;
   label?: boolean;
   labelText?: string;
-  size?: 'sm' | 'md' | 'lg';
+  size?: size;
   outlined?: string;
   boxshadow?: boolean;
   filled?: string;
@@ -52,13 +54,9 @@ class InputComponentProps {
 }
 
 /* A class that holds the state of the component. */
-class InputComponentState {
+type InputComponentState = {
   inputFieldValue: string;
-
-  constructor() {
-    this.inputFieldValue = '';
-  }
-}
+};
 
 // ---------------------------  Class Component ------------------------------//
 
@@ -70,7 +68,7 @@ export default class InputComponent extends Component<
   constructor(props: InputComponentProps) {
     super(props);
     this.fullprops = new InputComponentProps(this.props);
-    this.state = new InputComponentState();
+    this.state = {inputFieldValue: ''};
     this.handlechange = this.handlechange.bind(this);
   }
 

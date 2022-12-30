@@ -1,3 +1,19 @@
+import {licenceData} from '../../../../globals/global-types';
+
+export type TableProps = {
+  data: licenceData;
+  id?: string;
+  columnsToDisplayIndices?: number[];
+};
+
+export type TableState = {dataReceived: boolean};
+
+export type TableData = {
+  heading: string[];
+  body: string[][];
+  bodyLen: number;
+};
+
 export function generateTable(
   data: {
     heading: string[];
@@ -20,7 +36,7 @@ export function generateTable(
   }
 
   const theadElement = (
-    <thead>
+    <thead key={'tableHead'}>
       <tr>{thElementArray}</tr>
     </thead>
   );
@@ -41,17 +57,21 @@ export function generateTable(
       );
     }
 
-    const rowElement: JSX.Element = <tr>{cellElementArray}</tr>;
+    const rowElement: JSX.Element = (
+      <tr key={'row' + i + 'ofTableBody'}>{cellElementArray}</tr>
+    );
 
     trElementArray[i] = rowElement;
   }
 
-  const tbodyElement = <tbody>{trElementArray}</tbody>;
+  const tbodyElement = <tbody key={'tableBody'}>{trElementArray}</tbody>;
 
   //----------- combine to create table ------------//
 
   const table: JSX.Element = (
-    <table id={tableId}>{[theadElement, tbodyElement]}</table>
+    <table id={tableId} key={tableId}>
+      {[theadElement, tbodyElement]}
+    </table>
   );
 
   //----------------- return table ------------------//
@@ -80,8 +100,12 @@ export function generateLoadingTable() {
 
       skeletonCellArray[k] = (
         <td key={'cell' + k + 'ofRow' + i}>
-          <svg style={{width: width, height: '20px', borderRadius: '5px'}}>
+          <svg
+            key={'svg' + k + 'ofRow' + i}
+            style={{width: width, height: '20px', borderRadius: '5px'}}
+          >
             <rect
+              key={'rect' + k + 'ofRow' + i}
               className="skeletonText"
               width={width}
               height={'20px'}
@@ -92,7 +116,9 @@ export function generateLoadingTable() {
       );
     }
 
-    const skeletonRow: JSX.Element = <tr>{skeletonCellArray}</tr>;
+    const skeletonRow: JSX.Element = (
+      <tr key={'row' + i + 'ofLoadTableBody'}>{skeletonCellArray}</tr>
+    );
 
     skeletonRowArray[i] = skeletonRow;
   }
@@ -114,4 +140,19 @@ export function generateLoadingTable() {
       <tbody>{skeletonRowArray}</tbody>
     </table>
   );
+}
+
+export function determineTableState(props: TableProps): TableState {
+  const {data, columnsToDisplayIndices, id} = props;
+  if (
+    data &&
+    data.body &&
+    data.bodyLen &&
+    data.heading &&
+    columnsToDisplayIndices &&
+    id
+  ) {
+    return {dataReceived: true};
+  }
+  return {dataReceived: false};
 }

@@ -38,6 +38,13 @@ export default class Dashboard extends Component<{}, licenceDataState> {
     });
     const currentAccessToken = this.context.currentUserInfo.accessToken;
     const newLicenceData = await getLicenceData(currentAccessToken as string);
+    if (!newLicenceData) {
+      this.setState({
+        gettingData: false,
+        lastSyncedText: 'Failled to fetch data',
+      });
+      return;
+    }
     const lastSyncedTime = newLicenceData.lastSynced;
     const syncUpdateObject = getTimeSinceLastSync(lastSyncedTime);
     assert(syncUpdateObject !== 'Click here to get licence data ➜');

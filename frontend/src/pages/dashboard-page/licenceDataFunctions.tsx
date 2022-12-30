@@ -33,7 +33,7 @@ export async function getLicenceData(accessToken: string) {
   console.log('returning response');
   if (!response) {
     console.log('failed getting data');
-    return;
+    return false;
   } else {
     localStorage.setItem('licenceData', JSON.stringify(response.data.data));
     return response.data;
