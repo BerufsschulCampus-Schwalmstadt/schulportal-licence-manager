@@ -301,25 +301,40 @@ async function getTable(
       // iterate through all rows adding them to our table body
       for (let i = 1; i < rows.length; i++) {
         const row: string[] = [];
-        Array.from(rows[i].cells)
-          .slice(0, table.heading.length - 1)
-          .forEach(cell => {
-            let text: string | null;
-            if (cell.childNodes.length === 1) {
-              text = nodeCleaner(cell.textContent as string);
-              row.push(text ? text : '');
-            } else {
-              const filteredArr = Array.from(cell.childNodes).filter(node =>
-                nodeCleaner(node.textContent as string)
-              );
-              if (!filteredArr.length) row.push('');
-              else {
-                filteredArr.forEach(textNode =>
-                  row.push(nodeCleaner(textNode.textContent as string))
-                );
-              }
-            }
-          });
+        const cellsArr = Array.from(rows[i].cells).slice(
+          0,
+          table.heading.length - 1
+        );
+
+        cellsArr.forEach(cell => {
+          const currCellChilNodes = Array.from(cell.childNodes);
+          const containsHr = Boolean(
+            currCellChilNodes.filter(
+              node => node.nodeName.toLowerCase() === 'hr'
+            ).length
+          );
+          const childNodesContainingText = currCellChilNodes.filter(node =>
+            nodeCleaner(node.textContent as string)
+          );
+          const hasText = Boolean(childNodesContainingText.length);
+
+          if (containsHr && !hasText) {
+            row.push('-');
+            row.push('-');
+          } else if (containsHr && childNodesContainingText.length === 1) {
+            row.push(
+              nodeCleaner(childNodesContainingText[0].textContent as string)
+            );
+            row.push('-');
+          } else if (hasText) {
+            childNodesContainingText.forEach(node =>
+              row.push(nodeCleaner(node.textContent as string))
+            );
+          } else {
+            row.push('-');
+          }
+        });
+
         table.body.push(row);
         table.bodyLen++;
       }
@@ -328,7 +343,7 @@ async function getTable(
       return table;
     }, table);
 
-    console.log(table.heading);
+    console.log(table.body[table.body.length - 1]);
     successfullNavIndicator = await navToNextTablePage(page);
   }
 
