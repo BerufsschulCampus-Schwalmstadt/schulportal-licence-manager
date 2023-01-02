@@ -13,7 +13,6 @@ import {
   licenceDataState,
 } from './licenceDataFunctions';
 import {licenceDataContext} from './licenceDataContext';
-import {licenceData} from '../../globals/global-types';
 import LicenceDataTable from './licenceDataTable/licenceDataTable';
 import assert from 'assert';
 
@@ -81,7 +80,7 @@ export default class Dashboard extends Component<{}, licenceDataState> {
   render() {
     const latestLicenceData = identifyLatestLicenceData(this.state);
     const licenceDataContextValues: GetAndSetLicenceData = {
-      currentLicenceData: latestLicenceData as licenceData,
+      currentLicenceData: latestLicenceData,
       syncToLatestData: this.handleLicenceDataSync,
       lastSynced: this.state.lastSynced,
       lastSyncedText: this.state.lastSyncedText,

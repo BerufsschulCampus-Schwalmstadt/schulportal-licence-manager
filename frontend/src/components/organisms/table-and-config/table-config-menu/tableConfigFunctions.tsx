@@ -12,7 +12,10 @@ export type configMenuProps = {
   };
 };
 
-export type configMenuState = {scrolled: boolean};
+export type configMenuState = {
+  scrolled: boolean;
+  columnSetupOptionsReceived: boolean;
+};
 
 export function determineConfigMenuDataState(props: configMenuProps) {
   if (!props.columnSetupOptions) return {columnDataReceived: false};

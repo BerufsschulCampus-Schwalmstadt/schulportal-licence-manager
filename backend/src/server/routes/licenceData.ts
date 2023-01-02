@@ -20,6 +20,6 @@ licenceDataRouter.get('/', async (req, res) => {
     lastSynced: new Date(),
   };
   loginObject.kill();
-  console.log(responseObject.data);
+  console.log(data);
   return res.status(200).send(responseObject);
 });

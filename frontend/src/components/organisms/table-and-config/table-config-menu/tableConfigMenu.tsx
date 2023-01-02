@@ -18,7 +18,7 @@ export default class TableConfigMenu extends Component<
 > {
   constructor(props: configMenuProps) {
     super(props);
-    this.state = {scrolled: false};
+    this.state = {scrolled: false, columnSetupOptionsReceived: false};
     this.handleScrolling = this.handleScrolling.bind(this);
   }
 
@@ -30,6 +30,18 @@ export default class TableConfigMenu extends Component<
   handleScrolling() {
     const valueToSet = updateConfigMenuScroll(this.state);
     if (valueToSet) this.setState(valueToSet);
+  }
+
+  componentDidUpdate(
+    prevProps: Readonly<Partial<configMenuProps>>,
+    prevState: Readonly<configMenuState>
+  ): void {
+    if (
+      prevProps.columnSetupOptions?.headings !==
+      this.props.columnSetupOptions?.headings
+    ) {
+      this.setState({columnSetupOptionsReceived: true});
+    }
   }
 
   render() {

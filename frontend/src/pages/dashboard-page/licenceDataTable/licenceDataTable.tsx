@@ -82,24 +82,17 @@ export default class LicenceDataTable extends Component<
       columnsToDisplayIndices: this.state.indicesToSelect,
       id: this.tableId,
     };
+    console.log(this.context.currentLicenceData?.heading);
     return (
       <div className="licenceDataTableWrapper">
         <TableConfigMenu
           inputHandler={this.handleInput}
           inputName="licenceSearchAndFilter"
-          columnSetupOptions={
-            this.context.currentLicenceData
-              ? {
-                  headings: this.context.currentLicenceData.heading,
-                  indicesToSelect: this.state.indicesToSelect,
-                  columnToSelectEditor: this.handleColumnToDisplayUpdates,
-                }
-              : {
-                  headings: undefined,
-                  indicesToSelect: this.state.indicesToSelect,
-                  columnToSelectEditor: this.handleColumnToDisplayUpdates,
-                }
-          }
+          columnSetupOptions={{
+            headings: this.context.currentLicenceData?.heading,
+            indicesToSelect: this.state.indicesToSelect,
+            columnToSelectEditor: this.handleColumnToDisplayUpdates,
+          }}
         />
         <Table {...tableProps} />
       </div>

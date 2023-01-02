@@ -50,6 +50,12 @@ th {
     text-transform: capitalize;
 }
 
+tr {
+    border-bottom: 1px dashed #CCCCCC;
+    border-right: 1px dashed #CCCCCC;
+    border-left: 1px dashed #CCCCCC;
+}
+
 td {
     /* Auto layout */
     padding: 8px 20px;

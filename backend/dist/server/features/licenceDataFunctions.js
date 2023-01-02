@@ -152,25 +152,56 @@ function navToNextTablePage(page) {
 function getTable(page) {
     return __awaiter(this, void 0, void 0, function* () {
         let table = {
-            heading: [''],
-            body: [['']],
+            heading: [],
+            body: [],
             bodyLen: 0,
         };
         let successfullNavIndicator = true;
         while (successfullNavIndicator) {
             table = yield page.evaluate(table => {
                 const rows = document.querySelectorAll('tr');
+                const nodeCleaner = (nodeTextContent) => {
+                    return nodeTextContent.replace(/(\r\n|\n|\r)/gm, '').trim();
+                };
                 if (!table.heading[0]) {
-                    table.heading = Array.from(rows[0].cells, headingText => headingText.innerText);
+                    Array.from(rows[0].cells).forEach(cell => {
+                        Array.from(cell.childNodes)
+                            .filter(node => {
+                            const text = nodeCleaner(node.textContent);
+                            return text && text.toLowerCase() !== 'actions';
+                        })
+                            .forEach(textNode => {
+                            if (textNode.textContent) {
+                                table.heading.push(nodeCleaner(textNode.textContent));
+                            }
+                        });
+                    });
                 }
-                const rowsLen = rows.length;
-                for (let i = 1; i < rowsLen; i++) {
-                    const currentRowCellArray = Array.from(rows[i].cells, el => el.innerText);
-                    table.body[table.bodyLen] = currentRowCellArray;
+                for (let i = 1; i < rows.length; i++) {
+                    const row = [];
+                    Array.from(rows[i].cells)
+                        .slice(0, table.heading.length - 1)
+                        .forEach(cell => {
+                        let text;
+                        if (cell.childNodes.length === 1) {
+                            text = nodeCleaner(cell.textContent);
+                            row.push(text ? text : '');
+                        }
+                        else {
+                            const filteredArr = Array.from(cell.childNodes).filter(node => nodeCleaner(node.textContent));
+                            if (!filteredArr.length)
+                                row.push('');
+                            else {
+                                filteredArr.forEach(textNode => row.push(nodeCleaner(textNode.textContent)));
+                            }
+                        }
+                    });
+                    table.body.push(row);
                     table.bodyLen++;
                 }
                 return table;
             }, table);
+            console.log(table.heading);
             successfullNavIndicator = yield navToNextTablePage(page);
         }
         return table;

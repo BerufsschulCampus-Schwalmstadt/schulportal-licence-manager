@@ -16,7 +16,7 @@ export type licenceDataSyncHandler = () => Promise<void>;
 export type licenceDataExportHandler = () => Promise<void>;
 
 export type GetAndSetLicenceData = {
-  currentLicenceData: licenceData;
+  currentLicenceData?: licenceData;
   syncToLatestData: licenceDataSyncHandler;
   lastSynced?: Date;
   lastSyncedText: string;

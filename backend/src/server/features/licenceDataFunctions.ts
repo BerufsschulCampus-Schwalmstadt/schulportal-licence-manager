@@ -262,8 +262,8 @@ async function getTable(
 ): Promise<{heading: string[]; body: string[][]; bodyLen: number}> {
   // table structure
   let table = {
-    heading: [''],
-    body: [['']],
+    heading: [] as string[],
+    body: [] as string[][],
     bodyLen: 0,
   };
 
@@ -278,24 +278,49 @@ async function getTable(
       const rows: NodeListOf<HTMLTableRowElement> =
         document.querySelectorAll('tr');
 
+      const nodeCleaner = (nodeTextContent: string) => {
+        return nodeTextContent.replace(/(\r\n|\n|\r)/gm, '').trim();
+      };
+
       // set heading
       if (!table.heading[0]) {
-        table.heading = Array.from(
-          rows[0].cells,
-          headingText => headingText.innerText
-        );
+        Array.from(rows[0].cells).forEach(cell => {
+          Array.from(cell.childNodes)
+            .filter(node => {
+              const text = nodeCleaner(node.textContent as string);
+              return text && text.toLowerCase() !== 'actions';
+            })
+            .forEach(textNode => {
+              if (textNode.textContent) {
+                table.heading.push(nodeCleaner(textNode.textContent));
+              }
+            });
+        });
       }
 
-      // get number of rows on page
-      const rowsLen: number = rows.length;
-
       // iterate through all rows adding them to our table body
-      for (let i = 1; i < rowsLen; i++) {
-        const currentRowCellArray: string[] = Array.from(
-          rows[i].cells,
-          el => el.innerText
-        );
-        table.body[table.bodyLen] = currentRowCellArray;
+      for (let i = 1; i < rows.length; i++) {
+        const row: string[] = [];
+        Array.from(rows[i].cells)
+          .slice(0, table.heading.length - 1)
+          .forEach(cell => {
+            let text: string | null;
+            if (cell.childNodes.length === 1) {
+              text = nodeCleaner(cell.textContent as string);
+              row.push(text ? text : '');
+            } else {
+              const filteredArr = Array.from(cell.childNodes).filter(node =>
+                nodeCleaner(node.textContent as string)
+              );
+              if (!filteredArr.length) row.push('');
+              else {
+                filteredArr.forEach(textNode =>
+                  row.push(nodeCleaner(textNode.textContent as string))
+                );
+              }
+            }
+          });
+        table.body.push(row);
         table.bodyLen++;
       }
 
@@ -303,6 +328,7 @@ async function getTable(
       return table;
     }, table);
 
+    console.log(table.heading);
     successfullNavIndicator = await navToNextTablePage(page);
   }
 

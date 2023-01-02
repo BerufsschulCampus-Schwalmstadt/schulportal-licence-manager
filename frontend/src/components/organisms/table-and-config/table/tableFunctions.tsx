@@ -37,7 +37,7 @@ export function generateTable(
 
   const theadElement = (
     <thead key={'tableHead'}>
-      <tr>{thElementArray}</tr>
+      <tr style={{borderBottom: 0}}>{thElementArray}</tr>
     </thead>
   );
 

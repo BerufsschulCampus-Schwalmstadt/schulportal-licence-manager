@@ -26,6 +26,6 @@ exports.licenceDataRouter.get('/', (req, res) => __awaiter(void 0, void 0, void 
         lastSynced: new Date(),
     };
     loginObject.kill();
-    console.log(responseObject.data);
+    console.log(data);
     return res.status(200).send(responseObject);
 }));

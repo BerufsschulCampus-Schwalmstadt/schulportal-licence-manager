@@ -63,6 +63,24 @@ export default class CheckboxListDropdown extends Component<
     this.setState({listVisibility: 'closed'});
   }
 
+  componentDidUpdate(
+    prevProps: Readonly<CheckboxListDropdownProps>,
+    prevState: Readonly<CheckboxListDropdownState>
+  ): void {
+    if (
+      JSON.stringify(prevProps.indicesToSelect) !==
+      JSON.stringify(this.props.indicesToSelect)
+    ) {
+      this.setState({
+        options: generateCheckboxOptions(
+          this.props,
+          this.handleCheckboxChange,
+          this.handleListItemClick
+        ),
+      });
+    }
+  }
+
   render() {
     const {
       id,
